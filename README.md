@@ -1,1 +1,2 @@
-npm install -g pnpm
+npm install
+npm run dev
