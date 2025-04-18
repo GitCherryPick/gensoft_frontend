@@ -3,16 +3,15 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Spotlight } from "@/components/ui/spotlight-new"
 import TextHeroPrimary from "@/components/core/TextHeroPrimary"
+import TextHeroSecondary from "@/components/core/TextHeroSecondary"
 
 export default function LoginPage() {
   return (
     <div className="h-screen w-full rounded-md flex md:items-center md:justify-center bg-black/[0.96] relative overflow-hidden">
       <Spotlight />
       <div className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0">
-        <TextHeroPrimary />
-        <p className="mt-4 font-normal text-base text-neutral-300 max-w-lg text-center mx-auto">
-          Si no tiene una cuenta asignada, contacte al administrador de su organizacion.
-        </p>
+        <TextHeroPrimary text="PythonLearn" />
+        <TextHeroSecondary text="Plataforma Educativa" />
 
         <div className="mt-10 flex flex-col md:flex-row gap-4 justify-center max-w-lg mx-auto">
           <Link href="/role-student" className="w-full md:w-auto">

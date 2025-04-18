@@ -1,13 +1,8 @@
 import React from "react"
 import { cn } from "@/lib/utils"
 
-export default function TextHeroPrimary({ text = "Titulo \n de Ejemplo", className, ...props }) {
-  const lines = text.split("\n").map((line, i) => (
-    <React.Fragment key={i}>
-      {i > 0 && <br />}
-      {line.trim()}
-    </React.Fragment>
-  ))
+export default function TextHeroPrimary({ text = ["Titulo", "de Ejemplo"], className, ...props }) {
+  const lines = Array.isArray(text) ? text : text.split("\n").map((line) => line.trim())
 
   return (
     <h1
@@ -17,7 +12,12 @@ export default function TextHeroPrimary({ text = "Titulo \n de Ejemplo", classNa
       )}
       {...props}
     >
-      {lines}
+      {lines.map((line, index) => (
+        <React.Fragment key={index}>
+          {index > 0 && <br />}
+          {line}
+        </React.Fragment>
+      ))}
     </h1>
   )
 }
