@@ -8,7 +8,7 @@ export default function Input({ type = "text", placeholder = "Enter text...", cl
         type={type}
         placeholder={placeholder}
         className={cn(
-          "w-full rounded-md border border-neutral-700 bg-dark-2 px-4 py-2 text-light-1 placeholder-light-3 focus:border-light-3 focus:outline-none focus:ring-1 focus:ring-light-3",
+          "w-full rounded-md border border-neutral-700 bg-transparent px-4 py-2 text-light-1 placeholder-light-3 focus:border-light-3 focus:outline-none focus:ring-1 focus:ring-light-3",
           error && "border-red-500 focus:border-red-500 focus:ring-red-500",
           className,
         )}
