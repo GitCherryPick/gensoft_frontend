@@ -6,6 +6,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { usePathname, useRouter } from "next/navigation"
+import { ROUTES } from "@/lib/navigation"
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname()
@@ -15,25 +16,24 @@ export default function AdminLayout({ children }) {
   const links = [
     {
       label: "Gestión de Usuarios",
-      href: "/role-admin/users",
+      href: ROUTES.ADMIN.USERS,
       icon: <IconUsers className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Matriculación",
-      href: "/role-admin/enrollment",
+      href: ROUTES.ADMIN.ENROLLMENT,
       icon: <IconSchool className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Cerrar Sesión",
-      href: "/",
+      href: ROUTES.HOME,
       icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
   ]
 
-  // Redirect to users page if at the root admin path
   useEffect(() => {
-    if (pathname === "/role-admin") {
-      router.push("/role-admin/users")
+    if (pathname === ROUTES.ADMIN.ROOT) {
+      router.push(ROUTES.ADMIN.USERS)
     }
   }, [pathname, router])
 
@@ -64,7 +64,7 @@ export default function AdminLayout({ children }) {
             <SidebarLink
               link={{
                 label: "Administrador",
-                href: "/role-admin/users",
+                href: ROUTES.ADMIN.USERS,
                 icon: (
                   <div className="h-7 w-7 shrink-0 rounded-full bg-gray-300 flex items-center justify-center">
                     <span className="text-xs">A</span>
@@ -86,7 +86,10 @@ export default function AdminLayout({ children }) {
 
 const Logo = () => {
   return (
-    <Link href="/role-admin" className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black">
+    <Link
+      href={ROUTES.ADMIN.ROOT}
+      className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
+    >
       <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />
       <motion.span
         initial={{ opacity: 0 }}

@@ -6,6 +6,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { usePathname, useRouter } from "next/navigation"
+import { ROUTES } from "@/lib/navigation"
 
 export default function TeacherLayout({ children }) {
   const pathname = usePathname()
@@ -15,30 +16,29 @@ export default function TeacherLayout({ children }) {
   const links = [
     {
       label: "Crear Tareas",
-      href: "/role-teacher/tasks",
+      href: ROUTES.TEACHER.TASKS,
       icon: <IconClipboardList className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Exámenes",
-      href: "/role-teacher/exams",
+      href: ROUTES.TEACHER.EXAMS,
       icon: <IconFileText className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Alumnos",
-      href: "/role-teacher/students",
+      href: ROUTES.TEACHER.STUDENTS,
       icon: <IconUsers className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Cerrar Sesión",
-      href: "/",
+      href: ROUTES.HOME,
       icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
   ]
 
-  // Redirect to tasks page if at the root teacher path
   useEffect(() => {
-    if (pathname === "/role-teacher") {
-      router.push("/role-teacher/tasks")
+    if (pathname === ROUTES.TEACHER.ROOT) {
+      router.push(ROUTES.TEACHER.TASKS)
     }
   }, [pathname, router])
 
@@ -69,7 +69,7 @@ export default function TeacherLayout({ children }) {
             <SidebarLink
               link={{
                 label: "Docente",
-                href: "/role-teacher/tasks",
+                href: ROUTES.TEACHER.TASKS,
                 icon: (
                   <div className="h-7 w-7 shrink-0 rounded-full bg-gray-300 flex items-center justify-center">
                     <span className="text-xs">D</span>
@@ -92,7 +92,7 @@ export default function TeacherLayout({ children }) {
 const Logo = () => {
   return (
     <Link
-      href="/role-teacher"
+      href={ROUTES.TEACHER.ROOT}
       className="relative z-20 flex items-center space-x-2 py-1 text-sm font-normal text-black"
     >
       <div className="h-5 w-6 shrink-0 rounded-tl-lg rounded-tr-sm rounded-br-lg rounded-bl-sm bg-black dark:bg-white" />

@@ -5,4 +5,3 @@ export default function EnrollmentPage() {
     </div>
   )
 }
-

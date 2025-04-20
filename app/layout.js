@@ -1,4 +1,5 @@
 import "./globals.css"
+import StyleGuideButton from "./design-system/StyleGuideButton"
 
 export const metadata = {
   title: "Role-Based System",
@@ -9,11 +10,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark">
-      <body className="min-h-screen bg-background text-foreground">{children}</body>
+      <body className="min-h-screen bg-background text-foreground">
+        {children}
+        <StyleGuideButton />
+      </body>
     </html>
   )
 }
-
-
-
-import './globals.css'

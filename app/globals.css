@@ -12,7 +12,10 @@
     /* Light text colors */
     --color-light-1: #ffffff;
     --color-light-2: #b8b8ba;
-    --color-light-3: #87868d;
+    --color-light-3: #77767d;
+
+    /* Call to action colors */
+    --color-cta-1: #b0a1ff;
 
     /* Legacy color names (keeping for compatibility) */
     --color-text-primary: var(--color-light-1);
@@ -83,6 +86,19 @@
   .text-hero-secondary {
     @apply mt-4 font-normal text-base text-light-2 max-w-lg text-center mx-auto;
   }
+
+  /* Text variants */
+  .text-variant-1 {
+    @apply text-light-1 text-lg font-normal;
+  }
+
+  .text-variant-2 {
+    @apply text-light-2 text-base font-medium;
+  }
+
+  .text-variant-3 {
+    @apply text-light-3 text-base font-normal;
+  }
 }
 
 @layer utilities {
@@ -110,6 +126,23 @@
   }
   .text-light-3 {
     color: var(--color-light-3);
+  }
+
+  /* Call to action colors */
+  .bg-cta-1 {
+    background-color: var(--color-cta-1);
+  }
+  .text-cta-1 {
+    color: var(--color-cta-1);
+  }
+  .hover\:bg-cta-1:hover {
+    background-color: var(--color-cta-1);
+  }
+  .hover\:text-cta-1:hover {
+    color: var(--color-cta-1);
+  }
+  .border-cta-1 {
+    border-color: var(--color-cta-1);
   }
 
   /* Legacy color classes (keeping for compatibility) */
