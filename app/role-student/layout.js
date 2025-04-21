@@ -45,7 +45,7 @@ export default function StudentLayout({ children }) {
   return (
     <div
       className={cn(
-        "mx-auto flex w-full flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
+        "mx-auto flex w-full flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-50 md:flex-row dark:border-neutral-700 dark:bg-dark-1",
         "h-screen",
       )}
     >
@@ -59,7 +59,9 @@ export default function StudentLayout({ children }) {
                   key={idx}
                   link={link}
                   className={
-                    pathname === link.href ? "bg-gray-100 text-neutral-900 dark:bg-neutral-800 dark:text-white" : ""
+                    pathname === link.href
+                      ? "bg-gray-50 text-neutral-900 font-semibold dark:bg-dark-2 dark:text-white"
+                      : ""
                   }
                 />
               ))}
@@ -81,7 +83,7 @@ export default function StudentLayout({ children }) {
         </SidebarBody>
       </Sidebar>
       <div className="flex flex-1">
-        <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-neutral-900">
+        <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-dark-1">
           {children}
         </div>
       </div>

@@ -19,13 +19,11 @@ const PromiseButton = React.forwardRef(
   ({ onClick, children, className, disabled = false, variant = "default", loadingText, ...props }, ref) => {
     const [isLoading, setIsLoading] = useState(false)
 
-    // Handle the async click event
     const handleClick = async (e) => {
       if (isLoading || disabled) return
 
       try {
         setIsLoading(true)
-        // If onClick returns a promise, await it
         if (onClick) {
           await onClick(e)
         }
@@ -36,7 +34,6 @@ const PromiseButton = React.forwardRef(
       }
     }
 
-    // Determine button variant classes
     const variantClasses = {
       default: "bg-cta-1 text-black hover:bg-opacity-90",
       secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",

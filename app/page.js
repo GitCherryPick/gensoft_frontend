@@ -6,6 +6,8 @@ import HeroActions from "@/app/components/HeroActions"
 import LoginCard from "@/app/components/LoginCard"
 import { Spotlight } from "@/components/ui/spotlight-new"
 import FadeIn from "@/components/animations/FadeIn"
+import Link from "next/link"
+import { ROUTES } from "@/lib/navigation"
 
 export default function LoginPage() {
   const [showLoginCard, setShowLoginCard] = useState(false)
@@ -31,6 +33,16 @@ export default function LoginPage() {
             )}
           </AnimatePresence>
         </div>
+      </div>
+
+      {/* Hidden links for prefetching */}
+      <div style={{ display: "none" }}>
+        <Link href={ROUTES.STUDENT.ROOT} prefetch={true} />
+        <Link href={ROUTES.STUDENT.PROBLEMS} prefetch={true} />
+        <Link href={ROUTES.ADMIN.ROOT} prefetch={true} />
+        <Link href={ROUTES.ADMIN.USERS} prefetch={true} />
+        <Link href={ROUTES.TEACHER.ROOT} prefetch={true} />
+        <Link href={ROUTES.TEACHER.TASKS} prefetch={true} />
       </div>
     </div>
   )

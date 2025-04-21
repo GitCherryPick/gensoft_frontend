@@ -7,17 +7,15 @@ export default function Input({
   type = "text",
   placeholder = "Enter text...",
   className,
-  icon: Icon, // Accept an icon component as a prop
-  secure = false, // New prop for password toggle
+  icon: Icon,
+  secure = false,
   error,
   ...props
 }) {
   const [showPassword, setShowPassword] = useState(false)
 
-  // Determine the actual input type based on secure prop and showPassword state
   const inputType = secure ? (showPassword ? "text" : "password") : type
 
-  // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
   }
@@ -35,15 +33,14 @@ export default function Input({
           placeholder={placeholder}
           className={cn(
             "w-full h-12 rounded-md border border-neutral-700 bg-transparent px-4 text-light-1 text-variant-3 placeholder:text-light-3 focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30 text-sm",
-            Icon && "pl-10", // Add padding left when icon is present
-            secure && "pr-10", // Add padding right when secure is true
+            Icon && "pl-10", 
+            secure && "pr-10", 
             error && "border-red-500 focus:border-red-500 focus:ring-red-500",
             className,
           )}
           {...props}
         />
 
-        {/* Password visibility toggle button */}
         {secure && (
           <button
             type="button"

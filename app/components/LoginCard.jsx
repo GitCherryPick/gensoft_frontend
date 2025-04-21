@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Mail, Lock, ArrowLeft } from "lucide-react"
 import Input from "@/components/core/Input"
 import PromiseButton from "@/components/core/PromiseButton"
@@ -11,6 +11,12 @@ export default function LoginCard({ onBack }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const router = useRouter()
+
+  useEffect(() => {
+    router.prefetch(ROUTES.STUDENT.ROOT)
+    router.prefetch(ROUTES.ADMIN.ROOT)
+    router.prefetch(ROUTES.TEACHER.ROOT)
+  }, [router])
 
   const handleLogin = async () => {
     await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -65,14 +71,27 @@ export default function LoginCard({ onBack }) {
             Iniciar Sesión
           </PromiseButton>
 
+          {/* Role selection links with prefetch */}
           <div className="flex justify-center gap-4 mt-6 pt-6 border-t border-neutral-700/50">
-            <Link href={ROUTES.STUDENT.ROOT} className="text-variant-3 text-xs hover:text-light-1 transition-colors">
+            <Link
+              href={ROUTES.STUDENT.ROOT}
+              prefetch={true}
+              className="text-variant-3 text-xs hover:text-light-1 transition-colors"
+            >
               Estudiante
             </Link>
-            <Link href={ROUTES.ADMIN.ROOT} className="text-variant-3 text-xs hover:text-light-1 transition-colors">
+            <Link
+              href={ROUTES.ADMIN.ROOT}
+              prefetch={true}
+              className="text-variant-3 text-xs hover:text-light-1 transition-colors"
+            >
               Admin
             </Link>
-            <Link href={ROUTES.TEACHER.ROOT} className="text-variant-3 text-xs hover:text-light-1 transition-colors">
+            <Link
+              href={ROUTES.TEACHER.ROOT}
+              prefetch={true}
+              className="text-variant-3 text-xs hover:text-light-1 transition-colors"
+            >
               Docente
             </Link>
           </div>

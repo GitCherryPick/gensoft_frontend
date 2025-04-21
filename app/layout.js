@@ -1,5 +1,6 @@
 import "./globals.css"
 import StyleGuideButton from "./design-system/StyleGuideButton"
+import RoutePrefetcher from "@/components/RoutePrefetcher"
 
 export const metadata = {
   title: "Role-Based System",
@@ -13,6 +14,7 @@ export default function RootLayout({ children }) {
       <body className="min-h-screen bg-background text-foreground">
         {children}
         <StyleGuideButton />
+        <RoutePrefetcher />
       </body>
     </html>
   )
