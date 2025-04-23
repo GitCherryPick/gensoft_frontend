@@ -15,6 +15,7 @@ export default function RoutePrefetcher() {
 
     router.prefetch(ROUTES.TEACHER.ROOT)
     router.prefetch(ROUTES.TEACHER.TASKS)
+    router.prefetch(ROUTES.TEACHER.CONTENT)
 
     console.log("Routes prefetched for faster navigation")
   }, [router])
