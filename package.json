@@ -39,6 +39,7 @@
     "@radix-ui/react-tooltip": "^1.1.6",
     "@tabler/icons-react": "^3.31.0",
     "autoprefixer": "^10.4.20",
+    "@tailwindcss/typography": "^0.5.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
@@ -47,6 +48,7 @@
     "framer-motion": "^10.16.5",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
+    "marked": "^9.1.5",
     "motion": "^12.5.0",
     "next": "15.1.0",
     "next-themes": "^0.4.4",
@@ -66,6 +68,7 @@
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.0.1",
     "postcss": "^8",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
