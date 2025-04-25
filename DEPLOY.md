@@ -1,11 +1,11 @@
-# Instrucciones de Despliegue (Next.js)
+# Instrucciones de Despliegue
 
 ## Requisitos
 
 *   **Node.js:** Es necesario tener Node.js instalado.
     *   Disponible para descarga en: [https://nodejs.org/](https://nodejs.org/)
 
-## Pasos para el Despliegue
+## Pasos
 
 Los siguientes comandos se ejecutan desde el directorio raíz del proyecto.
 
@@ -14,18 +14,21 @@ Los siguientes comandos se ejecutan desde el directorio raíz del proyecto.
     npm install
     ```
     Este comando descarga las dependencias necesarias utilizando NPM.
-
-2.  **Construcción para Producción:**
+   
+3.  **Construcción para Producción:**
     ```bash
     npm run build
     ```
     Este comando genera la versión optimizada de la aplicación para el entorno de producción.
 
-3.  **Inicio del Servidor:**
+4.  **Inicio del Servidor:**
     ```bash
     npm start
     ```
     Este comando inicia el servidor de producción de Next.js.
 
 luego de estos pasos, la aplicación estará disponible en la dirección `http://localhost:3000`.
+
+![image](https://github.com/user-attachments/assets/5b838734-0de1-4715-b999-55d19f49f29f)
+
 
