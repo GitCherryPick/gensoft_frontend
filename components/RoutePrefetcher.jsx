@@ -7,6 +7,8 @@ export default function RoutePrefetcher() {
   const router = useRouter()
 
   useEffect(() => {
+    router.prefetch(ROUTES.HOME)
+
     router.prefetch(ROUTES.STUDENT.ROOT)
     router.prefetch(ROUTES.STUDENT.COURSES)
     router.prefetch(ROUTES.STUDENT.PROFILE)
