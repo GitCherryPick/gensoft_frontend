@@ -9,7 +9,13 @@
 
 Los siguientes comandos se ejecutan desde el directorio raíz del proyecto.
 
-1.  **Instalación de Dependencias:**
+1. **Navegar al directorio de la aplicación:**
+   ```bash
+   cd application
+   ```
+   Asegúrate de estar en el directorio correcto antes de proceder con la instalación de dependencias.
+
+2.  **Instalación de Dependencias:**
     ```bash
     npm install
     ```
