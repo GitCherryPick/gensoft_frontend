@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconBrain, IconUser, IconSettings, IconArrowLeft } from "@tabler/icons-react"
+import { IconBrain, IconUser, IconArrowLeft } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -13,21 +13,24 @@ export default function StudentLayout({ children }) {
   const router = useRouter()
   const [open, setOpen] = useState(true)
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOpen(false)
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   const links = [
     {
-      label: "Problemas",
-      href: ROUTES.STUDENT.PROBLEMS,
+      label: "Cursos",
+      href: ROUTES.STUDENT.COURSES,
       icon: <IconBrain className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Perfil",
       href: ROUTES.STUDENT.PROFILE,
       icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
-    },
-    {
-      label: "Configuraciones",
-      href: ROUTES.STUDENT.SETTINGS,
-      icon: <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Cerrar Sesión",
@@ -38,7 +41,7 @@ export default function StudentLayout({ children }) {
 
   useEffect(() => {
     if (pathname === ROUTES.STUDENT.ROOT) {
-      router.push(ROUTES.STUDENT.PROBLEMS)
+      router.push(ROUTES.STUDENT.COURSES)
     }
   }, [pathname, router])
 
@@ -83,7 +86,7 @@ export default function StudentLayout({ children }) {
         </SidebarBody>
       </Sidebar>
       <div className="flex flex-1">
-        <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-4 dark:border-neutral-700 dark:bg-dark-1">
+        <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-dark-1">
           {children}
         </div>
       </div>
@@ -103,7 +106,7 @@ const Logo = () => {
         animate={{ opacity: 1 }}
         className="font-medium whitespace-pre text-black dark:text-white"
       >
-        Portal Estudiante
+        Placeholder
       </motion.span>
     </Link>
   )

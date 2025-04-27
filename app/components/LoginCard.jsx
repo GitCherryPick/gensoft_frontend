@@ -6,11 +6,13 @@ import PromiseButton from "@/components/core/PromiseButton"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ROUTES } from "@/lib/navigation"
+import { useAuth } from "@/lib/auth/auth-context"
 
 export default function LoginCard({ onBack }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const router = useRouter()
+  const { login, isLoading } = useAuth()
 
   useEffect(() => {
     router.prefetch(ROUTES.STUDENT.ROOT)
@@ -19,9 +21,19 @@ export default function LoginCard({ onBack }) {
   }, [router])
 
   const handleLogin = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    console.log("Logging in with:", email, password)
-    router.push(ROUTES.STUDENT.ROOT)
+    try {
+      const user = await login({ email, password })
+
+      if (user.role === "student") {
+        router.push(ROUTES.STUDENT.ROOT)
+      } else if (user.role === "admin") {
+        router.push(ROUTES.ADMIN.ROOT)
+      } else if (user.role === "teacher") {
+        router.push(ROUTES.TEACHER.ROOT)
+      }
+    } catch (error) {
+      console.error("Error:", error)
+    }
   }
 
   return (
@@ -71,7 +83,6 @@ export default function LoginCard({ onBack }) {
             Iniciar Sesión
           </PromiseButton>
 
-          {/* Role selection links with prefetch */}
           <div className="flex justify-center gap-4 mt-6 pt-6 border-t border-neutral-700/50">
             <Link
               href={ROUTES.STUDENT.ROOT}

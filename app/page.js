@@ -35,10 +35,9 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Hidden links for prefetching */}
       <div style={{ display: "none" }}>
         <Link href={ROUTES.STUDENT.ROOT} prefetch={true} />
-        <Link href={ROUTES.STUDENT.PROBLEMS} prefetch={true} />
+        <Link href={ROUTES.STUDENT.COURSES} prefetch={true} />
         <Link href={ROUTES.ADMIN.ROOT} prefetch={true} />
         <Link href={ROUTES.ADMIN.USERS} prefetch={true} />
         <Link href={ROUTES.TEACHER.ROOT} prefetch={true} />

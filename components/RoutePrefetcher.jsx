@@ -8,16 +8,16 @@ export default function RoutePrefetcher() {
 
   useEffect(() => {
     router.prefetch(ROUTES.STUDENT.ROOT)
-    router.prefetch(ROUTES.STUDENT.PROBLEMS)
+    router.prefetch(ROUTES.STUDENT.COURSES)
+    router.prefetch(ROUTES.STUDENT.PROFILE)
 
     router.prefetch(ROUTES.ADMIN.ROOT)
     router.prefetch(ROUTES.ADMIN.USERS)
+    router.prefetch(ROUTES.ADMIN.ENROLLMENT)
 
     router.prefetch(ROUTES.TEACHER.ROOT)
     router.prefetch(ROUTES.TEACHER.TASKS)
     router.prefetch(ROUTES.TEACHER.CONTENT)
-
-    console.log("Routes prefetched for faster navigation")
   }, [router])
 
   return null
