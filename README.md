@@ -4,7 +4,7 @@
 
 Este proyecto tiene como objetivo crear una plataforma inclusiva que permita la enseñanza de Introducción a la Programación en Python, garantizando accesibilidad, calidad y formación de habilidades digitales para todos los estudiantes, sin brechas.
 
-La plataforma combina el uso de Recursos Educativos Abiertos (OER), Incorpora un agente inteligente que asiste a los estudiantes durante su aprendizaje, Facilita la movilidad estudiantil entre instituciones, la gestión de docentes y de administradores, además de conservar el progreso de cada estudiante.
+La plataforma combina el uso de Recursos Educativos Abiertos (OER), un agente inteligente de apoyo al aprendizaje, movilidad estudiantil entre instituciones, la gestión de docentes y de administradores, además de conservar el progreso de cada estudiante.
 
 ## Proposito
 
@@ -12,7 +12,7 @@ El propósito del proyecto GITCHERRYPICK es desarrollar una plataforma inclusiva
 
 ## Alcance
 
-La plataforma ofrecerá gestión de contenidos educativos, creación y uso de Recursos Educativos Abiertos (OER), un entorno de programación en Python seguro, incorpora un agente inteligente, seguimiento del progreso estudiantil, administración de actividades, exámenes y certificaciones, además de integrar interoperabilidad con plataformas LMS como Moodle, cumpliendo con estándares de accesibilidad y seguridad.
+La plataforma ofrecerá gestión de contenidos educativos, creación y uso de Recursos Educativos Abiertos (OER), un entorno de programación en Python seguro, un agente inteligente, seguimiento del progreso estudiantil, administración de actividades, exámenes y certificaciones, además de integrar interoperabilidad con plataformas LMS como Moodle, cumpliendo con estándares de accesibilidad y seguridad.
 
 ## Características Principales
 
@@ -28,13 +28,14 @@ La plataforma ofrecerá gestión de contenidos educativos, creación y uso de Re
   Videos, audios con slides y subtítulos, simulaciones y documentos PDFs.
   Retroalimentación automática en actividades y ejercicios.
 
-- Agente inteligente que proporciona feedback automático y gestiona el avance del estudiante.
+- Agente inteligente:
+  Asistencia personalizada durante el aprendizaje.
 
 - Integraciones:
   Conexión con Moodle a través de estándares LOM.
 
 - Certificaciones:
-  Emisión de certificados al completar módulos.
+  Emisión de certificados al completar los cursos.
 
 - Seguimiento:
   Gestión y almacenamiento de programas realizados, calificaciones y exámenes.
@@ -43,6 +44,7 @@ La plataforma ofrecerá gestión de contenidos educativos, creación y uso de Re
 
 - Cumplimiento de normas de accesibilidad (WCAG 2.1).
 
-- Arquitectura modular basada en microservicios y contenedores Docker para facilitar mantenimiento y expansión.
+- Evaluaciones Interactivas:
+  Pruebas dinámicas para el estudiante.
 
-- Evaluaciones interactivas
+- Arquitectura modular basada en microservicios y contenedores Docker para facilitar mantenimiento y expansión.
