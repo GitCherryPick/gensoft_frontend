@@ -4,7 +4,7 @@
 
 Este proyecto tiene como objetivo crear una plataforma inclusiva que permita la enseñanza de Introducción a la Programación en Python, garantizando accesibilidad, calidad y formación de habilidades digitales para todos los estudiantes, sin brechas.
 
-La plataforma combina el uso de Recursos Educativos Abiertos (OER). Facilita la movilidad estudiantil entre instituciones, la gestión de docentes y de administradores, además de conservar el progreso de cada estudiante.
+La plataforma combina el uso de Recursos Educativos Abiertos (OER), Incorpora un agente inteligente que asiste a los estudiantes durante su aprendizaje, Facilita la movilidad estudiantil entre instituciones, la gestión de docentes y de administradores, además de conservar el progreso de cada estudiante.
 
 ## Proposito
 
@@ -12,7 +12,7 @@ El propósito del proyecto GITCHERRYPICK es desarrollar una plataforma inclusiva
 
 ## Alcance
 
-La plataforma ofrecerá gestión de contenidos educativos, creación y uso de Recursos Educativos Abiertos (OER), un entorno de programación en Python seguro, seguimiento del progreso estudiantil, administración de actividades, exámenes y certificaciones, además de integrar interoperabilidad con plataformas LMS como Moodle, cumpliendo con estándares de accesibilidad y seguridad.
+La plataforma ofrecerá gestión de contenidos educativos, creación y uso de Recursos Educativos Abiertos (OER), un entorno de programación en Python seguro, incorpora un agente inteligente, seguimiento del progreso estudiantil, administración de actividades, exámenes y certificaciones, además de integrar interoperabilidad con plataformas LMS como Moodle, cumpliendo con estándares de accesibilidad y seguridad.
 
 ## Características Principales
 
@@ -27,6 +27,8 @@ La plataforma ofrecerá gestión de contenidos educativos, creación y uso de Re
 - Formatos de Contenido Diversos:
   Videos, audios con slides y subtítulos, simulaciones y documentos PDFs.
   Retroalimentación automática en actividades y ejercicios.
+
+- Agente inteligente que proporciona feedback automático y gestiona el avance del estudiante.
 
 - Integraciones:
   Conexión con Moodle a través de estándares LOM.
@@ -43,4 +45,4 @@ La plataforma ofrecerá gestión de contenidos educativos, creación y uso de Re
 
 - Arquitectura modular basada en microservicios y contenedores Docker para facilitar mantenimiento y expansión.
 
-- Evaluaciones interactivas. (NO SE¿? BORRAR SI NO lo haremos¿?)
+- Evaluaciones interactivas
