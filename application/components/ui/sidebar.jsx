@@ -45,20 +45,26 @@ export const DesktopSidebar = ({ className, children, ...props }) => {
   const { open, setOpen, animate } = useSidebar()
   return (
     <>
-      <motion.div
-        className={cn(
-          "h-full px-4 py-4 hidden md:flex md:flex-col bg-white dark:bg-dark-2 w-[300px] shrink-0",
-          className,
+      <div className="relative hidden md:block">
+        {/* Elemento invisible para capturar hover en el borde izquierdo cuando está contraído */}
+        {!open && animate && (
+          <div className="absolute top-0 left-0 w-2 h-full z-10 cursor-pointer" onMouseEnter={() => setOpen(true)} />
         )}
-        animate={{
-          width: animate ? (open ? "300px" : "60px") : "300px",
-        }}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        {...props}
-      >
-        {children}
-      </motion.div>
+        <motion.div
+          className={cn(
+            "h-full px-4 py-4 hidden md:flex md:flex-col bg-white dark:bg-dark-2 w-[300px] shrink-0",
+            className,
+          )}
+          animate={{
+            width: animate ? (open ? "300px" : "60px") : "300px",
+          }}
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+          {...props}
+        >
+          {children}
+        </motion.div>
+      </div>
     </>
   )
 }
