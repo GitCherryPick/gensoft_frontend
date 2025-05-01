@@ -1,77 +1,66 @@
-**Estándares de codificación**
-1.1 Variables
-• camelCase:
-Es una convención donde la primera palabra está en minúsculas y las siguientes palabras empiezan con mayúsculas.
-Se usa para variables y funciones.
 
-Ejemplos:
+# Estándares de Codificación
 
-let userName = "John";  
-let totalAmount = 100;  
-let currentPageNumber = 1;
+## 1. JavaScript / React
 
-• UPPER_SNAKE_CASE:
-Se usa para constantes inmutables, donde todas las letras están en mayúsculas y se separan por guiones bajos.
+### 1.1 Variables
 
-Ejemplos:
+- **camelCase**:  
+  Usado para variables y funciones. La primera palabra está en minúsculas y las siguientes comienzan con mayúsculas.
 
-const API_URL = 'https://api.midominio.com';  
-const MAX_RETRIES = 5;
+  **Ejemplos:**
+  ```js
+  let userName = "John";
+  let totalAmount = 100;
+  let currentPageNumber = 1;
+  ```
 
-• Uso de const y let:
-Usar const por defecto para variables que no cambiarán.
-Usar let solo cuando se necesite cambiar el valor de la variable.
+- **UPPER_SNAKE_CASE**:  
+  Usado para constantes inmutables. Todas las letras en mayúsculas y separadas por guiones bajos.
 
-Ejemplos:
+  **Ejemplos:**
+  ```js
+  const API_URL = 'https://api.midominio.com';
+  const MAX_RETRIES = 5;
+  ```
 
-const API_URL = 'https://api.midominio.com';  // No cambia
-let currentPage = 1;  // Cambia a medida que se navega
-________________________________________
-1.2 Funciones
-• camelCase en nombres de funciones:
-Las funciones deben seguir la convención de camelCase.
-Esto ayuda a mantener un estilo coherente en todo el código.
+- **Uso de `const` y `let`**:  
+  - Usar `const` por defecto.
+  - Usar `let` solo si el valor cambiará.
 
-Ejemplo:
+  **Ejemplos:**
+  ```js
+  const API_URL = 'https://api.midominio.com';
+  let currentPage = 1;
+  ```
 
-const fetchStudents = async () => { /* lógica */ };  
-const handleButtonClick = () => { /* lógica */ };
+---
 
-• Empezar siempre con un verbo:
-Los nombres de las funciones deben comenzar con un verbo que describa claramente lo que hace la función.
-Los verbos comunes son: fetch, handle, sort, calculate, update.
+### 1.2 Funciones
 
-Ejemplo:
+- **camelCase** en nombres de funciones.
+- Empezar siempre con un **verbo**.
+- Preferir **arrow functions**.
+- Mantener funciones **pequeñas y específicas**.
 
-const fetchStudents = async () => { /* obtener lista de estudiantes */ };
-const sortItems = (items) => { /* ordenar los elementos */ };
-
-• Usar preferentemente arrow functions:
-Es preferible usar arrow functions para declarar funciones, ya que son más concisas y mantienen el contexto de this de manera adecuada.
-
-Ejemplo:
-
-const fetchStudents = async () => { /* lógica */ };  
-const handleClick = () => { /* lógica */ };
-
-• Mantener funciones pequeñas y específicas:
-Las funciones deben ser pequeñas y cumplir una sola responsabilidad (principio de responsabilidad única).
-Esto mejora la legibilidad y facilita las pruebas.
-
-Ejemplo:
-
-const calculateTotal = (items) => {  // Función pequeña y con un único objetivo
+**Ejemplos:**
+```js
+const fetchStudents = async () => { /* lógica */ };
+const handleButtonClick = () => { alert("Button clicked!"); };
+const calculateTotal = (items) => {
   return items.reduce((total, item) => total + item.price, 0);
 };
+```
 
-const handleButtonClick = () => {  // Función simple que maneja un evento
-  alert("Button clicked!");
-};
-________________________________________
-1.3 Manejo de Errores
-•	Siempre capturar errores en funciones asíncronas (try/catch).
-•	Mostrar errores claros en consola o al usuario.
-Ejemplo:
+---
+
+### 1.3 Manejo de Errores
+
+- Siempre usar `try/catch` en funciones asíncronas.
+- Mostrar errores claros en consola o al usuario.
+
+**Ejemplo:**
+```js
 const getData = async () => {
   try {
     const response = await fetch(API_URL);
@@ -80,22 +69,35 @@ const getData = async () => {
     console.error('Error fetching data:', error);
   }
 };
-________________________________________
-1.4 Imports y Exports
-•	import primero librerías, luego módulos internos, luego estilos.
-•	Usar exportación por defecto para componentes principales y exportación nombrada para utilidades.
-Ejemplo:
+```
+
+---
+
+### 1.4 Imports y Exports
+
+- Ordenar: **Librerías → Módulos internos → Estilos**
+- Usar:
+  - **Export default** para componentes principales.
+  - **Export nombrado** para funciones/utilidades.
+
+**Ejemplo:**
+```js
 import React from 'react';
 import { formatDate } from '@/utils/formatDate';
 import './App.css';
 
-// Export nombrado
 export const formatDate = (date) => { /* lógica */ };
-________________________________________
-1.5 Comentarios
-•	Comentar solo lo necesario, explicando el por qué, no el qué.
-•	Usar // para comentarios breves, /** */ para bloques más largos.
-Ejemplo:
+```
+
+---
+
+### 1.5 Comentarios
+
+- Explicar el **por qué**, no el **qué**.
+- Usar `//` para comentarios breves y `/** */` para bloques.
+
+**Ejemplos:**
+```js
 // Formatea la fecha en formato local
 const formatDate = (date) => { /* lógica */ };
 
@@ -104,79 +106,64 @@ const formatDate = (date) => { /* lógica */ };
  * por su edad de manera ascendente.
  */
 const getSortedStudents = () => { /* lógica */ };
-________________________________________
-2. TailwindCSS — Estándares de codificación
-2.1 Orden de Clases
-•	Seguir el orden: Layout → Box Model → Size → Colors → Borders → Effects → Text → Others.
-Ejemplo:
+```
+
+---
+
+## 2. TailwindCSS — Estándares de Codificación
+
+### 2.1 Orden de Clases
+
+Orden recomendado: **Layout → Box Model → Size → Colors → Borders → Effects → Text → Others**
+
+**Ejemplo:**
+```html
 <div className="flex items-center justify-between p-4 w-full bg-gray-100 border rounded-lg shadow-md text-gray-900">
   ...
 </div>
-________________________________________
-2.2 Responsive First (Mobile First)
-•	Aplicar clases para pantallas pequeñas primero, luego agregar md:, lg:, xl:.
-Ejemplo:
+```
+
+---
+
+### 2.2 Responsive First (Mobile First)
+
+Aplicar clases para pantallas pequeñas primero, luego `md:`, `lg:`, `xl:`.
+
+**Ejemplo:**
+```html
 <div className="p-2 md:p-4 lg:p-6">
   Responsive content
 </div>
-________________________________________
-2.3 Accesibilidad (a11y)
-•	Siempre usar atributos alt en imágenes.
-•	Usar etiquetas semánticas (button, nav, section) correctamente.
-Ejemplo:
+```
+
+---
+
+### 2.3 Accesibilidad (a11y)
+
+- Usar atributos `alt` en imágenes.
+- Usar etiquetas semánticas correctamente (`button`, `nav`, `section`).
+
+**Ejemplo:**
+```html
 <img src="logo.png" alt="Logo de la empresa" />
 <button className="px-4 py-2 bg-blue-500 text-white rounded">
   Enviar
 </button>
-________________________________________
-Módulos Estándares:
+```
 
-/components/
-Propósito: Componentes reutilizables de UI.
-Reglas de nombres: PascalCase
-Ejemplos de archivo: StudentCard.jsx, Button.jsx
+---
 
-/pages/
-Propósito: Vistas principales de la app. Cada página que representa una ruta.
-Reglas de nombres: PascalCase
-Ejemplos de archivo: Home.jsx, Profile.jsx
+## 3. Estructura de Módulos
 
-/services/
-Propósito: Lógica para llamadas API, servicios externos, etc.
-Reglas de nombres: camelCase
-Ejemplos de archivo: studentService.js, authService.js
-
-/utils/
-Propósito: Funciones de utilidad que no dependen de la UI.
-Reglas de nombres: camelCase
-Ejemplos de archivo: formatDate.js, calculateAge.js
-
-/hooks/
-Propósito: Custom Hooks de React.
-Reglas de nombres: camelCase
-Ejemplos de archivo: useFetchStudents.js, useModal.js
-
-/styles/
-Propósito: Archivos CSS o configuraciones de Tailwind (opcional si todo es inline).
-Reglas de nombres: camelCase
-Ejemplos de archivo: globals.css, tailwind.config.js
-
-/assets/
-Propósito: Imágenes, íconos, videos estáticos.
-Reglas de nombres: camelCase
-Ejemplos de archivo: logo.png, banner.mp4
-
-/constants/
-Propósito: Constantes reutilizables.
-Reglas de nombres: UPPER_SNAKE_CASE
-Ejemplos de archivo: ROUTES.js, API_ENDPOINTS.js
-
-/contexts/
-Propósito: Contextos globales de React.
-Reglas de nombres: camelCase
-Ejemplos de archivo: authContext.js, themeContext.js
-
-/layouts/
-Propósito: Estructuras grandes como Navbar, Footer, Sidebar.
-Reglas de nombres: PascalCase
-Ejemplos de archivo: MainLayout.jsx, DashboardLayout.jsx
+| Carpeta       | Propósito                                       | Regla de nombres         | Ejemplos                         |
+|---------------|--------------------------------------------------|---------------------------|----------------------------------|
+| `components/` | Componentes reutilizables de UI                  | PascalCase                | `StudentCard.jsx`, `Button.jsx` |
+| `pages/`      | Vistas principales de la app (rutas)             | PascalCase                | `Home.jsx`, `Profile.jsx`       |
+| `services/`   | Llamadas API, servicios externos                 | camelCase                 | `studentService.js`             |
+| `utils/`      | Funciones de utilidad                            | camelCase                 | `formatDate.js`                 |
+| `hooks/`      | Custom Hooks de React                            | camelCase                 | `useFetchStudents.js`           |
+| `styles/`     | Archivos CSS o Tailwind                          | camelCase                 | `globals.css`, `tailwind.config.js` |
+| `assets/`     | Imágenes, íconos, videos                         | camelCase                 | `logo.png`, `banner.mp4`        |
+| `constants/`  | Constantes reutilizables                         | UPPER_SNAKE_CASE          | `ROUTES.js`, `API_ENDPOINTS.js` |
+| `contexts/`   | Contextos globales de React                      | camelCase                 | `authContext.js`                |
+| `layouts/`    | Estructuras grandes (Navbar, Sidebar, etc.)     | PascalCase                | `MainLayout.jsx`                |
