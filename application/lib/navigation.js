@@ -1,11 +1,17 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import { useEffect } from "react"
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export const ROUTES = {
   HOME: "/home",
   LOGIN: "/login",
+
+  RECOVER_PASSWORD: {
+    ROOT: "/recover-password",
+    RECOVERY_CARD: "/recover-password/recovery-password-card",
+    PASSWORD_RESET_CARD: "/recover-password/password-reset-card",
+  },
 
   STUDENT: {
     ROOT: "/role-student",
@@ -26,13 +32,13 @@ export const ROUTES = {
     STUDENTS: "/role-teacher/students",
     CONTENT: "/role-teacher/content",
   },
-}
+};
 
 export const DEFAULT_ROUTES = {
   STUDENT: ROUTES.STUDENT.COURSES,
   ADMIN: ROUTES.ADMIN.USERS,
   TEACHER: ROUTES.TEACHER.TASKS,
-}
+};
 
 export function getNavLinks(role) {
   switch (role) {
@@ -53,7 +59,7 @@ export function getNavLinks(role) {
           href: ROUTES.HOME,
           icon: "IconArrowLeft",
         },
-      ]
+      ];
     case "admin":
       return [
         {
@@ -71,7 +77,7 @@ export function getNavLinks(role) {
           href: ROUTES.HOME,
           icon: "IconArrowLeft",
         },
-      ]
+      ];
     case "teacher":
       return [
         {
@@ -99,36 +105,36 @@ export function getNavLinks(role) {
           href: ROUTES.HOME,
           icon: "IconArrowLeft",
         },
-      ]
+      ];
     default:
-      return []
+      return [];
   }
 }
 
 export function usePrefetchRoutes(role = "all") {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    router.prefetch(ROUTES.HOME)
+    router.prefetch(ROUTES.HOME);
 
     if (role === "student" || role === "all") {
-      router.prefetch(ROUTES.STUDENT.ROOT)
-      router.prefetch(ROUTES.STUDENT.COURSES)
-      router.prefetch(ROUTES.STUDENT.PROFILE)
+      router.prefetch(ROUTES.STUDENT.ROOT);
+      router.prefetch(ROUTES.STUDENT.COURSES);
+      router.prefetch(ROUTES.STUDENT.PROFILE);
     }
 
     if (role === "admin" || role === "all") {
-      router.prefetch(ROUTES.ADMIN.ROOT)
-      router.prefetch(ROUTES.ADMIN.USERS)
-      router.prefetch(ROUTES.ADMIN.ENROLLMENT)
+      router.prefetch(ROUTES.ADMIN.ROOT);
+      router.prefetch(ROUTES.ADMIN.USERS);
+      router.prefetch(ROUTES.ADMIN.ENROLLMENT);
     }
 
     if (role === "teacher" || role === "all") {
-      router.prefetch(ROUTES.TEACHER.ROOT)
-      router.prefetch(ROUTES.TEACHER.TASKS)
-      router.prefetch(ROUTES.TEACHER.EXAMS)
-      router.prefetch(ROUTES.TEACHER.STUDENTS)
-      router.prefetch(ROUTES.TEACHER.CONTENT)
+      router.prefetch(ROUTES.TEACHER.ROOT);
+      router.prefetch(ROUTES.TEACHER.TASKS);
+      router.prefetch(ROUTES.TEACHER.EXAMS);
+      router.prefetch(ROUTES.TEACHER.STUDENTS);
+      router.prefetch(ROUTES.TEACHER.CONTENT);
     }
-  }, [router, role])
+  }, [router, role]);
 }
