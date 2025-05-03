@@ -16,6 +16,8 @@
 
     /* Call to action colors */
     --color-cta-1: #b0a1ff;
+    --color-cta-1-hover: rgba(176, 161, 255, 0.1); /* Nuevo color para hover */
+    --color-cta-1-selected: rgba(176, 161, 255, 0.15); /* Nuevo color para seleccionado */
 
     /* Legacy color names (keeping for compatibility) */
     --color-text-primary: var(--color-light-1);
@@ -99,6 +101,15 @@
   .text-variant-3 {
     @apply text-light-3 text-base font-normal;
   }
+
+  /* Nuevas clases para estados de módulos */
+  .bg-cta-hover {
+    background-color: var(--color-cta-1-hover);
+  }
+
+  .bg-cta-selected {
+    background-color: var(--color-cta-1-selected);
+  }
 }
 
 @layer utilities {
@@ -152,4 +163,28 @@
   .text-secondary {
     color: var(--color-text-secondary);
   }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+}
+
+/* Añadir esta animación personalizada al final del archivo */
+@keyframes spinner-rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.custom-spinner {
+  animation: spinner-rotation 0.8s linear infinite;
 }

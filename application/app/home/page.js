@@ -41,7 +41,6 @@ export default function HomePage() {
         <Link href={ROUTES.ADMIN.ROOT} prefetch={true} />
         <Link href={ROUTES.ADMIN.USERS} prefetch={true} />
         <Link href={ROUTES.TEACHER.ROOT} prefetch={true} />
-        <Link href={ROUTES.TEACHER.TASKS} prefetch={true} />
       </div>
     </div>
   )

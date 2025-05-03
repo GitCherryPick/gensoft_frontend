@@ -37,6 +37,15 @@ export default function TeacherLayout({ children }) {
     }
   }, [pathname, router])
 
+  // Efecto para cerrar el sidebar después de 2 segundos
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOpen(false)
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <div
       className={cn(
@@ -44,6 +53,7 @@ export default function TeacherLayout({ children }) {
         "h-screen",
       )}
     >
+   
       <Sidebar open={open} setOpen={setOpen} animate={true}>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
