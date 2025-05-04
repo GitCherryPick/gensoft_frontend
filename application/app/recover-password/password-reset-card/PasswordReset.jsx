@@ -1,41 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
-import { ArrowLeft, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import Input from "@/components/core/Input";
 import PromiseButton from "@/components/core/PromiseButton";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ROUTES } from "@/lib/navigation";
 
-export default function PasswordReset({ onBack }) {
-  const [email, setEmail] = useState("");
+export default function PasswordReset() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    router.prefetch(ROUTES.STUDENT.ROOT);
-    router.prefetch(ROUTES.ADMIN.ROOT);
-    router.prefetch(ROUTES.TEACHER.ROOT);
-  }, [router]);
-
   const handleLogin = async () => {
-    router.push(ROUTES.HOME);
+    router.push("/home?login=true");
   };
 
   return (
     <div className="w-full max-w-sm mx-auto relative z-50">
       <div className="bg-dark-2 border border-neutral-700 rounded-xl shadow-xl p-8">
-        <div className="mb-6 flex justify-start">
-          <button
-            onClick={onBack}
-            className="text-light-3 hover:text-light-1 flex items-center gap-1 transition-colors"
-          >
-            <ArrowLeft size={16} />
-            <span className="text-sm">Volver</span>
-          </button>
-        </div>
-
         <h2 className="text-xl font-medium text-light-1 text-center mb-6">
           Reestablecer Contraseña
         </h2>
@@ -51,8 +32,9 @@ export default function PasswordReset({ onBack }) {
               type="password"
               placeholder="Contraseña"
               value={password}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               icon={Lock}
+              secure={true}
               className="bg-transparent border-neutral-700/50 focus:border-blue-500/50"
             />
           </div>
@@ -61,8 +43,9 @@ export default function PasswordReset({ onBack }) {
               type="confirmPassword"
               placeholder="Confirmar Contraseña"
               value={confirmPassword}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               icon={Lock}
+              secure={true}
               className="bg-transparent border-neutral-700/50 focus:border-blue-500/50"
             />
           </div>

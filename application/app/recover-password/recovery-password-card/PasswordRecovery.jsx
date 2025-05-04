@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Mail, ArrowLeft } from "lucide-react";
 import Input from "@/components/core/Input";
 import PromiseButton from "@/components/core/PromiseButton";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/navigation";
 
@@ -11,14 +10,12 @@ export default function PasswordRecovery({ onBack }) {
   const [email, setEmail] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    router.prefetch(ROUTES.STUDENT.ROOT);
-    router.prefetch(ROUTES.ADMIN.ROOT);
-    router.prefetch(ROUTES.TEACHER.ROOT);
-  }, [router]);
+  const handleSig = async () => {
+    router.push(ROUTES.RECOVER_PASSWORD.PASSWORD_RESET_CARD);
+  };
 
   const handleLogin = async () => {
-    router.push(ROUTES.RECOVER_PASSWORD.PASSWORD_RESET_CARD);
+    router.push("/home?login=true");
   };
 
   return (
@@ -26,7 +23,7 @@ export default function PasswordRecovery({ onBack }) {
       <div className="bg-dark-2 border border-neutral-700 rounded-xl shadow-xl p-8">
         <div className="mb-6 flex justify-start">
           <button
-            onClick={onBack}
+            onClick={handleLogin}
             className="text-light-3 hover:text-light-1 flex items-center gap-1 transition-colors"
           >
             <ArrowLeft size={16} />
@@ -55,7 +52,7 @@ export default function PasswordRecovery({ onBack }) {
           </div>
 
           <PromiseButton
-            onClick={handleLogin}
+            onClick={handleSig}
             className="w-full"
             loadingText="Iniciando sesión..."
           >
