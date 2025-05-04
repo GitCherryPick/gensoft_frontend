@@ -8,9 +8,20 @@ import { ROUTES } from "@/lib/navigation";
 
 export default function PasswordRecovery({ onBack }) {
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
+  const validateEmailDomain = (email) => {
+    const allowedDomain = "@est.umss.edu";
+    return email.endsWith(allowedDomain);
+  };
+
   const handleSig = async () => {
+    if (!validateEmailDomain(email)) {
+      setError("Por favor, utiliza tu correo institucional (@est.umss.edu)");
+      return;
+    }
+    setError("");
     router.push(ROUTES.RECOVER_PASSWORD.PASSWORD_RESET_CARD);
   };
 
@@ -49,6 +60,7 @@ export default function PasswordRecovery({ onBack }) {
               icon={Mail}
               className="bg-transparent border-neutral-700/50 focus:border-blue-500/50"
             />
+            {error && <p className="text-red-500 text-sm">{error}</p>}
           </div>
 
           <PromiseButton
