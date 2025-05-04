@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/navigation";
 
-export default function ComponentFormLoginCard({ onBack }) {
+export default function PasswordRecovery({ onBack }) {
   const [email, setEmail] = useState("");
   const router = useRouter();
 
@@ -61,30 +61,6 @@ export default function ComponentFormLoginCard({ onBack }) {
           >
             Continuar
           </PromiseButton>
-
-          <div className="flex justify-center gap-4 mt-6 pt-6 border-t border-neutral-700/50">
-            <Link
-              href={ROUTES.STUDENT.ROOT}
-              prefetch={true}
-              className="text-variant-3 text-xs hover:text-light-1 transition-colors"
-            >
-              Estudiante
-            </Link>
-            <Link
-              href={ROUTES.ADMIN.ROOT}
-              prefetch={true}
-              className="text-variant-3 text-xs hover:text-light-1 transition-colors"
-            >
-              Admin
-            </Link>
-            <Link
-              href={ROUTES.TEACHER.ROOT}
-              prefetch={true}
-              className="text-variant-3 text-xs hover:text-light-1 transition-colors"
-            >
-              Docente
-            </Link>
-          </div>
         </div>
       </div>
     </div>

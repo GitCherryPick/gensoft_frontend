@@ -6,7 +6,7 @@ import { Spotlight } from "@/components/ui/spotlight-new";
 import Link from "next/link";
 import { ROUTES } from "@/lib/navigation";
 
-export default function HomePage() {
+export default function HomePasswordRecovery() {
   const [showLoginCard, setShowLoginCard] = useState(false);
 
   return (
