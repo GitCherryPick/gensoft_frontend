@@ -169,6 +169,32 @@ export async function addContent(newContent) {
   return simulateBackend(contentToAdd)
 }
 
+export async function createModule(moduleData) {
+  const { course_id, title, description, level } = moduleData
+
+  // Calcular el module_order (el siguiente número después del último módulo del curso)
+  const courseModules = modules.filter((m) => m.course_id === course_id)
+  const nextOrder = courseModules.length > 0 ? Math.max(...courseModules.map((m) => m.module_order)) + 1 : 1
+
+  // Generar un nuevo ID
+  const newId = Math.max(...modules.map((m) => m.id), 0) + 1
+
+  // Crear el nuevo módulo
+  const newModule = {
+    id: newId,
+    course_id,
+    title,
+    description,
+    level,
+    module_order: nextOrder,
+  }
+
+  // Añadir a la lista de módulos
+  modules = [...modules, newModule]
+
+  return simulateBackend(newModule)
+}
+
 export async function reorderModule(moduleId, newOrder) {
   const moduleToMove = modules.find((module) => module.id === moduleId)
   if (!moduleToMove) return simulateBackend(false)

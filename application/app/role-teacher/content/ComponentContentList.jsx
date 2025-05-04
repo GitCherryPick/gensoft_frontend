@@ -91,8 +91,15 @@ export default function ComponentContentList({ onModuleSelect }) {
     }
   }
 
-  const handleAddModule = () => {
-    console.log("Añadir nuevo módulo")
+  const handleModuleCreated = (newModule) => {
+    // Añadir el nuevo módulo a la lista
+    setModules((prevModules) => [...prevModules, newModule])
+
+    // Seleccionar automáticamente el nuevo módulo
+    setSelectedModuleId(newModule.id)
+    if (onModuleSelect) {
+      onModuleSelect(newModule)
+    }
   }
 
   if (isLoading || (error && !retriesExhausted)) {
@@ -137,7 +144,13 @@ export default function ComponentContentList({ onModuleSelect }) {
             ))}
           </AnimationCascadeList>
 
-          <ComponentAddModuleButton onClick={handleAddModule} delay={modules.length * 0.05 + 0.1} />
+          {course && (
+            <ComponentAddModuleButton
+              delay={modules.length * 0.05 + 0.1}
+              courseId={course.id}
+              onModuleCreated={handleModuleCreated}
+            />
+          )}
 
           <div className="h-24"></div>
         </div>
