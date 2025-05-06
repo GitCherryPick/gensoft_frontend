@@ -11,6 +11,7 @@ export const ROUTES = {
     ROOT: "/recover-password",
     RECOVERY_CARD: "/recover-password/recovery-password-card",
     PASSWORD_RESET_CARD: "/recover-password/password-reset-card",
+    NOTIFY_RECOVER: "/recover-password/notify-recover",
   },
 
   STUDENT: {

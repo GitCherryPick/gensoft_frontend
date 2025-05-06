@@ -22,7 +22,29 @@ export default function PasswordRecovery({ onBack }) {
       return;
     }
     setError("");
-    router.push(ROUTES.RECOVER_PASSWORD.PASSWORD_RESET_CARD);
+    await fetch("http://localhost:8006/auth/password-reset/request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+      }),
+    })
+      .then((res) => {
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          throw new Error("Error al enviar el correo de recuperación.");
+        }
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+    router.push(ROUTES.RECOVER_PASSWORD.NOTIFY_RECOVER);
   };
 
   const handleLogin = async () => {
