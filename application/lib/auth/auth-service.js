@@ -1,43 +1,67 @@
-"use client"
-import toast from "react-hot-toast"
+"use client";
+import toast from "react-hot-toast";
 
-const delay = () => new Promise((resolve) => setTimeout(resolve, 500))
-
-export async function loginUser(credentials) {
+export async function loginUser({ email, password }) {
   try {
-    await delay()
+    const response = await fetch("http://localhost:8006/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: email, 
+        password: password,
+      }),
+    });
 
-    if (Math.random() < 0.33) {
-      throw new Error("Error al iniciar sesion")
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.detail || "Credenciales incorrectas.");
     }
 
-    let role = "student"
+    const data = await response.json();
+    const { access_token, token_type } = data;
 
-    if (credentials.email.includes("admin")) {
-      role = "admin"
-    } else if (credentials.email.includes("teacher") || credentials.email.includes("profesor")) {
-      role = "teacher"
+    // Determinar rol según el correo
+    let role = "student";
+    if (email.includes("admin")) {
+      role = "admin";
+    } else if (email.includes("teacher") || email.includes("profesor")) {
+      role = "teacher";
     }
 
     const user = {
-      id: "1",
+      id: 1,
       name: "Usuario Demo",
-      email: credentials.email,
-      role: role,
-    }
+      email,
+      role,
+      token: access_token,
+      token_type,
+    };
 
-    return user
+    localStorage.setItem("token", access_token);
+
+    return user;
   } catch (error) {
-    toast.error(error.message)
-    throw error
+    toast.error(error.message);
+    throw error;
   }
 }
 
 export async function logoutUser() {
-  await delay()
-  return true
+  localStorage.removeItem("token");
+  return true;
 }
 
 export async function getCurrentUser() {
-  return null
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+
+  return {
+    id: 1,
+    name: "Usuario Demo",
+    email: "usuario@demo.com",
+    role: "student",
+  };
 }
