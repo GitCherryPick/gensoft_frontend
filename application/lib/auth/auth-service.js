@@ -1,7 +1,7 @@
 "use client";
 import toast from "react-hot-toast";
 
-export async function loginUser({ email, password }) {
+export async function loginUser({ username, password }) {
   try {
     const response = await fetch("http://localhost:8006/auth/login", {
       method: "POST",
@@ -9,7 +9,7 @@ export async function loginUser({ email, password }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: email, 
+        username: username, 
         password: password,
       }),
     });
@@ -24,16 +24,16 @@ export async function loginUser({ email, password }) {
 
     // Determinar rol según el correo
     let role = "student";
-    if (email.includes("admin")) {
+    if (username.includes("admin")) {
       role = "admin";
-    } else if (email.includes("teacher") || email.includes("profesor")) {
+    } else if (username.includes("teacher") || username.includes("profesor")) {
       role = "teacher";
     }
 
     const user = {
       id: 1,
       name: "Usuario Demo",
-      email,
+      username,
       role,
       token: access_token,
       token_type,
@@ -61,7 +61,7 @@ export async function getCurrentUser() {
   return {
     id: 1,
     name: "Usuario Demo",
-    email: "usuario@demo.com",
+    username: "usuariodemo",
     role: "student",
   };
 }
