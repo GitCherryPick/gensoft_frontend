@@ -34,64 +34,16 @@ let modules = [
     level: "1",
     module_order: 3,
   },
-  {
-    id: 4,
-    course_id: 1,
-    title: "Bucles",
-    description: "Iteraciones",
-    level: "2",
-    module_order: 4,
-  },
-  {
-    id: 5,
-    course_id: 1,
-    title: "Objetos",
-    description: "Estructuras de datos",
-    level: "2",
-    module_order: 5,
-  },
-  {
-    id: 6,
-    course_id: 1,
-    title: "Arrays",
-    description: "Colecciones",
-    level: "2",
-    module_order: 6,
-  },
-  {
-    id: 7,
-    course_id: 1,
-    title: "Promesas",
-    description: "Asincronía",
-    level: "3",
-    module_order: 7,
-  },
-  {
-    id: 8,
-    course_id: 1,
-    title: "Async/Await",
-    description: "Manejo avanzado de asincronía",
-    level: "3",
-    module_order: 8,
-  },
-  {
-    id: 9,
-    course_id: 2,
-    title: "Decoradores",
-    description: "Metaprogramación",
-    level: "2",
-    module_order: 1,
-  },
 ]
 
-const contents = [
+let contents = [
   {
     id: 1,
     module_id: 1,
-    content_type: "Text",
-    title: "Declaración var",
-    content: "let x = 5;",
-    video_url: null,
+    content_type: "Video",
+    title: "Video Variables",
+    content: null,
+    video_url: "/videos/variables.mp4",
     file_path: null,
     created_at: new Date("2023-01-10T12:00:00Z"),
   },
@@ -107,23 +59,18 @@ const contents = [
   },
   {
     id: 3,
-    module_id: 9,
-    content_type: "Text",
-    title: "Ejemplo Decorador",
-    content: "@my_decorator\ndef...",
-    video_url: null,
+    module_id: 3,
+    content_type: "Video",
+    title: "Video Condicionales",
+    content: null,
+    video_url: "/videos/conditionals.mp4",
     file_path: null,
     created_at: new Date("2023-02-16T10:00:00Z"),
   },
 ]
 
-async function simulateBackend(data, errorRate = 0.1) {
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  if (Math.random() < errorRate) {
-    throw new Error("Error al conectar con el servidor")
-  }
-
+async function simulateBackend(data) {
+  await new Promise((resolve) => setTimeout(resolve, 500))
   return data
 }
 
@@ -172,14 +119,11 @@ export async function addContent(newContent) {
 export async function createModule(moduleData) {
   const { course_id, title, description, level } = moduleData
 
-  // Calcular el module_order (el siguiente número después del último módulo del curso)
   const courseModules = modules.filter((m) => m.course_id === course_id)
   const nextOrder = courseModules.length > 0 ? Math.max(...courseModules.map((m) => m.module_order)) + 1 : 1
 
-  // Generar un nuevo ID
   const newId = Math.max(...modules.map((m) => m.id), 0) + 1
 
-  // Crear el nuevo módulo
   const newModule = {
     id: newId,
     course_id,
@@ -189,8 +133,20 @@ export async function createModule(moduleData) {
     module_order: nextOrder,
   }
 
-  // Añadir a la lista de módulos
   modules = [...modules, newModule]
+
+  const newContent = {
+    id: Math.max(...contents.map((content) => content.id), 0) + 1,
+    module_id: newId,
+    content_type: "Video",
+    title: `Video ${title}`,
+    content: null,
+    video_url: `/videos/${title.toLowerCase().replace(/\s+/g, "-")}.mp4`,
+    file_path: null,
+    created_at: new Date(),
+  }
+
+  contents = [...contents, newContent]
 
   return simulateBackend(newModule)
 }
@@ -241,4 +197,8 @@ export async function moveModuleDown(moduleId) {
 
 export async function getDefaultCourse() {
   return getCourseById(1)
+}
+
+export async function getDefaultCourseId() {
+  return 1
 }

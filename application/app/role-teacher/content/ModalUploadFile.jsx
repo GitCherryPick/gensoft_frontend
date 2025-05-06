@@ -32,7 +32,7 @@ export default function ModalUploadFile({
       maxHeight={maxHeight}
       fullHeight={true}
     >
-      <div className="overflow-hidden rounded-lg bg-dark-2 flex flex-col flex-1">
+      <div className="overflow-hidden rounded-lg bg-dark-1 flex flex-col flex-1">
         <div className="flex">
           <TabButton
             icon={<File className="h-5 w-5" />}
@@ -111,7 +111,7 @@ function FileUploadZone({ type, onUpload }) {
 
   return (
     <div
-      className="border-2 border-dashed border-cta-1/30 dark:border-cta-1/20 rounded-lg p-10 text-center cursor-pointer hover:bg-dark-1/50 transition-colors flex-1 flex flex-col items-center justify-center"
+      className="border-2 border-dashed border-cta-1/30 dark:border-cta-1/20 rounded-lg p-10 text-center cursor-pointer hover:bg-dark-1/50 transition-colors flex-1 flex flex-col items-center justify-center w-full"
       onDragOver={handleDragOver}
       onDrop={handleDrop}
       onClick={() => document.getElementById(`file-upload-${type}`).click()}

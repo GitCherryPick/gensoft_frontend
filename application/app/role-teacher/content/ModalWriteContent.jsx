@@ -45,9 +45,9 @@ export default function ModalWriteContent({ isOpen, onClose, onSave, initialCont
       title={moduleTitle ? `Escribir contenido: ${moduleTitle}` : "Escribir contenido"}
       description="Utiliza el editor para crear tu propio contenido"
       maxWidth="3xl"
-      fullHeight={true}
+      fullHeight={false}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col">
         <div className="bg-gray-100 dark:bg-dark-2 rounded-t-md border border-gray-200 dark:border-gray-700 p-2 flex flex-wrap gap-1">
           <ToolbarButton icon={<Bold size={18} />} onClick={() => handleFormatText("bold")} tooltip="Negrita" />
           <ToolbarButton icon={<Italic size={18} />} onClick={() => handleFormatText("italic")} tooltip="Cursiva" />
@@ -76,7 +76,7 @@ export default function ModalWriteContent({ isOpen, onClose, onSave, initialCont
             const text = e.clipboardData.getData("text/plain")
             document.execCommand("insertText", false, text)
           }}
-          style={{ minHeight: "200px" }}
+          style={{ minHeight: "200px", maxHeight: "300px" }}
           ref={(el) => {
             if (el && !el.innerHTML && initialContent) {
               el.innerHTML = initialContent
