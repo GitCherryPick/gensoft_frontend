@@ -4,26 +4,20 @@
 
 @layer base {
   :root {
-    /* Color system */
-    /* Dark backgrounds */
     --color-dark-1: #0d0c11;
     --color-dark-2: #131219;
 
-    /* Light text colors */
     --color-light-1: #ffffff;
     --color-light-2: #b8b8ba;
     --color-light-3: #77767d;
 
-    /* Call to action colors */
     --color-cta-1: #b0a1ff;
-    --color-cta-1-hover: rgba(176, 161, 255, 0.1); /* Nuevo color para hover */
-    --color-cta-1-selected: rgba(176, 161, 255, 0.15); /* Nuevo color para seleccionado */
+    --color-cta-1-hover: rgba(176, 161, 255, 0.1);
+    --color-cta-1-selected: rgba(176, 161, 255, 0.15);
 
-    /* Legacy color names (keeping for compatibility) */
     --color-text-primary: var(--color-light-1);
     --color-text-secondary: var(--color-light-2);
 
-    /* System colors (from existing theme) */
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -47,7 +41,6 @@
   }
 
   .dark {
-    /* Map our custom dark colors to the dark theme */
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
     --card: 0 0% 3.9%;
@@ -79,7 +72,6 @@
   }
 }
 
-/* Custom component classes */
 @layer components {
   .text-hero-primary {
     @apply text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50;
@@ -89,7 +81,6 @@
     @apply mt-4 font-normal text-base text-light-2 max-w-lg text-center mx-auto;
   }
 
-  /* Text variants */
   .text-variant-1 {
     @apply text-light-1 text-lg font-normal;
   }
@@ -102,7 +93,6 @@
     @apply text-light-3 text-base font-normal;
   }
 
-  /* Nuevas clases para estados de módulos */
   .bg-cta-hover {
     background-color: var(--color-cta-1-hover);
   }
@@ -119,8 +109,6 @@
       linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   }
 
-  /* Custom utility classes for our new colors */
-  /* Dark backgrounds */
   .bg-dark-1 {
     background-color: var(--color-dark-1);
   }
@@ -128,7 +116,6 @@
     background-color: var(--color-dark-2);
   }
 
-  /* Light text colors */
   .text-light-1 {
     color: var(--color-light-1);
   }
@@ -139,7 +126,6 @@
     color: var(--color-light-3);
   }
 
-  /* Call to action colors */
   .bg-cta-1 {
     background-color: var(--color-cta-1);
   }
@@ -156,7 +142,6 @@
     border-color: var(--color-cta-1);
   }
 
-  /* Legacy color classes (keeping for compatibility) */
   .text-primary {
     color: var(--color-text-primary);
   }
@@ -164,18 +149,16 @@
     color: var(--color-text-secondary);
   }
 
-  /* Hide scrollbar but keep functionality */
   .scrollbar-hide {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   .scrollbar-hide::-webkit-scrollbar {
-    display: none; /* Chrome, Safari and Opera */
+    display: none;
   }
 }
 
-/* Añadir esta animación personalizada al final del archivo */
 @keyframes spinner-rotation {
   0% {
     transform: rotate(0deg);
