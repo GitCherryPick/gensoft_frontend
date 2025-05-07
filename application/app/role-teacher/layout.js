@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconClipboardList, IconFileText, IconUsers, IconArrowLeft, IconBook } from "@tabler/icons-react"
+import { IconUsers, IconArrowLeft, IconBook } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -14,16 +14,6 @@ export default function TeacherLayout({ children }) {
   const [open, setOpen] = useState(true)
 
   const links = [
-    {
-      label: "Crear Tareas",
-      href: ROUTES.TEACHER.TASKS,
-      icon: <IconClipboardList className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
-    },
-    {
-      label: "Exámenes",
-      href: ROUTES.TEACHER.EXAMS,
-      icon: <IconFileText className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
-    },
     {
       label: "Alumnos",
       href: ROUTES.TEACHER.STUDENTS,
@@ -43,9 +33,18 @@ export default function TeacherLayout({ children }) {
 
   useEffect(() => {
     if (pathname === ROUTES.TEACHER.ROOT) {
-      router.push(ROUTES.TEACHER.TASKS)
+      router.push(ROUTES.TEACHER.STUDENTS)
     }
   }, [pathname, router])
+
+  // Efecto para cerrar el sidebar después de 2 segundos
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setOpen(false)
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <div
@@ -54,6 +53,7 @@ export default function TeacherLayout({ children }) {
         "h-screen",
       )}
     >
+   
       <Sidebar open={open} setOpen={setOpen} animate={true}>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
@@ -76,7 +76,7 @@ export default function TeacherLayout({ children }) {
             <SidebarLink
               link={{
                 label: "Docente",
-                href: ROUTES.TEACHER.TASKS,
+                href: ROUTES.TEACHER.STUDENTS,
                 icon: (
                   <div className="h-7 w-7 shrink-0 rounded-full bg-gray-300 flex items-center justify-center">
                     <span className="text-xs">D</span>

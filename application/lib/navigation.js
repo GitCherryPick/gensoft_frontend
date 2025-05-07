@@ -27,8 +27,6 @@ export const ROUTES = {
 
   TEACHER: {
     ROOT: "/role-teacher",
-    TASKS: "/role-teacher/tasks",
-    EXAMS: "/role-teacher/exams",
     STUDENTS: "/role-teacher/students",
     CONTENT: "/role-teacher/content",
   },
@@ -37,7 +35,7 @@ export const ROUTES = {
 export const DEFAULT_ROUTES = {
   STUDENT: ROUTES.STUDENT.COURSES,
   ADMIN: ROUTES.ADMIN.USERS,
-  TEACHER: ROUTES.TEACHER.TASKS,
+  TEACHER: ROUTES.TEACHER.STUDENTS,
 };
 
 export function getNavLinks(role) {
@@ -81,16 +79,6 @@ export function getNavLinks(role) {
     case "teacher":
       return [
         {
-          label: "Crear Tareas",
-          href: ROUTES.TEACHER.TASKS,
-          icon: "IconClipboardList",
-        },
-        {
-          label: "Exámenes",
-          href: ROUTES.TEACHER.EXAMS,
-          icon: "IconFileText",
-        },
-        {
           label: "Alumnos",
           href: ROUTES.TEACHER.STUDENTS,
           icon: "IconUsers",
@@ -131,8 +119,6 @@ export function usePrefetchRoutes(role = "all") {
 
     if (role === "teacher" || role === "all") {
       router.prefetch(ROUTES.TEACHER.ROOT);
-      router.prefetch(ROUTES.TEACHER.TASKS);
-      router.prefetch(ROUTES.TEACHER.EXAMS);
       router.prefetch(ROUTES.TEACHER.STUDENTS);
       router.prefetch(ROUTES.TEACHER.CONTENT);
     }
