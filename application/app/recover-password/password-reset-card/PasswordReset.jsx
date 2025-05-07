@@ -45,7 +45,7 @@ export default function PasswordReset() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        token: new URLSearchParams(window.location.search).get("token"),
+        token: {token},
         password: password,
       }),
     })
