@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Mail, Lock, ArrowLeft } from "lucide-react";
+import { User, Lock, ArrowLeft } from "lucide-react";
 import Input from "@/components/core/Input";
 import PromiseButton from "@/components/core/PromiseButton";
 import Link from "next/link";
@@ -9,7 +9,7 @@ import { ROUTES } from "@/lib/navigation";
 import { useAuth } from "@/lib/auth/auth-context";
 
 export default function ComponentFormLoginCard({ onBack }) {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
   const { login, isLoading } = useAuth();
@@ -22,7 +22,7 @@ export default function ComponentFormLoginCard({ onBack }) {
 
   const handleLogin = async () => {
     try {
-      const user = await login({ email, password });
+      const user = await login({ username, password });
 
       if (user.role === "student") {
         router.push(ROUTES.STUDENT.ROOT);
@@ -56,11 +56,11 @@ export default function ComponentFormLoginCard({ onBack }) {
         <div className="space-y-5">
           <div className="space-y-3">
             <Input
-              type="email"
-              placeholder="Correo electrónico"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              icon={Mail}
+              type="username"
+              placeholder="Nombre de usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              icon={User}
               className="bg-transparent border-neutral-700/50 focus:border-blue-500/50"
             />
 

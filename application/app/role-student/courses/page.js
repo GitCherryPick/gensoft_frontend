@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from "react";
-
+import OneDarkPro from '../../../public/theme/onedarkpro.json';
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
 export default function EditorPython() {
@@ -12,6 +12,14 @@ export default function EditorPython() {
   const [entrada, setEntrada] = useState("");
   const [archivoGuardado, setArchivoGuardado] = useState("");
   const [pyodide, setPyodide] = useState(null);
+
+  const handleEditorDidMount = (monaco) => {
+    monaco.editor.defineTheme('OneDarkPro', {
+      base: 'vs-dark',
+      inherit: true,
+      ...OneDarkPro
+    });   
+  };
 
   useEffect(() => {
     setIsCliente(true);
@@ -34,45 +42,29 @@ export default function EditorPython() {
     cargarPyodide();
   }, []);
 
-  if (!isCliente) return null; 
+  if (!isCliente) return null;
 
   const ejecutarCodigo = async () => {
-    if (!pyodide) {
-      setSalida("⚠️ Pyodide aún se está cargando...");
-      return;
-    }
-  
-    try {
-      const entradaProcesada = entrada
-        .split('\n')
-        .map(linea => `"${linea.replace(/"/g, '\\"')}"`)
-        .join(', ');
-  
-        const codigoEjecutable = `
-import sys
-import io
-
-sys.stdout = io.StringIO()
-
-_entradas = iter([${entradaProcesada}])
-input = lambda: next(_entradas)
-
-try:
-    exec("""${codigo}""")
-except Exception as e:
-    print("⚠️ Error en tiempo de ejecución:", e)
-
-output = sys.stdout.getvalue()
-`;
-
-      await pyodide.runPythonAsync(codigoEjecutable);
-      const resultado = await pyodide.runPythonAsync("output");
-      setSalida(resultado || "✅ Código ejecutado correctamente.");
-    } catch (error) {
-      setSalida("⚠️ Error al ejecutar el código: " + error.message);
-    }
+    await fetch("http://localhost:8002/execute", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        code: codigo,
+        call: entrada,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setSalida(data.output || data.error );
+      })
+      .catch((error) => {
+        setSalida(data.error || "Error al ejecutar el código: " + error.message);
+      });
   };
-  
+
   const guardarArchivo = () => {
     const blob = new Blob([codigo], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -111,7 +103,8 @@ output = sys.stdout.getvalue()
             height="100%"
             defaultLanguage="python"
             value={codigo}
-            theme="vs-dark"
+            theme="OneDarkPro"
+            beforeMount={handleEditorDidMount}
             onChange={(valor) => {
               if (valor !== undefined) setCodigo(valor);
             }}
@@ -131,7 +124,7 @@ output = sys.stdout.getvalue()
             <label htmlFor="entrada" className="block font-bold mb-1">Entrada:</label>
             <textarea
               id="entrada"
-              className="w-full h-20 p-2 bg-gray-800 border border-gray-600 rounded text-white"
+              className="w-full h-20 p-2 border border-gray-600 bg-transparent rounded-md focus:outline-none focus:ring-1 focus:ring-cta-1 focus:border-cta-1 resize-none text-white"
               placeholder="Escribe aquí tus valores de entrada..."
               value={entrada}
               onChange={(e) => setEntrada(e.target.value)}
