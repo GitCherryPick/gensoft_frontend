@@ -11,6 +11,7 @@ export const ROUTES = {
     ROOT: "/recover-password",
     RECOVERY_CARD: "/recover-password/recovery-password-card",
     PASSWORD_RESET_CARD: "/recover-password/password-reset-card",
+    NOTIFY_RECOVER: "/recover-password/notify-recover",
   },
 
   STUDENT: {
@@ -118,9 +119,14 @@ export function usePrefetchRoutes(role = "all") {
     }
 
     if (role === "teacher" || role === "all") {
+<<<<<<<<< Temporary merge branch 1
       router.prefetch(ROUTES.TEACHER.ROOT);
+      router.prefetch(ROUTES.TEACHER.TASKS);
+      router.prefetch(ROUTES.TEACHER.EXAMS);
       router.prefetch(ROUTES.TEACHER.STUDENTS);
       router.prefetch(ROUTES.TEACHER.CONTENT);
+=========
+>>>>>>>>> Temporary merge branch 2
     }
   }, [router, role]);
 }
