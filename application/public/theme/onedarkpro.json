@@ -194,31 +194,31 @@
       "token": "storage.type.haskell"
     },
     {
-      "foreground": "#e06c75",
+      "foreground": "#FF5FFF",
       "token": "support.variable.magic.python"
     },
     {
-      "foreground": "#abb2bf",
+      "foreground": "#FFFFFF",
       "token": "punctuation.separator.period.python"
     },
     {
-      "foreground": "#abb2bf",
+      "foreground": "#FFFFFF",
       "token": "punctuation.separator.element.python"
     },
     {
-      "foreground": "#abb2bf",
+      "foreground": "#FFFFFF",
       "token": "punctuation.parenthesis.begin.python"
     },
     {
-      "foreground": "#abb2bf",
+      "foreground": "#FFFFFF",
       "token": "punctuation.parenthesis.end.python"
     },
     {
-      "foreground": "#e5c07b",
+      "foreground": "#FFD700",
       "token": "variable.parameter.function.language.special.self.python"
     },
     {
-      "foreground": "#e5c07b",
+      "foreground": "#FFD700",
       "token": "variable.parameter.function.language.special.cls.python"
     },
     {
@@ -722,43 +722,43 @@
       "token": "keyword.operator.sizeof.cpp"
     },
     {
-      "foreground": "#d19a66",
+      "foreground": "#FFAF00",
       "token": "variable.parameter.function.language.python"
     },
     {
-      "foreground": "#56b6c2",
+      "foreground": "#5FD7FF",
       "token": "support.type.python"
     },
     {
-      "foreground": "#c678dd",
+      "foreground": "#FF00FF",
       "token": "keyword.operator.logical.python"
     },
     {
-      "foreground": "#d19a66",
+      "foreground": "#FFAF00",
       "token": "variable.parameter.function.python"
     },
     {
-      "foreground": "#abb2bf",
+      "foreground": "#FFFFFF",
       "token": "punctuation.definition.arguments.begin.python"
     },
     {
-      "foreground": "#abb2bf",
+      "foreground": "#FFFFFF",
       "token": "punctuation.definition.arguments.end.python"
     },
     {
-      "foreground": "#abb2bf",
+      "foreground": "#FFFFFF",
       "token": "punctuation.separator.arguments.python"
     },
     {
-      "foreground": "#abb2bf",
+      "foreground": "#FFFFFF",
       "token": "punctuation.definition.list.begin.python"
     },
     {
-      "foreground": "#abb2bf",
+      "foreground": "#FFFFFF",
       "token": "punctuation.definition.list.end.python"
     },
     {
-      "foreground": "#61afef",
+      "foreground": "#FF3333",
       "token": "meta.function-call.generic.python"
     },
     {
@@ -782,16 +782,16 @@
       "token": "keyword.operator.assignment.compound.ts"
     },
     {
-      "foreground": "#c678dd",
-      "token": "keyword"
+      "foreground": "#FF5F87",
+      "token": "keyword.control.python"
     },
     {
       "foreground": "#e5c07b",
       "token": "entity.name.namespace"
     },
     {
-      "foreground": "#e06c75",
-      "token": "variable"
+      "foreground": "#87D7FF",
+      "token": "variable.other.readwrite.python"
     },
     {
       "foreground": "#abb2bf",
@@ -818,8 +818,8 @@
       "token": "token.package"
     },
     {
-      "foreground": "#61afef",
-      "token": "entity.name.function"
+      "foreground": "#FF3333",
+      "token": "entity.name.function.python"
     },
     {
       "foreground": "#61afef",
@@ -870,7 +870,7 @@
       "token": "entity.name.type"
     },
     {
-      "foreground": "#c678dd",
+      "foreground": "#FF5F87",
       "token": "keyword.control"
     },
     {
@@ -958,20 +958,24 @@
       "token": "meta.tag"
     },
     {
-      "foreground": "#98c379",
-      "token": "string"
+      "foreground": "#5FFF87",
+      "token": "string.quoted.single.python"
+    },
+    {
+      "foreground": "#5FFF87",
+      "token": "string.quoted.double.python"
     },
     {
       "foreground": "#56b6c2",
       "token": "constant.other.symbol"
     },
     {
-      "foreground": "#d19a66",
-      "token": "constant.numeric"
+      "foreground": "#FFAF00",
+      "token": "constant.numeric.decimal.python"
     },
     {
-      "foreground": "#d19a66",
-      "token": "constant"
+      "foreground": "#FFAF00",
+      "token": "constant.numeric.float.python"
     },
     {
       "foreground": "#d19a66",
@@ -1438,15 +1442,15 @@
       "token": "keyword.operator.nowdoc.php"
     },
     {
-      "foreground": "#61afef",
+      "foreground": "#00FFFF",
       "token": "meta.function.decorator.python"
     },
     {
-      "foreground": "#56b6c2",
+      "foreground": "#00FFFF",
       "token": "support.token.decorator.python"
     },
     {
-      "foreground": "#56b6c2",
+      "foreground": "#00FFFF",
       "token": "meta.function.decorator.identifier.python"
     },
     {
@@ -1814,11 +1818,11 @@
       "token": " meta.brace.square"
     },
     {
-      "foreground": "#7f848e",
-      "token": "comment"
+      "foreground": "#8787AF",
+      "token": "comment.line.number-sign.python"
     },
     {
-      "foreground": "#7f848e",
+      "foreground": "#8787AF",
       "token": " punctuation.definition.comment"
     },
     {
@@ -1950,5 +1954,7 @@
       "token": "constant.character.math.tex"
     }
   ],
+
+
   "encodedTokensColors": []
 }
