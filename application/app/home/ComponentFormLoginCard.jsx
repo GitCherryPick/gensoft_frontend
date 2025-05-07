@@ -1,40 +1,40 @@
-"use client"
-import { useState, useEffect } from "react"
-import { Mail, Lock, ArrowLeft } from "lucide-react"
-import Input from "@/components/core/Input"
-import PromiseButton from "@/components/core/PromiseButton"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { ROUTES } from "@/lib/navigation"
-import { useAuth } from "@/lib/auth/auth-context"
+"use client";
+import { useState, useEffect } from "react";
+import { User, Lock, ArrowLeft } from "lucide-react";
+import Input from "@/components/core/Input";
+import PromiseButton from "@/components/core/PromiseButton";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/navigation";
+import { useAuth } from "@/lib/auth/auth-context";
 
 export default function ComponentFormLoginCard({ onBack }) {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const router = useRouter()
-  const { login, isLoading } = useAuth()
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const { login, isLoading } = useAuth();
 
   useEffect(() => {
-    router.prefetch(ROUTES.STUDENT.ROOT)
-    router.prefetch(ROUTES.ADMIN.ROOT)
-    router.prefetch(ROUTES.TEACHER.ROOT)
-  }, [router])
+    router.prefetch(ROUTES.STUDENT.ROOT);
+    router.prefetch(ROUTES.ADMIN.ROOT);
+    router.prefetch(ROUTES.TEACHER.ROOT);
+  }, [router]);
 
   const handleLogin = async () => {
     try {
-      const user = await login({ email, password })
+      const user = await login({ username, password });
 
       if (user.role === "student") {
-        router.push(ROUTES.STUDENT.ROOT)
+        router.push(ROUTES.STUDENT.ROOT);
       } else if (user.role === "admin") {
-        router.push(ROUTES.ADMIN.ROOT)
+        router.push(ROUTES.ADMIN.ROOT);
       } else if (user.role === "teacher") {
-        router.push(ROUTES.TEACHER.ROOT)
+        router.push(ROUTES.TEACHER.ROOT);
       }
     } catch (error) {
-      console.error("Error:", error)
+      console.error("Error:", error);
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-sm mx-auto relative z-50">
@@ -49,16 +49,18 @@ export default function ComponentFormLoginCard({ onBack }) {
           </button>
         </div>
 
-        <h2 className="text-xl font-medium text-light-1 text-center mb-6">Iniciar Sesión</h2>
+        <h2 className="text-xl font-medium text-light-1 text-center mb-6">
+          Iniciar Sesión
+        </h2>
 
         <div className="space-y-5">
           <div className="space-y-3">
             <Input
-              type="email"
-              placeholder="Correo electrónico"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              icon={Mail}
+              type="username"
+              placeholder="Nombre de usuario"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              icon={User}
               className="bg-transparent border-neutral-700/50 focus:border-blue-500/50"
             />
 
@@ -73,13 +75,20 @@ export default function ComponentFormLoginCard({ onBack }) {
             />
 
             <div className="text-left mt-1">
-              <Link href="#" className="text-variant-3 text-xs hover:text-light-1 transition-colors">
+              <Link
+                href={ROUTES.RECOVER_PASSWORD.ROOT}
+                className="text-variant-3 text-xs hover:text-light-1 transition-colors"
+              >
                 ¿Olvidaste tu contraseña?
               </Link>
             </div>
           </div>
 
-          <PromiseButton onClick={handleLogin} className="w-full" loadingText="Iniciando sesión...">
+          <PromiseButton
+            onClick={handleLogin}
+            className="w-full"
+            loadingText="Iniciando sesión..."
+          >
             Iniciar Sesión
           </PromiseButton>
 
@@ -109,5 +118,5 @@ export default function ComponentFormLoginCard({ onBack }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -18,7 +18,7 @@ export default function RoutePrefetcher() {
     router.prefetch(ROUTES.ADMIN.ENROLLMENT)
 
     router.prefetch(ROUTES.TEACHER.ROOT)
-    router.prefetch(ROUTES.TEACHER.TASKS)
+    router.prefetch(ROUTES.TEACHER.STUDENTS)
     router.prefetch(ROUTES.TEACHER.CONTENT)
   }, [router])
 
