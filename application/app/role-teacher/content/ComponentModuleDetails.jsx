@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { getContentByModuleId } from "@/lib/content/content-service"
+import { getContentByModuleId, deleteContent } from "@/lib/content/content-service"
 import Spinner from "@/components/core/Spinner"
 import ErrorMessage from "@/components/core/ErrorMessage"
 import ActionButton from "@/components/core/ActionButton"
 import ModalUploadFile from "./ModalUploadFile"
 import ModalWriteContent from "./ModalWriteContent"
 import ModalEditDescription from "./ModalEditDescription"
-import { FileText, Video, ImageIcon, File, Edit, PenSquare, Upload } from "lucide-react"
+import { FileText, Video, ImageIcon, File, Edit, PenSquare, Upload, Trash2, Link } from "lucide-react"
 import toast from "react-hot-toast"
 
 export default function ComponentModuleDetails({ module }) {
@@ -65,18 +65,8 @@ export default function ComponentModuleDetails({ module }) {
     console.log("Archivo:", file)
   }
 
-  const handleSaveContent = async (content) => {
-    console.log("Contenido guardado:", content)
-
-    const newContent = {
-      id: Date.now(),
-      module_id: module.id,
-      content_type: "Text",
-      title: "Nuevo contenido",
-      content: content,
-      created_at: new Date(),
-    }
-
+  const handleSaveContent = async (newContent) => {
+    console.log("Contenido guardado:", newContent)
     setContents((prev) => [...prev, newContent])
     return true
   }
@@ -91,6 +81,17 @@ export default function ComponentModuleDetails({ module }) {
 
     toast.success("Descripción actualizada correctamente")
     return true
+  }
+
+  const handleDeleteContent = async (contentId) => {
+    try {
+      await deleteContent(contentId)
+      setContents((prev) => prev.filter((content) => content.id !== contentId))
+      toast.success("Contenido eliminado correctamente")
+    } catch (error) {
+      console.error("Error al eliminar contenido:", error)
+      toast.error(error.message || "Error al eliminar el contenido")
+    }
   }
 
   if (!module || !moduleData) {
@@ -151,7 +152,7 @@ export default function ComponentModuleDetails({ module }) {
         ) : (
           <div className="space-y-4">
             {contents.map((content) => (
-              <ContentItem key={content.id} content={content} />
+              <ContentItem key={content.id} content={content} onDelete={() => handleDeleteContent(content.id)} />
             ))}
           </div>
         )}
@@ -172,6 +173,7 @@ export default function ComponentModuleDetails({ module }) {
         onClose={() => setShowWriteContentModal(false)}
         onSave={handleSaveContent}
         moduleTitle={moduleData.title}
+        moduleId={moduleData.id}
       />
 
       <ModalEditDescription
@@ -185,15 +187,17 @@ export default function ComponentModuleDetails({ module }) {
   )
 }
 
-function ContentItem({ content }) {
+function ContentItem({ content, onDelete }) {
   const getContentIcon = () => {
-    switch (content.content_type) {
-      case "Text":
+    switch (content.content_type.toLowerCase()) {
+      case "text":
         return <FileText className="h-5 w-5 text-blue-400" />
-      case "Video":
+      case "video":
         return <Video className="h-5 w-5 text-red-400" />
-      case "Image":
+      case "image":
         return <ImageIcon className="h-5 w-5 text-green-400" />
+      case "url":
+        return <Link className="h-5 w-5 text-purple-400" />
       default:
         return <File className="h-5 w-5 text-gray-400" />
     }
@@ -204,29 +208,49 @@ function ContentItem({ content }) {
       <div className="flex items-start gap-3">
         <div className="mt-1">{getContentIcon()}</div>
         <div className="flex-1">
-          <h4 className="font-medium mb-1">{content.title}</h4>
+          <div className="flex justify-between items-start">
+            <h4 className="font-medium mb-1">{content.title}</h4>
+            <button
+              onClick={onDelete}
+              className="p-1.5 rounded-md text-light-3 hover:bg-red-100 hover:text-red-500 dark:hover:bg-red-900/20 transition-colors"
+              aria-label="Eliminar contenido"
+              title="Eliminar contenido"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
 
-          {content.content_type === "Text" && content.content && (
+          {content.content_type.toLowerCase() === "text" && content.content && (
             <div className="mt-2 p-3 bg-gray-100 dark:bg-dark-2 rounded-md">
               <div className="text-sm whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: content.content }}></div>
             </div>
           )}
 
-          {content.content_type === "Video" && content.video_url && (
+          {content.content_type.toLowerCase() === "video" && content.video_url && (
             <div className="mt-2">
               <p className="text-sm text-light-3">URL del video: {content.video_url}</p>
             </div>
           )}
 
-          {content.content_type === "Image" && content.file_path && (
+          {content.content_type.toLowerCase() === "image" && content.file_path && (
             <div className="mt-2">
               <p className="text-sm text-light-3">Ruta de la imagen: {content.file_path}</p>
             </div>
           )}
 
-          {content.content_type === "PDF" && content.file_path && (
+          {content.content_type.toLowerCase() === "url" && content.video_url && (
             <div className="mt-2">
-              <p className="text-sm text-light-3">Ruta del PDF: {content.file_path}</p>
+              <p className="text-sm text-light-3">
+                URL:{" "}
+                <a
+                  href={content.video_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-cta-1 hover:underline"
+                >
+                  {content.video_url}
+                </a>
+              </p>
             </div>
           )}
 

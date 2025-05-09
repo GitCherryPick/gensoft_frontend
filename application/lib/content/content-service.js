@@ -92,10 +92,7 @@ export async function getModuleById(moduleId) {
   return simulateBackend(module)
 }
 
-export async function getContentByModuleId(moduleId) {
-  const moduleContents = [...contents].filter((content) => content.module_id === moduleId)
-  return simulateBackend(moduleContents)
-}
+
 
 export async function addContent(newContent) {
   const newId = Math.max(...contents.map((content) => content.id), 0) + 1
@@ -261,4 +258,139 @@ export async function createModule(moduleData) {
   const createdModule = await response.json();
   console.log('Nuevo módulo creado:', createdModule);
   return createdModule;
+}
+
+export async function createTextContent(contentData) {
+  const { module_id, content, title } = contentData;
+
+  if (!module_id) {
+    throw new Error("El ID del módulo es obligatorio");
+  }
+
+  if (!content) {
+    throw new Error("El contenido de texto es obligatorio");
+  }
+
+  const response = await fetch(`${CONTENT_API_BASE_URL}/contents/text`, {
+    method: 'POST',
+    headers: defaultContentHeaders,
+    body: JSON.stringify({
+      module_id,
+      content,
+      title: title || "Contenido de texto",
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error al crear contenido de texto: ${response.statusText}`);
+  }
+
+  const newContent = await response.json();
+  console.log("Nuevo contenido de texto creado:", newContent);
+  return newContent;
+}
+
+export async function getContentByModuleId(moduleId) {
+  const response = await fetch(`${CONTENT_API_BASE_URL}/contents/module/${moduleId}`, {
+    headers: defaultContentHeaders,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error al obtener contenidos del módulo: ${response.statusText}`);
+  }
+
+  const contents = await response.json();
+  console.log("Contenidos del módulo:", contents);
+  return contents;
+}
+
+export async function deleteContent(contentId) {
+  const response = await fetch(`${CONTENT_API_BASE_URL}/contents/${contentId}`, {
+    method: 'DELETE',
+    headers: defaultContentHeaders,
+  });
+
+  if (!response.ok && response.status !== 204) {
+    throw new Error(`Error al eliminar el contenido: ${response.statusText}`);
+  }
+
+  console.log(`Contenido con ID ${contentId} eliminado exitosamente.`);
+  return { success: true, message: "Contenido eliminado correctamente" };
+}
+
+
+//----------------------------
+
+
+
+export async function createGenericContent(contentData) {
+  const { module_id, content_type, title, content, video_url, file_path } = contentData
+
+  if (!module_id) {
+    throw new Error("El ID del módulo es obligatorio")
+  }
+
+  const moduleExists = modules.some((m) => m.id === module_id)
+  if (!moduleExists) {
+    throw new Error(`El módulo con ID ${module_id} no existe`)
+  }
+
+  const validTypes = ["text", "pdf", "image", "video", "slide", "url"]
+  if (!validTypes.includes(content_type.toLowerCase())) {
+    throw new Error(`Tipo de contenido '${content_type}' no válido. Debe ser uno de: ${validTypes.join(", ")}`)
+  }
+
+  if (content_type.toLowerCase() === "url" || content_type.toLowerCase() === "video") {
+    if (video_url && !(video_url.startsWith("http://") || video_url.startsWith("https://"))) {
+      throw new Error("La URL debe comenzar con http:// o https://")
+    }
+  }
+
+  const newId = Math.max(...contents.map((c) => c.id), 0) + 1
+
+  const newContent = {
+    id: newId,
+    module_id,
+    content_type: content_type.toLowerCase(),
+    title: title || `Contenido ${newId}`,
+    content,
+    video_url,
+    file_path,
+    created_at: new Date(),
+  }
+
+  contents = [...contents, newContent]
+
+  return simulateBackend(newContent)
+}
+
+
+export async function createUrlContent(contentData) {
+  const { module_id, url, title } = contentData
+
+  if (!module_id) {
+    throw new Error("El ID del módulo es obligatorio")
+  }
+
+  if (!url) {
+    throw new Error("La URL es obligatoria")
+  }
+
+  if (!(url.startsWith("http://") || url.startsWith("https://"))) {
+    throw new Error("La URL debe comenzar con http:// o https://")
+  }
+
+  const moduleExists = modules.some((m) => m.id === module_id)
+  if (!moduleExists) {
+    throw new Error(`El módulo con ID ${module_id} no existe`)
+  }
+
+  return createGenericContent({
+    module_id,
+    content_type: "url",
+    title: title || "Contenido de URL",
+    content: null,
+    video_url: url,
+    file_path: null,
+  })
 }
