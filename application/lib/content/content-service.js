@@ -394,3 +394,41 @@ export async function createUrlContent(contentData) {
     file_path: null,
   })
 }
+
+
+async function uploadFileContent(file, module_id, title = null, type) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('module_id', module_id);
+  if (title) formData.append('title', title);
+
+  const response = await fetch(`${CONTENT_API_BASE_URL}/contents/upload/${type}`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error uploading ${type}: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  console.log(`${type} upload response:`, data);
+  return data;
+}
+
+// Funciones específicas
+export async function uploadPdfContent(file, module_id, title = null) {
+  return uploadFileContent(file, module_id, title, 'pdf');
+}
+
+export async function uploadImageContent(file, module_id, title = null) {
+  return uploadFileContent(file, module_id, title, 'image');
+}
+
+export async function uploadVideoContent(file, module_id, title = null) {
+  return uploadFileContent(file, module_id, title, 'video');
+}
+
+export async function uploadSlideContent(file, module_id, title = null) {
+  return uploadFileContent(file, module_id, title, 'slide');
+}

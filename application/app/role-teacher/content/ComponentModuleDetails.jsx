@@ -60,9 +60,9 @@ export default function ComponentModuleDetails({ module }) {
     }
   }, [module])
 
-  const handleFileUpload = (type, file) => {
-    toast.success(`Subiendo archivo de tipo: ${type}`)
-    console.log("Archivo:", file)
+  const handleFileUpload = (type, newContent) => {
+    console.log(`Archivo de tipo ${type} subido:`, newContent)
+    setContents((prev) => [...prev, newContent])
   }
 
   const handleSaveContent = async (newContent) => {
@@ -166,6 +166,7 @@ export default function ComponentModuleDetails({ module }) {
         description="Sube archivos para enriquecer el contenido de este módulo. Puedes subir documentos PDF, imágenes, videos o presentaciones."
         maxWidth="3xl"
         maxHeight="80vh"
+        moduleId={moduleData.id}
       />
 
       <ModalWriteContent
@@ -198,6 +199,10 @@ function ContentItem({ content, onDelete }) {
         return <ImageIcon className="h-5 w-5 text-green-400" />
       case "url":
         return <Link className="h-5 w-5 text-purple-400" />
+      case "pdf":
+        return <File className="h-5 w-5 text-orange-400" />
+      case "slide":
+        return <FileText className="h-5 w-5 text-yellow-400" />
       default:
         return <File className="h-5 w-5 text-gray-400" />
     }
@@ -232,11 +237,14 @@ function ContentItem({ content, onDelete }) {
             </div>
           )}
 
-          {content.content_type.toLowerCase() === "image" && content.file_path && (
-            <div className="mt-2">
-              <p className="text-sm text-light-3">Ruta de la imagen: {content.file_path}</p>
-            </div>
-          )}
+          {(content.content_type.toLowerCase() === "image" ||
+            content.content_type.toLowerCase() === "pdf" ||
+            content.content_type.toLowerCase() === "slide") &&
+            content.file_path && (
+              <div className="mt-2">
+                <p className="text-sm text-light-3">Archivo: {content.file_path}</p>
+              </div>
+            )}
 
           {content.content_type.toLowerCase() === "url" && content.video_url && (
             <div className="mt-2">
