@@ -7,6 +7,9 @@ import ErrorMessage from "@/components/core/ErrorMessage"
 import toast from "react-hot-toast"
 import ContentCard from "./cards/ContentCard"
 import CardContentImage from "./cards/CardContentImage"
+import CardContentPDF from "./cards/CardContentPDF"
+import CardContentSlide from "./cards/CardContentSlide"
+import CardContentVideo from "./cards/CardContentVideo"
 
 export default function ComponentContentList({ moduleId, onContentChange }) {
   const [contents, setContents] = useState([])
@@ -71,6 +74,12 @@ export default function ComponentContentList({ moduleId, onContentChange }) {
     switch (content.content_type.toLowerCase()) {
       case "image":
         return <CardContentImage key={content.id} content={content} onDelete={handleDeleteContent} />
+      case "pdf":
+        return <CardContentPDF key={content.id} content={content} onDelete={handleDeleteContent} />
+      case "slide":
+        return <CardContentSlide key={content.id} content={content} onDelete={handleDeleteContent} />
+      case "video":
+        return <CardContentVideo key={content.id} content={content} onDelete={handleDeleteContent} />
       default:
         return <ContentCard key={content.id} content={content} onDelete={handleDeleteContent} />
     }
@@ -102,7 +111,6 @@ export default function ComponentContentList({ moduleId, onContentChange }) {
 
   // Separar contenidos en textos y no-textos
   const textContents = contents.filter((content) => content.content_type.toLowerCase() === "text")
-
   const otherContents = contents.filter((content) => content.content_type.toLowerCase() !== "text")
 
   return (

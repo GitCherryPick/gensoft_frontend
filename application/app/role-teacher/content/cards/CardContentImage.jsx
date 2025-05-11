@@ -14,7 +14,6 @@ export default function CardContentImage({ content, onDelete }) {
 
   const imageUrl = getImageUrl(content.file_path)
 
-  // Formatear la fecha (solo fecha, sin hora)
   const formatDate = (dateString) => {
     if (!dateString) return ""
     const date = new Date(dateString)
@@ -24,10 +23,12 @@ export default function CardContentImage({ content, onDelete }) {
   return (
     <div className="space-y-2">
       <div
-        className="relative overflow-hidden rounded-md h-48"
+        className="relative overflow-hidden rounded-xl h-64"
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
       >
+        <div className="absolute top-0 left-0 bg-blue-500 text-white text-xs font-bold py-1 px-2 z-10">IMAGEN</div>
+
         {!imageError && imageUrl ? (
           <img
             src={imageUrl || "/placeholder.svg"}
@@ -61,7 +62,7 @@ export default function CardContentImage({ content, onDelete }) {
           title={imageUrl}
         >
           <ExternalLink size={12} className="mr-1 flex-shrink-0" />
-          <span className="truncate">Abrir</span>
+          <span className="truncate">Abrir imagen</span>
         </a>
 
         <span className="text-light-3">{formatDate(content.created_at)}</span>
