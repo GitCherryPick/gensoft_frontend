@@ -5,9 +5,18 @@ import Modal from "@/components/core/Modal"
 import { Bold, Italic, Underline } from "lucide-react"
 import { cn } from "@/lib/utils"
 import toast from "react-hot-toast"
+import { createTextContent } from "@/lib/content/content-service"
 
-export default function ModalWriteContent({ isOpen, onClose, onSave, initialContent = "", moduleTitle = "" }) {
+export default function ModalWriteContent({
+  isOpen,
+  onClose,
+  onSave,
+  initialContent = "",
+  moduleTitle = "",
+  moduleId,
+}) {
   const [content, setContent] = useState(initialContent)
+  const [title, setTitle] = useState("")
   const [isSaving, setIsSaving] = useState(false)
 
   const handleSave = async () => {
@@ -16,19 +25,37 @@ export default function ModalWriteContent({ isOpen, onClose, onSave, initialCont
       return
     }
 
+    if (!title.trim()) {
+      toast.error("El título no puede estar vacío")
+      return
+    }
+
     setIsSaving(true)
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
-      if (onSave) {
-        await onSave(content)
+      if (!moduleId) {
+        throw new Error("ID del módulo no proporcionado")
       }
 
+      const contentData = {
+        module_id: moduleId,
+        content: content,
+        title: title.trim(),
+      }
+
+      const savedContent = await createTextContent(contentData)
+
       toast.success("Contenido guardado correctamente")
+
+      if (onSave) {
+        await onSave(savedContent)
+      }
+
       onClose()
     } catch (error) {
       console.error("Error al guardar:", error)
-      toast.error("Error al guardar el contenido")
+      toast.error(error.message || "Error al guardar el contenido")
     } finally {
       setIsSaving(false)
     }
@@ -42,12 +69,27 @@ export default function ModalWriteContent({ isOpen, onClose, onSave, initialCont
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={moduleTitle ? `Escribir contenido: ${moduleTitle}` : "Escribir contenido"}
-      description="Utiliza el editor para crear tu propio contenido"
+      title={moduleTitle ? `Modulo: ${moduleTitle}` : "Escribir contenido"}
+      description="Redacta contenido que será visible para los estudiantes en el curso"
       maxWidth="3xl"
       fullHeight={false}
     >
       <div className="flex flex-col">
+        <div className="mb-4">
+          <label htmlFor="content-title" className="block text-sm font-medium text-light-3 mb-2">
+            Título del contenido
+          </label>
+          <input
+            id="content-title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder=""
+            className="w-full p-2 rounded-md border border-gray-300 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-1 focus:ring-cta-1 focus:border-cta-1 text-light-1"
+            required
+          />
+        </div>
+
         <div className="bg-gray-100 dark:bg-dark-2 rounded-t-md border border-gray-200 dark:border-gray-700 p-2 flex flex-wrap gap-1">
           <ToolbarButton icon={<Bold size={18} />} onClick={() => handleFormatText("bold")} tooltip="Negrita" />
           <ToolbarButton icon={<Italic size={18} />} onClick={() => handleFormatText("italic")} tooltip="Cursiva" />
@@ -76,7 +118,7 @@ export default function ModalWriteContent({ isOpen, onClose, onSave, initialCont
             const text = e.clipboardData.getData("text/plain")
             document.execCommand("insertText", false, text)
           }}
-          style={{ minHeight: "200px", maxHeight: "300px" }}
+          style={{ minHeight: "150px", maxHeight: "200px" }}
           ref={(el) => {
             if (el && !el.innerHTML && initialContent) {
               el.innerHTML = initialContent
@@ -116,8 +158,4 @@ function ToolbarButton({ icon, onClick, tooltip, className }) {
       {icon}
     </button>
   )
-}
-
-function ToolbarDivider() {
-  return <div className="h-6 w-px bg-gray-300 dark:bg-gray-600 mx-1 self-center" />
 }

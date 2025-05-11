@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 import Layout from "./Layout"
-import ComponentContentList from "./ComponentContentList"
+import ComponentModuleList from "./ComponentModuleList"
 import ComponentModuleDetails from "./ComponentModuleDetails"
 import EmptyState from "@/components/core/EmptyState"
 
@@ -11,7 +11,7 @@ export default function ContentPage() {
   return (
     <div className="h-full w-full">
       <Layout
-        leftPanel={<ComponentContentList onModuleSelect={setSelectedModule} />}
+        leftPanel={<ComponentModuleList onModuleSelect={setSelectedModule} />}
         rightPanel={selectedModule ? <ComponentModuleDetails module={selectedModule} /> : <EmptyState />}
         defaultLeftSize={35}
         defaultRightSize={65}
