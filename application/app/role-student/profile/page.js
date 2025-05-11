@@ -73,13 +73,10 @@ export default function ProfilePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-00">
-      {/* Header con banner */}
       <div className="bg-slate-950 h-32 w-full"></div>
 
-      {/* Contenido principal 0D0C11*/}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 w-full">
         <div className="bg-slate-950 rounded-lg shadow-xl overflow-hidden border border-gray-400">
-          {/* Sección superior con foto e info básica */}
           <div className="md:flex p-6">
             <div className="md:w-1/4 flex justify-center md:justify-start">
               <div className="relative flex flex-col items-center">
@@ -120,7 +117,6 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Implementación de Tabs de Radix UI */}
           <div className="border-t border-gray-700">
             <Tabs defaultValue="info" className="w-full">
               <TabsList className="flex overflow-x-auto w-full border-b border-gray-700 p-0 h-auto">
@@ -150,7 +146,6 @@ export default function ProfilePage() {
                 </TabsTrigger>
               </TabsList>
 
-              {/* Contenido de los tabs */}
               <div className="p-6">
                 <TabsContent value="info" className="m-0">
                   <div className="flex justify-center">
@@ -159,7 +154,6 @@ export default function ProfilePage() {
                         Habilidades
                       </h3>
                       <div className="space-y-6 bg-gray-800 rounded-xl p-6 shadow-md">
-                        {/* Skill: Python */}
                         <div>
                           <div className="flex justify-between items-center mb-1">
                             <span className="text-base font-medium text-gray-300 flex items-center gap-2">
@@ -179,7 +173,6 @@ export default function ProfilePage() {
                           </div>
                         </div>
 
-                        {/* Skill: Algoritmos */}
                         <div>
                           <div className="flex justify-between items-center mb-1">
                             <span className="text-base font-medium text-gray-300 flex items-center gap-2">
