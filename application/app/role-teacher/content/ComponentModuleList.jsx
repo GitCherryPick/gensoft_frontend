@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { getDefaultCourse, getModulesByCourseId, getCourseById } from "@/lib/content/content-service"
+import { getDefaultCourse, getModulesByCourseId } from "@/lib/content/content-service"
 import Spinner from "@/components/core/Spinner"
 import ErrorMessage from "@/components/core/ErrorMessage"
 import AnimationCascadeList from "./AnimationCascadeList"
@@ -31,15 +31,8 @@ export default function ComponentContentList({ onModuleSelect, defaultCourseId }
       setError(null)
 
       try {
-        // Si tenemos un ID de curso por defecto, lo usamos
         let defaultCourse
-        if (defaultCourseId) {
-          console.log(`Cargando curso con ID: ${defaultCourseId}`)
-          defaultCourse = await getCourseById(defaultCourseId)
-        } else {
-          // Si no, usamos la función getDefaultCourse
-          defaultCourse = await getDefaultCourse()
-        }
+        defaultCourse = await getDefaultCourse()
 
         if (!isMounted) return
 

@@ -10,6 +10,7 @@ import CardContentImage from "./cards/CardContentImage"
 import CardContentPDF from "./cards/CardContentPDF"
 import CardContentSlide from "./cards/CardContentSlide"
 import CardContentVideo from "./cards/CardContentVideo"
+import CardContentText from "./cards/CardContentText"
 
 export default function ComponentContentList({ moduleId, onContentChange }) {
   const [contents, setContents] = useState([])
@@ -28,7 +29,6 @@ export default function ComponentContentList({ moduleId, onContentChange }) {
       try {
         const moduleContents = await getContentByModuleId(moduleId)
         if (isMounted) {
-          // Ordenar por fecha de creación (más reciente primero)
           const sortedContents = [...moduleContents].sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
           setContents(sortedContents)
         }
@@ -51,7 +51,6 @@ export default function ComponentContentList({ moduleId, onContentChange }) {
     }
   }, [moduleId])
 
-  // Método para actualizar la lista de contenidos cuando se añade uno nuevo
   useEffect(() => {
     if (onContentChange) {
       onContentChange(contents)
@@ -69,9 +68,10 @@ export default function ComponentContentList({ moduleId, onContentChange }) {
     }
   }
 
-  // Función para renderizar el componente adecuado según el tipo de contenido
   const renderContentCard = (content) => {
     switch (content.content_type.toLowerCase()) {
+      case "text":
+        return <CardContentText key={content.id} content={content} onDelete={handleDeleteContent} />
       case "image":
         return <CardContentImage key={content.id} content={content} onDelete={handleDeleteContent} />
       case "pdf":
@@ -109,24 +109,21 @@ export default function ComponentContentList({ moduleId, onContentChange }) {
     )
   }
 
-  // Separar contenidos en textos y no-textos
   const textContents = contents.filter((content) => content.content_type.toLowerCase() === "text")
   const otherContents = contents.filter((content) => content.content_type.toLowerCase() !== "text")
 
   return (
     <div className="space-y-6">
-      {/* Sección de contenidos de texto (ancho completo) */}
       {textContents.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-light-1">Contenidos de texto</h3>
+          {/* <h3 className="text-lg font-medium text-light-1">Contenidos de texto</h3> */}
           <div className="space-y-4">{textContents.map((content) => renderContentCard(content))}</div>
         </div>
       )}
 
-      {/* Sección de otros contenidos (cuadrícula de 2 columnas) */}
       {otherContents.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-light-1">Otros contenidos</h3>
+          {/* <h3 className="text-lg font-medium text-light-1">Otros contenidos</h3> */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {otherContents.map((content) => renderContentCard(content))}
           </div>

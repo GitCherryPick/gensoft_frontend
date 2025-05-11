@@ -76,14 +76,6 @@ async function simulateBackend(data) {
   return data
 }
 
-// export async function getAllCourses() {
-//   return simulateBackend([...courses])
-// }
-
-// export async function getCourseById(courseId) {
-//   const course = courses.find((course) => course.id === courseId) || null
-//   return simulateBackend(course)
-// }
 
 
 
