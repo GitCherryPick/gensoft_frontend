@@ -1,20 +1,12 @@
 "use client";
-import { useState } from "react";
-import { AnimatePresence } from "framer-motion";
-import ComponentHero from "./ComponentHero";
-import ComponentHomeAction from "./ComponentHomeAction";
-import ComponentFormLoginCard from "./ComponentFormLoginCard";
+
+import { Suspense } from "react";
 import { Spotlight } from "@/components/ui/spotlight-new";
-import FadeIn from "@/components/animations/FadeIn";
 import Link from "next/link";
 import { ROUTES } from "@/lib/navigation";
-import { useSearchParams } from "next/navigation";
+import HomeClientContent from "./HomeClientContent";
 
 export default function HomePage() {
-  const searchParams = useSearchParams();
-  const showLogin = searchParams.get("login") === "true";
-  const [showLoginCard, setShowLoginCard] = useState(showLogin);
-
   return (
     <div className="h-screen w-full rounded-md bg-dark-1 relative overflow-hidden">
       <div className="absolute inset-0 z-10">
@@ -23,30 +15,12 @@ export default function HomePage() {
 
       <div className="w-full min-h-screen flex items-center relative z-30">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
-          <AnimatePresence mode="wait">
-            {!showLoginCard ? (
-              <FadeIn
-                key="hero"
-                className="max-w-xl mx-0 lg:mx-12 xl:mx-24 2xl:mx-36 text-left"
-              >
-                <ComponentHero />
-                <ComponentHomeAction
-                  onGetStarted={() => setShowLoginCard(true)}
-                />
-              </FadeIn>
-            ) : (
-              <FadeIn
-                key="login"
-                className="flex justify-center items-center"
-                initialY={10}
-                exitY={-10}
-              >
-                <ComponentFormLoginCard
-                  onBack={() => setShowLoginCard(false)}
-                />
-              </FadeIn>
-            )}
-          </AnimatePresence>
+          <Suspense fallback={
+            <div className="max-w-xl mx-0 lg:mx-12 xl:mx-24 2xl:mx-36 text-left">
+            </div>
+          }>
+            <HomeClientContent />
+          </Suspense>
         </div>
       </div>
 
