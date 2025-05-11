@@ -1,6 +1,6 @@
 "use client";
 import PromiseButton from "@/components/core/PromiseButton";
-import { Code, BookOpen, FileCode, Award } from "lucide-react";
+import { Code, BookOpen, FileCode, Award, Brain } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function ProfilePage() {
@@ -72,11 +72,14 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-900">
+    <div className="flex flex-col min-h-screen bg-slate-00">
+      {/* Header con banner */}
       <div className="bg-slate-950 h-32 w-full"></div>
 
+      {/* Contenido principal 0D0C11*/}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 w-full">
         <div className="bg-slate-950 rounded-lg shadow-xl overflow-hidden border border-gray-400">
+          {/* Sección superior con foto e info básica */}
           <div className="md:flex p-6">
             <div className="md:w-1/4 flex justify-center md:justify-start">
               <div className="relative flex flex-col items-center">
@@ -101,7 +104,7 @@ export default function ProfilePage() {
             <div className="md:w-3/4 mt-6 md:mt-0 md:pl-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between">
                 <div>
-                  <h1 className="text-4xl font-bold text-gray-100">
+                  <h1 className="text-2xl font-bold text-gray-100">
                     {student.name}
                   </h1>
                   <p className="text-gray-400">{student.role}</p>
@@ -117,6 +120,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
+          {/* Implementación de Tabs de Radix UI */}
           <div className="border-t border-gray-700">
             <Tabs defaultValue="info" className="w-full">
               <TabsList className="flex overflow-x-auto w-full border-b border-gray-700 p-0 h-auto">
@@ -146,42 +150,50 @@ export default function ProfilePage() {
                 </TabsTrigger>
               </TabsList>
 
+              {/* Contenido de los tabs */}
               <div className="p-6">
                 <TabsContent value="info" className="m-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                  <div className="flex justify-center">
+                    <div className="w-full max-w-3xl">
+                      <h3 className="text-xl font-semibold text-gray-300 mb-6">
                         Habilidades
                       </h3>
-                      <div className="space-y-4">
+                      <div className="space-y-6 bg-gray-800 rounded-xl p-6 shadow-md">
+                        {/* Skill: Python */}
                         <div>
-                          <div className="flex justify-between">
-                            <span className="text-sm font-medium text-gray-300">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-base font-medium text-gray-300 flex items-center gap-2">
+                              <Code size={18} className="text-indigo-400" />
                               Python
                             </span>
-                            <span className="text-sm text-gray-500">
-                              Principiante
+
+                            <span className="text-indigo-300 font-semibold">
+                              40%
                             </span>
                           </div>
-                          <div className="mt-1 bg-gray-700 rounded-full h-2">
+                          <div className="relative w-full bg-gray-700 rounded-full h-3">
                             <div
-                              className="bg-indigo-600 h-2 rounded-full"
+                              className="bg-gradient-to-r from-indigo-500 to-indigo-400 h-3 rounded-full transition-all duration-500"
                               style={{ width: "40%" }}
                             ></div>
                           </div>
                         </div>
+
+                        {/* Skill: Algoritmos */}
                         <div>
-                          <div className="flex justify-between">
-                            <span className="text-sm font-medium text-gray-300">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-base font-medium text-gray-300 flex items-center gap-2">
+                              <Brain size={18} className="text-indigo-400" />
                               Algoritmos
                             </span>
-                            <span className="text-sm text-gray-500">
-                              Principiante
+
+                            <span className="text-indigo-300 font-semibold">
+                              40%
                             </span>
                           </div>
-                          <div className="mt-1 bg-gray-700 rounded-full h-2">
+                          <div className="relative w-full bg-gray-700 rounded-full h-3">
                             <div
-                              className="bg-indigo-600 h-2 rounded-full"
+                              className="bg-gradient-to-r from-indigo-500 to-indigo-400 h-3 rounded-full transition-all duration-500"
                               style={{ width: "30%" }}
                             ></div>
                           </div>
@@ -190,7 +202,6 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 </TabsContent>
-
                 <TabsContent value="courses" className="m-0">
                   <h3 className="text-lg font-semibold text-gray-300 mb-4">
                     Mis Cursos
