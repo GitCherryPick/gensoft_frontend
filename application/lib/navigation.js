@@ -30,6 +30,10 @@ export const ROUTES = {
     ROOT: "/role-teacher",
     STUDENTS: "/role-teacher/students",
     CONTENT: "/role-teacher/content",
+    PROFILE: "/role-teacher/profile",
+    COURSES: "/role-teacher/courses",
+    COURSE_DETAILS: (id) => `/role-teacher/courses/${id}`,
+    RESOURCES: "/role-teacher/resources",
   },
 };
 

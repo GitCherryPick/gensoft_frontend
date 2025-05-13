@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconUsers, IconArrowLeft, IconBook } from "@tabler/icons-react"
+import { IconUsers, IconArrowLeft, IconBook, IconUser, IconFiles } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -23,6 +23,21 @@ export default function TeacherLayout({ children }) {
       label: "Gestión de Contenido",
       href: ROUTES.TEACHER.CONTENT,
       icon: <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Mi Perfil",
+      href: ROUTES.TEACHER.PROFILE,
+      icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Mis Cursos",
+      href: ROUTES.TEACHER.COURSES,
+      icon: <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Recursos",
+      href: ROUTES.TEACHER.RESOURCES,
+      icon: <IconFiles className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Cerrar Sesión",
