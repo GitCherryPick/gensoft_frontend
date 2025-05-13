@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from "react";
 import OneDarkPro from '../../../public/theme/onedarkpro.json';
 import confetti from "canvas-confetti";
+import TestCaseResult from '../../../components/TestCaseResult'
 
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
@@ -14,6 +15,7 @@ export default function EditorPython() {
   const [entrada, setEntrada] = useState("");
   const [archivoGuardado, setArchivoGuardado] = useState("");
   const [pyodide, setPyodide] = useState(null);
+  const [testCases, setTestCases] = useState([]);
 
   const [pestanaActiva, setPestanaActiva] = useState('enunciado');
 
@@ -100,30 +102,46 @@ export default function EditorPython() {
       });
 
       console.log("code  ", codigo)
+
+      setPestanaActiva("testcases")
       
       const data = await res.json();
       console.log("Respuesta del servidor:", data);
       setSalida(data.output || "Código enviado correctamente.");
+      setTestCases(data.testCases || []);
   
       if (data.generalVeredict === "Accepted") {
-        confetti({
-          particleCount: 500,
-          spread: 700,
-          origin: { y: 0.5 },
-        });
-  
-        // También puedes lanzar múltiples explosiones si quieres más efecto:
-        /*
-        for (let i = 0; i < 3; i++) {
-          setTimeout(() => {
-            confetti({
-              particleCount: 100,
-              spread: 70,
-              origin: { y: 0.6 },
-            });
-          }, i * 300);
-        }
-        */
+        const duration = 2 * 1000;
+  const animationEnd = Date.now() + duration;
+  const defaults = {
+    startVelocity: 30,
+    spread: 360,
+    ticks: 60,
+    zIndex: 1000,
+  };
+
+  const interval = setInterval(function () {
+    const timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      return clearInterval(interval);
+    }
+
+    const particleCount = 100 * (timeLeft / duration);
+
+    confetti(Object.assign({}, defaults, {
+      particleCount,
+      origin: { x: Math.random() * 0.2, y: Math.random() * 0.3 },
+      colors: ['#00ffcc', '#33cc33', '#99ff66', '#ffffff'],
+    }));
+
+    confetti(Object.assign({}, defaults, {
+        particleCount,
+        origin: { x: 1 - Math.random() * 0.2, y: Math.random() * 0.3 },
+        colors: ['#00ffcc', '#33cc33', '#99ff66', '#ffffff'],
+      }));
+    }, 200);
+        
       }
     } catch (error) {
       console.error("Error al enviar:", error);
@@ -151,7 +169,7 @@ export default function EditorPython() {
       </div>
 
       <div className="w-full max-w-8xl h-[600px] grid grid-cols-3 gap-x-4">
-        <div className="h-full bg-white text-black rounded-lg shadow p-4 overflow-auto bg-[#3d424d] border border-[#52585a]">
+        <div className="h-full bg-white text-black rounded-lg shadow p-4 overflow-auto bg-[#17181c] border border-[#52585a]">
           <div className="flex border-b mb-4">
             <button
               onClick={() => setPestanaActiva('enunciado')}
@@ -177,10 +195,17 @@ export default function EditorPython() {
           {pestanaActiva === 'testcases' && (
             <div>
               <h2 className="text-lg font-semibold mb-2 text-white">Casos de prueba</h2>
-              <p className='text-white'>
-                Entrada: <code>suma(2, 3)</code> → Salida esperada: <code>5</code><br />
-                Entrada: <code>suma(-1, 1)</code> → Salida esperada: <code>0</code>
-              </p>
+              {testCases.length === 0 && <p>Realiza un envio.</p>}
+              {testCases.map((tc, i) => (
+                <TestCaseResult
+                  key={i}
+                  testNumber={i}
+                  input={tc.input}
+                  expectedOutput={tc.expectedOutput}
+                  output={tc.output}
+                  veredict={tc.veredict}
+                />
+              ))}
             </div>
           )}
         </div>
