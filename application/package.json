@@ -41,6 +41,7 @@
     "@tabler/icons-react": "^3.31.0",
     "@tailwindcss/typography": "^0.5.10",
     "autoprefixer": "^10.4.20",
+    "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
