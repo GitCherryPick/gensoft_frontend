@@ -30,6 +30,7 @@ export const ROUTES = {
     ROOT: "/role-teacher",
     STUDENTS: "/role-teacher/students",
     CONTENT: "/role-teacher/content",
+    PROFILE: "/role-teacher/profile",
   },
 };
 

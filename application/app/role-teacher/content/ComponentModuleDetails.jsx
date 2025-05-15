@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { getContentByModuleId } from "@/lib/content/content-service"
+import { getContentByModuleId, deleteContent } from "@/lib/content/content-service"
 import Spinner from "@/components/core/Spinner"
 import ErrorMessage from "@/components/core/ErrorMessage"
 import ActionButton from "@/components/core/ActionButton"
 import ModalUploadFile from "./ModalUploadFile"
 import ModalWriteContent from "./ModalWriteContent"
 import ModalEditDescription from "./ModalEditDescription"
-import { FileText, Video, ImageIcon, File, Edit, PenSquare, Upload } from "lucide-react"
+import { Edit, PenSquare, Upload } from "lucide-react"
 import toast from "react-hot-toast"
+import ComponentContentList from "./ComponentContentList"
 
 export default function ComponentModuleDetails({ module }) {
   const [contents, setContents] = useState([])
@@ -20,6 +21,7 @@ export default function ComponentModuleDetails({ module }) {
   const [showWriteContentModal, setShowWriteContentModal] = useState(false)
   const [showEditDescriptionModal, setShowEditDescriptionModal] = useState(false)
   const [moduleData, setModuleData] = useState(null)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   useEffect(() => {
     if (module) {
@@ -60,24 +62,18 @@ export default function ComponentModuleDetails({ module }) {
     }
   }, [module])
 
-  const handleFileUpload = (type, file) => {
-    toast.success(`Subiendo archivo de tipo: ${type}`)
-    console.log("Archivo:", file)
+  const handleFileUpload = (type, newContent) => {
+    console.log(`Archivo de tipo ${type} subido:`, newContent)
+    setContents((prev) => [...prev, newContent])
+    // Incrementar el refreshTrigger para forzar la recarga de la lista
+    setRefreshTrigger((prev) => prev + 1)
   }
 
-  const handleSaveContent = async (content) => {
-    console.log("Contenido guardado:", content)
-
-    const newContent = {
-      id: Date.now(),
-      module_id: module.id,
-      content_type: "Text",
-      title: "Nuevo contenido",
-      content: content,
-      created_at: new Date(),
-    }
-
+  const handleSaveContent = async (newContent) => {
+    console.log("Contenido guardado:", newContent)
     setContents((prev) => [...prev, newContent])
+    // Incrementar el refreshTrigger para forzar la recarga de la lista
+    setRefreshTrigger((prev) => prev + 1)
     return true
   }
 
@@ -91,6 +87,19 @@ export default function ComponentModuleDetails({ module }) {
 
     toast.success("Descripción actualizada correctamente")
     return true
+  }
+
+  const handleDeleteContent = async (contentId) => {
+    try {
+      await deleteContent(contentId)
+      setContents((prev) => prev.filter((content) => content.id !== contentId))
+      // Incrementar el refreshTrigger para forzar la recarga de la lista
+      setRefreshTrigger((prev) => prev + 1)
+      toast.success("Contenido eliminado correctamente")
+    } catch (error) {
+      console.error("Error al eliminar contenido:", error)
+      toast.error(error.message || "Error al eliminar el contenido")
+    }
   }
 
   if (!module || !moduleData) {
@@ -144,16 +153,12 @@ export default function ComponentModuleDetails({ module }) {
           <div className="py-8">
             <ErrorMessage message="Error al cargar contenidos" />
           </div>
-        ) : contents.length === 0 ? (
-          <div className="py-8 text-center text-light-3">
-            <p>Este módulo no tiene contenidos</p>
-          </div>
         ) : (
-          <div className="space-y-4">
-            {contents.map((content) => (
-              <ContentItem key={content.id} content={content} />
-            ))}
-          </div>
+          <ComponentContentList
+            moduleId={moduleData.id}
+            onContentChange={(newContents) => setContents(newContents)}
+            refreshTrigger={refreshTrigger}
+          />
         )}
       </div>
 
@@ -165,6 +170,7 @@ export default function ComponentModuleDetails({ module }) {
         description="Sube archivos para enriquecer el contenido de este módulo. Puedes subir documentos PDF, imágenes, videos o presentaciones."
         maxWidth="3xl"
         maxHeight="80vh"
+        moduleId={moduleData.id}
       />
 
       <ModalWriteContent
@@ -172,6 +178,7 @@ export default function ComponentModuleDetails({ module }) {
         onClose={() => setShowWriteContentModal(false)}
         onSave={handleSaveContent}
         moduleTitle={moduleData.title}
+        moduleId={moduleData.id}
       />
 
       <ModalEditDescription
@@ -182,57 +189,5 @@ export default function ComponentModuleDetails({ module }) {
         moduleTitle={moduleData.title}
       />
     </motion.div>
-  )
-}
-
-function ContentItem({ content }) {
-  const getContentIcon = () => {
-    switch (content.content_type) {
-      case "Text":
-        return <FileText className="h-5 w-5 text-blue-400" />
-      case "Video":
-        return <Video className="h-5 w-5 text-red-400" />
-      case "Image":
-        return <ImageIcon className="h-5 w-5 text-green-400" />
-      default:
-        return <File className="h-5 w-5 text-gray-400" />
-    }
-  }
-
-  return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-md p-4 hover:bg-gray-50 dark:hover:bg-dark-2 transition-colors">
-      <div className="flex items-start gap-3">
-        <div className="mt-1">{getContentIcon()}</div>
-        <div className="flex-1">
-          <h4 className="font-medium mb-1">{content.title}</h4>
-
-          {content.content_type === "Text" && content.content && (
-            <div className="mt-2 p-3 bg-gray-100 dark:bg-dark-2 rounded-md">
-              <div className="text-sm whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: content.content }}></div>
-            </div>
-          )}
-
-          {content.content_type === "Video" && content.video_url && (
-            <div className="mt-2">
-              <p className="text-sm text-light-3">URL del video: {content.video_url}</p>
-            </div>
-          )}
-
-          {content.content_type === "Image" && content.file_path && (
-            <div className="mt-2">
-              <p className="text-sm text-light-3">Ruta de la imagen: {content.file_path}</p>
-            </div>
-          )}
-
-          {content.content_type === "PDF" && content.file_path && (
-            <div className="mt-2">
-              <p className="text-sm text-light-3">Ruta del PDF: {content.file_path}</p>
-            </div>
-          )}
-
-          <div className="mt-2 text-xs text-light-3">Creado: {new Date(content.created_at).toLocaleString()}</div>
-        </div>
-      </div>
-    </div>
   )
 }
