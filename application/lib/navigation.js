@@ -18,6 +18,7 @@ export const ROUTES = {
     ROOT: "/role-student",
     COURSES: "/role-student/courses",
     PROFILE: "/role-student/profile",
+    RESOURCES: "/role-student/resources",
   },
 
   ADMIN: {
@@ -49,6 +50,11 @@ export function getNavLinks(role) {
           label: "Cursos",
           href: ROUTES.STUDENT.COURSES,
           icon: "IconBrain",
+        },
+        {
+          label: "Recursos",
+          href: ROUTES.STUDENT.RESOURCES,
+          icon: "IconBook",
         },
         {
           label: "Perfil",
