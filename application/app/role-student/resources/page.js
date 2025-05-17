@@ -4,14 +4,12 @@ import { useCourseData } from "./useCourseData"
 import { useState } from "react"
 import ComponentCourseTitle from "./ComponentCourseTitle"
 import ComponentModuleList from "./ComponentModuleList"
+import ComponentModuleHeader from "./ComponentModuleHeader"
+import ComponentModuleContent from "./ComponentModuleContent"
 
 export default function ResourcesPage() {
   const { course, modules, isLoading, error } = useCourseData()
   const [selectedModule, setSelectedModule] = useState(null)
-
-  const loremIpsum =
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. "
-  const repeatedText = Array(20).fill(loremIpsum).join(" ")
 
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
@@ -32,14 +30,8 @@ export default function ResourcesPage() {
         <div className="flex-1">
           <ScrollArea className="h-full">
             <div className="p-4">
-              {selectedModule && (
-                <div className="mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-                  <span className="text-xs font-mono text-gray-500">ID del módulo: {selectedModule.id}</span>
-                </div>
-              )}
-
-              <h2 className="text-lg font-medium mb-2">Sección Derecha</h2>
-              <p className="text-sm">{repeatedText}</p>
+              <ComponentModuleHeader selectedModule={selectedModule} />
+              <ComponentModuleContent moduleId={selectedModule?.id} />
             </div>
           </ScrollArea>
         </div>
