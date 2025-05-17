@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconUsers, IconSchool, IconArrowLeft } from "@tabler/icons-react"
+import { IconUsers,IconUser, IconSchool, IconArrowLeft } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -18,6 +18,11 @@ export default function AdminLayout({ children }) {
       label: "Gestión de Usuarios",
       href: ROUTES.ADMIN.USERS,
       icon: <IconUsers className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Perfil",
+      href: ROUTES.ADMIN.PROFILE,
+      icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Matriculación",
