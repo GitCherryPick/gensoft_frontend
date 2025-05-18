@@ -17,6 +17,7 @@ export const ROUTES = {
   STUDENT: {
     ROOT: "/role-student",
     COURSES: "/role-student/courses",
+    CODE_REPLICATOR: "/role-student/courses/replicator", 
     PROFILE: "/role-student/profile",
   },
 
