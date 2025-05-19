@@ -19,11 +19,13 @@ export const ROUTES = {
     COURSES: "/role-student/courses",
     CODE_REPLICATOR: "/role-student/courses/replicator", 
     PROFILE: "/role-student/profile",
+    RESOURCES: "/role-student/resources",
   },
 
   ADMIN: {
     ROOT: "/role-admin",
     USERS: "/role-admin/users",
+    PROFILE: "/role-admin/profile",
     ENROLLMENT: "/role-admin/enrollment",
   },
 
@@ -51,6 +53,11 @@ export function getNavLinks(role) {
           icon: "IconBrain",
         },
         {
+          label: "Recursos",
+          href: ROUTES.STUDENT.RESOURCES,
+          icon: "IconBook",
+        },
+        {
           label: "Perfil",
           href: ROUTES.STUDENT.PROFILE,
           icon: "IconUser",
@@ -67,6 +74,11 @@ export function getNavLinks(role) {
           label: "Gestión de Usuarios",
           href: ROUTES.ADMIN.USERS,
           icon: "IconUsers",
+        },
+        {
+          label: "Perfil",
+          href: ROUTES.ADMIN.PROFILE,
+          icon: "IconUser",
         },
         {
           label: "Matriculación",
@@ -118,6 +130,7 @@ export function usePrefetchRoutes(role = "all") {
       router.prefetch(ROUTES.ADMIN.ROOT);
       router.prefetch(ROUTES.ADMIN.USERS);
       router.prefetch(ROUTES.ADMIN.ENROLLMENT);
+      router.prefetch(ROUTES.ADMIN.PROFILE);
     }
 
     if (role === "teacher" || role === "all") {
