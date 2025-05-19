@@ -13,7 +13,7 @@ export default function ToReplicate({referenceCode}) {
     <div className="bg-zinc-900 border border-gray-300 rounded-lg p-4 font-mono text-sm leading-relaxed overflow-auto">
       <div className="relative">
         <div className="pl-5 code-editor ">
-          <pre className="language-python m-0">
+          <pre className="language-python">
             <code className="language-python select-none">{referenceCode}</code>
           </pre>
         </div>

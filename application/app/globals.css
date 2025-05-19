@@ -183,3 +183,16 @@
   line-height: 1.5 !important;
   user-select: none;
 }
+
+.code-editor-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.code-editor-main textarea,
+.code-editor-main div {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  tab-size: 4 !important;
+}
