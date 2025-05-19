@@ -171,3 +171,15 @@
 .custom-spinner {
   animation: spinner-rotation 0.8s linear infinite;
 }
+
+.code-editor pre[class*="language-"],
+.code-editor code[class*="language-"]{
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 2 !important;
+  background: transparent !important;
+  overflow: visible !important;
+  line-height: 1.5 !important;
+  user-select: none;
+}
