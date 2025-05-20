@@ -42,7 +42,9 @@ export default function AdminProfilePage() {
           <div className="md:w-3/4 mt-6 md:mt-0 md:pl-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-gray-100">{admin.name}</h1>
+                <h1 className="text-2xl font-bold text-gray-100">
+                  {admin.name}
+                </h1>
                 <p className="text-gray-400">{admin.role}</p>
               </div>
             </div>
@@ -76,33 +78,67 @@ export default function AdminProfilePage() {
 
             <div className="p-6">
               <TabsContent value="dashboard">
-                <h3 className="text-xl font-semibold text-gray-300 mb-4">Resumen General</h3>
+                <h3 className="text-xl font-semibold text-gray-300 mb-4">
+                  Resumen General
+                </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <StatCard label="Usuarios Registrados" value={admin.stats.totalUsers} />
-                  <StatCard label="Cursos Activos" value={admin.stats.activeCourses} />
-                  <StatCard label="Certificados Emitidos" value={admin.stats.certificatesIssued} />
-                  <StatCard label="Aprobaciones Pendientes" value={admin.stats.pendingApprovals} />
+                  <StatCard
+                    label="Usuarios Registrados"
+                    value={admin.stats.totalUsers}
+                  />
+                  <StatCard
+                    label="Cursos Activos"
+                    value={admin.stats.activeCourses}
+                  />
+                  <StatCard
+                    label="Certificados Emitidos"
+                    value={admin.stats.certificatesIssued}
+                  />
+                  <StatCard
+                    label="Aprobaciones Pendientes"
+                    value={admin.stats.pendingApprovals}
+                  />
                 </div>
               </TabsContent>
 
               <TabsContent value="users">
-                <h3 className="text-lg font-semibold text-gray-300 mb-4">Gestión de Usuarios</h3>
-                <p className="text-gray-400">Aquí se mostrarán los usuarios registrados. (Funcionalidad pendiente)</p>
+                <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                  Gestión de Usuarios
+                </h3>
+                <p className="text-gray-400">
+                  Aquí se mostrarán los usuarios registrados. (Funcionalidad
+                  pendiente)
+                </p>
               </TabsContent>
 
               <TabsContent value="courses">
-                <h3 className="text-lg font-semibold text-gray-300 mb-4">Gestión de Cursos</h3>
-                <p className="text-gray-400">Aquí se podrán editar, activar o eliminar cursos. (Funcionalidad pendiente)</p>
+                <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                  Gestión de Cursos
+                </h3>
+                <p className="text-gray-400">
+                  Aquí se podrán editar, activar o eliminar cursos.
+                  (Funcionalidad pendiente)
+                </p>
               </TabsContent>
 
               <TabsContent value="certificates">
-                <h3 className="text-lg font-semibold text-gray-300 mb-4">Certificados Emitidos</h3>
-                <p className="text-gray-400">Lista de certificados emitidos a usuarios. (Funcionalidad pendiente)</p>
+                <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                  Certificados Emitidos
+                </h3>
+                <p className="text-gray-400">
+                  Lista de certificados emitidos a usuarios. (Funcionalidad
+                  pendiente)
+                </p>
               </TabsContent>
 
               <TabsContent value="settings">
-                <h3 className="text-lg font-semibold text-gray-300 mb-4">Configuración General</h3>
-                <p className="text-gray-400">Opciones de configuración para el sistema. (Funcionalidad pendiente)</p>
+                <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                  Configuración General
+                </h3>
+                <p className="text-gray-400">
+                  Opciones de configuración para el sistema. (Funcionalidad
+                  pendiente)
+                </p>
               </TabsContent>
             </div>
           </Tabs>
