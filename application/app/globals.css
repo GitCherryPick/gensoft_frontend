@@ -171,3 +171,28 @@
 .custom-spinner {
   animation: spinner-rotation 0.8s linear infinite;
 }
+
+.code-editor pre[class*="language-"],
+.code-editor code[class*="language-"]{
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 2 !important;
+  background: transparent !important;
+  overflow: visible !important;
+  line-height: 1.5 !important;
+  user-select: none;
+}
+
+.code-editor-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.code-editor-main textarea,
+.code-editor-main div {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  tab-size: 4 !important;
+}
