@@ -46,7 +46,7 @@ export default function CertificatesPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-6">
+    <div className="max-w-7xl mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {certificates.map((cert) => (
           <div

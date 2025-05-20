@@ -86,15 +86,11 @@ export default function ProfilePage() {
             </TabsList>
 
             <div className="p-6">
-              <TabsContent value="info">
-                <div className="flex justify-center">
-                  <div className="w-full max-w-3xl">
-                    <h3 className="text-xl font-semibold text-gray-300 mb-6">
-                      Habilidades
-                    </h3>
-                    <SkillsPage />
-                  </div>
-                </div>
+              <TabsContent value="info" className="m-0">
+                <h3 className="text-lg font-semibold text-gray-300 mb-4">
+                  Habilidades
+                </h3>
+                <SkillsPage />
               </TabsContent>
 
               <TabsContent value="courses" className="m-0">

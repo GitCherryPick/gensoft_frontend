@@ -14,11 +14,11 @@ const skills = [
 
 export default function SkillsPage() {
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-4">
+    <div className="space-y-4 pt-0">
       {skills.map(({ id, name, icon: Icon, progress }) => (
         <div
           key={id}
-          className="space-y-4 bg-gray-800 rounded-xl p-4 shadow-md"
+          className="space-y-3 bg-gray-800 border border-gray-700 rounded-xl p-4 shadow-md"
         >
           <div className="flex justify-between items-center mb-1">
             <span className="text-base font-medium text-gray-300 flex items-center gap-2">
