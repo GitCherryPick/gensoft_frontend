@@ -4,31 +4,38 @@ import { useRef, useEffect, useMemo } from "react";
 const PYTHON_SYNTAX = {
   keywords: {
     pattern: /\b(False|None|True|and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield)\b/g,
-    color: 'text-[#FF79C6]'
+    color: 'text-[#FF79C6]',
+    priority: 2
   },
   builtins: {
     pattern: /\b(abs|all|any|bin|bool|bytearray|bytes|callable|chr|classmethod|compile|complex|delattr|dict|dir|divmod|enumerate|eval|exec|filter|float|format|frozenset|getattr|globals|hasattr|hash|help|hex|id|input|int|isinstance|issubclass|iter|len|list|locals|map|max|memoryview|min|next|object|oct|open|ord|pow|print|property|range|repr|reversed|round|set|setattr|slice|sorted|staticmethod|str|sum|super|tuple|type|vars|zip)\b/g,
-    color: 'text-[#8BE9FD]'
+    color: 'text-[#8BE9FD]',
+    priority: 3
   },
   strings: {
     pattern: /("""[\s\S]*?"""|'''[\s\S]*?'''|"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*')/g,
-    color: 'text-[#F1FA8C]'
+    color: 'text-[#F1FA8C]',
+    priority: 1
   },
   numbers: {
     pattern: /\b(\d+(\.\d+)?)\b/g,
-    color: 'text-[#BD93F9]'
+    color: 'text-[#BD93F9]',
+    priority: 7
   },
   comments: {
     pattern: /#.*/g,
-    color: 'text-[#6272A4]'
+    color: 'text-[#6272A4]',
+    priority: 8
   },
   decorators: {
     pattern: /@[\w\d_.]+/g,
-    color: 'text-[#50FA7B]'
+    color: 'text-[#50FA7B]',
+    priority: 9
   },
   operators: {
     pattern: /[+\-*/%=<>!&|^~]+/g,
-    color: 'text-[#FF79C6]'
+    color: 'text-[#FF79C6]',
+    priority: 5
   }
 };
 
@@ -42,31 +49,77 @@ export default function CodeEditor({
   const highlightRef = useRef(null);
 
   const highlightCode = (code) => {
-    let highlighted = code;
-    let spans = [];
-    let lastIndex = 0;
-
-    const processMatch = (match, color, index) => {
-      if (index > lastIndex) {
-        spans.push(<span key={spans.length} className="text-white">{highlighted.slice(lastIndex, index)}</span>);
-      }
-      spans.push(<span key={spans.length} className={color}>{match}</span>);
-      lastIndex = index + match.length;
-    };
-
-    Object.entries(PYTHON_SYNTAX).forEach(([type, { pattern, color }]) => {
-      pattern.lastIndex = 0; // Reset el índice de regex
+    let matches = [];
+    Object.entries(PYTHON_SYNTAX).forEach(([type, { pattern, color }], priority) => {
+      pattern.lastIndex = 0;
       let match;
       while ((match = pattern.exec(code)) !== null) {
-        processMatch(match[0], color, match.index);
+        matches.push({ 
+          start: match.index,
+          end: match.index + match[0].length,
+          color: color,
+          text: match[0],
+          priority,
+         });
       }
     });
-
-    if (lastIndex < code.length) {
-      spans.push(<span key={spans.length} className="text-white">{highlighted.slice(lastIndex)}</span>);
+    matches.sort((a, b) => {
+      if (a.start !== b.start) {
+        return a.start - b.start;
+      }
+      return a.priority - b.priority;
+    });
+    let result = [];
+    let lastEnd = 0;
+    for( let i=0; i<matches.length; i++) {
+      const {start, end, color, text} = matches[i];
+      if (start > lastEnd) {
+        result.push(
+          <span key={result.length} className="text-white">
+            {code.slice(lastEnd, start)}
+          </span>
+        );
+      }
+      result.push(
+        <span key={result.length} className={color}>
+          {text}
+        </span>
+      );
+      lastEnd = end;
     }
+    if (lastEnd < code.length) {
+      result.push(
+        <span key={result.length} className="text-white">
+          {code.slice(lastEnd)}
+        </span>
+      );
+    }
+    return result;
+    // let highlighted = code;
+    // let spans = [];
+    // let lastIndex = 0;
 
-    return spans;
+    // const processMatch = (match, color, index) => {
+    //   if (index > lastIndex) {
+    //     spans.push(<span key={spans.length} className="text-white">{highlighted.slice(lastIndex, index)}</span>);
+    //   }
+    //   spans.push(<span key={spans.length} className={color}>{match}</span>);
+    //   lastIndex = index + match.length;
+    // };
+
+    // Object.entries(PYTHON_SYNTAX).forEach(([type, { pattern, color }]) => {
+    //   pattern.lastIndex = 0; // Reset el índice de regex
+    //   let match;
+    //   while ((match = pattern.exec(code)) !== null) {
+    //     processMatch(match[0], color, match.index);
+    //   }
+    // });
+
+    // if (lastIndex < code.length) {
+    //   spans.push(<span key={spans.length} className="text-white">{highlighted.slice(lastIndex)}</span>);
+    // }
+
+    // return spans;
   };
 
   const highlightedCode = useMemo(() => highlightCode(codeInput), [codeInput]);
