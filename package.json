@@ -1,0 +1,12 @@
+{
+  "name": "gensoft_frontend",
+  "version": "1.0.0",
+  "description": "Este proyecto tiene como objetivo crear una plataforma inclusiva que permita la enseñanza de Introducción a la Programación en Python, garantizando accesibilidad, calidad y formación de habilidades digitales para todos los estudiantes, sin brechas.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

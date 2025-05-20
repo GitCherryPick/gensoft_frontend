@@ -6,6 +6,7 @@ import { useEffect } from "react";
 export const ROUTES = {
   HOME: "/home",
   LOGIN: "/login",
+  SIGNUP: "/signup",
 
   RECOVER_PASSWORD: {
     ROOT: "/recover-password",
