@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import OneDarkPro from '../../../public/theme/onedarkpro.json';
 import confetti from "canvas-confetti";
 import TestCaseResult from '../../../components/TestCaseResult'
+import { SANDBOX_API_BASE_URL, defaultContentHeaders } from '../../../lib/sandbox/sandbox-api-config';
 
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
@@ -51,7 +52,7 @@ export default function EditorPython() {
 
     const fetchTask = async () => {
       try {
-        const response = await fetch("http://localhost:8002/tasks/1");
+        const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks/1`);
         const data = await response.json();
         setTaskTitle(data.title);
         setTaskEnunciado(data.enunciado);
@@ -68,7 +69,7 @@ export default function EditorPython() {
   if (!isCliente) return null;
 
   const ejecutarCodigo = async () => {
-    await fetch("http://localhost:8002/execute", {
+    await fetch(`${SANDBOX_API_BASE_URL}/execute`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -89,7 +90,7 @@ export default function EditorPython() {
 
   const enviarCodigo = async () => {
     try {
-      const res = await fetch("http://localhost:8002/enviar", {
+      const res = await fetch("http://localhost:8010/enviar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

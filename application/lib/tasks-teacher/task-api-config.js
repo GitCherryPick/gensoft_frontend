@@ -1,4 +1,4 @@
-const TASK_API_BASE_URL = 'http://localhost:8002';
+const TASK_API_BASE_URL = 'http://localhost:8010';
 
 const defaultTaskHeaders = {
   'Content-Type': 'application/json',
