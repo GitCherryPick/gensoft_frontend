@@ -1,5 +1,6 @@
 "use client";
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useMemo, useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 const PYTHON_SYNTAX = {
   keywords: {
@@ -13,13 +14,11 @@ const PYTHON_SYNTAX = {
     priority: 3
   },
   strings: {
-    // Coincide con strings de comillas simples, dobles, triples simples y triples dobles, incluyendo espacios y saltos de línea
     pattern: /("""[\s\S]*?"""|'''[\s\S]*?'''|"([^"\\]|\\.)*"|'([^'\\]|\\.)*')/g,
     color: 'text-[#F1FA8C]',
     priority: 1
   },
   numbers: {
-    // Coincide con enteros, decimales, hexadecimales, binarios, octales, notación científica y complejos
     pattern: /\b(-?(0[xX][\da-fA-F]+|0[bB][01]+|0[oO][0-7]+|\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?j?)\b/g,
     color: 'text-[#BD93F9]',
     priority: 7
@@ -49,9 +48,23 @@ export default function CodeEditorCopy({
   const textareaRef = useRef(null);
   const linesRef = useRef(null);
   const highlightRef = useRef(null);
+  const [lines, setLines] = useState(1);
+  const [highlightedCode, setHighlightedCode] = useState('');
+  const [visibleLines, setVisibleLines] = useState(new Set());
+
+  const toggleLineVisibility = (lineNumber) => {
+    setVisibleLines(prev => {
+      const newVisible = new Set(prev);
+      if (newVisible.has(lineNumber)) {
+        newVisible.delete(lineNumber);
+      } else {
+        newVisible.add(lineNumber);
+      }
+      return newVisible;
+    });
+  };
 
   const highlightCode = (code) => {
-    // 1. Recoger matches para cada tipo, con prioridad (strings primero)
     let allMatches = [];
     Object.entries(PYTHON_SYNTAX).forEach(([type, { pattern, color }], priority) => {
       pattern.lastIndex = 0;
@@ -66,12 +79,10 @@ export default function CodeEditorCopy({
         });
       }
     });
-    // 2. Ordenar matches por prioridad (menor primero = mayor prioridad) y posición
     allMatches.sort((a, b) => {
       if (a.priority !== b.priority) return a.priority - b.priority;
       return a.start - b.start;
     });
-    // 3. Filtrar matches para evitar solapamientos (no resaltar números dentro de strings)
     let filtered = [];
     let occupied = Array(code.length).fill(false);
     for (let m of allMatches) {
@@ -87,13 +98,11 @@ export default function CodeEditorCopy({
         for (let i = m.start; i < m.end; i++) occupied[i] = true;
       }
     }
-    // 4. Generar el resultado final, asegurando que cada fragmento solo se agregue una vez
     let result = [];
     let cursor = 0;
     filtered.sort((a, b) => a.start - b.start);
     for (let i = 0; i < filtered.length; i++) {
       const { start, end, color, text } = filtered[i];
-      // Añadir texto plano entre el cursor y el inicio del match
       if (start > cursor) {
         result.push(
           <span key={result.length} className="text-white">
@@ -101,7 +110,6 @@ export default function CodeEditorCopy({
           </span>
         );
       }
-      // Añadir el match resaltado
       result.push(
         <span key={result.length} className={color}>
           {text}
@@ -109,7 +117,6 @@ export default function CodeEditorCopy({
       );
       cursor = end;
     }
-    // Añadir texto plano restante
     if (cursor < code.length) {
       result.push(
         <span key={result.length} className="text-white">
@@ -120,14 +127,11 @@ export default function CodeEditorCopy({
     return result;
   };
 
-  const highlightedCode = useMemo(() => highlightCode(codeInput), [codeInput]);
-
   useEffect(() => {
     const syncScroll = () => {
       if (!textareaRef.current || !highlightRef.current) return;
       highlightRef.current.scrollTop = textareaRef.current.scrollTop;
       highlightRef.current.scrollLeft = textareaRef.current.scrollLeft;
-      
       if (linesRef.current) {
         linesRef.current.scrollTop = textareaRef.current.scrollTop;
       }
@@ -137,7 +141,6 @@ export default function CodeEditorCopy({
     if (textarea) {
       textarea.addEventListener('scroll', syncScroll);
       textarea.addEventListener('input', syncScroll);
-      
       return () => {
         textarea.removeEventListener('scroll', syncScroll);
         textarea.removeEventListener('input', syncScroll);
@@ -145,7 +148,14 @@ export default function CodeEditorCopy({
     }
   }, []);
 
-  const lines = codeInput.split("\n").length;
+  useEffect(() => {
+    setHighlightedCode(highlightCode(codeInput));
+  }, [codeInput]);
+
+  useEffect(() => {
+    setLines(codeInput.split("\n").length);
+  }, [codeInput]);
+
   const handleKeyDown = (e) => {
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -157,7 +167,6 @@ export default function CodeEditorCopy({
         codeInput.substring(0, start) + '    ' + codeInput.substring(end);
       setCodeInput(newValue);
 
-      // Ajustar el cursor solo para tabulación
       setTimeout(() => {
         textarea.selectionStart = textarea.selectionEnd = start + 4;
       }, 0);
@@ -166,32 +175,69 @@ export default function CodeEditorCopy({
 
   const handleChange = (e) => {
     setCodeInput(e.target.value);
-  }
+  };
 
   return (
-    <div className="relative flex flex-col h-full w-full bg-zinc-800 font-mono text-base leading-snug rounded-xl overflow-hidden border border-gray-700">
+    <div className="relative flex flex-col h-full w-full bg-zinc-800 font-mono text-base rounded-xl overflow-hidden border border-gray-700" style={{ lineHeight: '1.6rem' }}>
       <div className="flex flex-1 overflow-hidden">
         <div
           ref={linesRef}
-          className="flex flex-col items-end text-indigo-400/80 px-3 py-3 select-none overflow-hidden border-r border-gray-700 bg-zinc-900/30"
+          className="flex flex-col items-start text-indigo-400/80 py-3 select-none overflow-hidden border-r border-gray-700 bg-zinc-900/30 min-w-[4rem]"
+          style={{
+            lineHeight: '1.6rem',
+            height: '100%'
+          }}
         >
-          {Array.from({ length: lines || 1 }, (_, i) => (
-            <div
-              className="min-h-[1.5em] leading-6 text-xs text-right w-6 text-gray-400"
-              key={i}
-            >
-              {i + 1}
-            </div>
-          ))}
+          <div className="flex flex-col" style={{ minHeight: '100%' }}>
+            {Array.from({ length: lines || 1 }, (_, i) => {
+              const lineNumber = i + 1;
+              const isVisible = visibleLines.has(lineNumber);
+              return (
+                <div 
+                  key={i} 
+                  className="flex items-center w-full"
+                  style={{
+                    height: '1.6rem',
+                    minHeight: '1.6rem',
+                    maxHeight: '1.6rem',
+                    lineHeight: '1.6rem',
+                    boxSizing: 'content-box'
+                  }}
+                >
+                  <button
+                    onClick={() => toggleLineVisibility(lineNumber)}
+                    className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-200 transition-colors flex-shrink-0"
+                    title={isVisible ? 'Ocultar línea' : 'Mostrar línea'}
+                  >
+                    {isVisible ? (
+                      <Eye className="w-3.5 h-3.5" />
+                    ) : (
+                      <EyeOff className="w-3.5 h-3.5 opacity-50" />
+                    )}
+                  </button>
+                  <span 
+                    className="text-xs text-gray-400 w-6 text-right flex-shrink-0"
+                    style={{
+                      lineHeight: '1.6rem',
+                      height: '1.6rem',
+                      display: 'inline-block'
+                    }}
+                  >
+                    {lineNumber}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         <div className="flex-1 relative code-editor-main bg-zinc-900/50">
           <div 
             ref={highlightRef}
-            className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-auto px-4 py-3 whitespace-pre text-gray-200 text-sm"
+            className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-auto px-4 pt-3 pb-0 whitespace-pre text-gray-200 text-sm"
             style={{ 
               fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-              lineHeight: '1.5rem',
+              lineHeight: '1.6rem',
               whiteSpace: 'pre',
               wordBreak: 'break-all',
               letterSpacing: 'normal',
@@ -203,9 +249,9 @@ export default function CodeEditorCopy({
           </div>
           <textarea
             ref={textareaRef}
-            className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent caret-white px-4 py-3 resize-none outline-none font-mono text-sm leading-6 whitespace-pre overflow-auto"
+            className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent caret-white px-4 pt-3 pb-0 resize-none outline-none font-mono text-sm whitespace-pre overflow-auto"
             style={{ 
-              lineHeight: '1.5rem',
+              lineHeight: '1.6rem',
               fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
               letterSpacing: 'normal',
               tabSize: 2
