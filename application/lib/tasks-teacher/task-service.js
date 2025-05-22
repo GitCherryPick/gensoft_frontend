@@ -74,14 +74,71 @@ export async function compareTaskCode(taskId, studentCode) {
  */
 export async function createTaskWithDetails(taskData) {
   console.log('Datos de la tarea recibidos:', taskData);
-  // Simulando una respuesta exitosa
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
         success: true,
         message: 'Tarea creada exitosamente'
       });
-    }, 500); // Simulamos un pequeño retraso de red
+    }, 700);
   });
 }
 
+/**
+ * Genera el código base a partir de las líneas visibles
+ * @param {Array} lineasVisibles - Array de objetos con número y contenido de líneas visibles
+ * @returns {string} Código formateado con saltos de línea
+ */
+function generarCodigoBase(lineasVisibles) {
+  if (!lineasVisibles || lineasVisibles.length === 0) return '';
+  const lineasOrdenadas = [...lineasVisibles].sort((a, b) => a.numero - b.numero);
+  const maxLinea = lineasOrdenadas[lineasOrdenadas.length - 1].numero;
+  const lineas = [];
+  let indiceLinea = 0;
+  for (let i = 1; i <= maxLinea; i++) {
+    if (indiceLinea < lineasOrdenadas.length && lineasOrdenadas[indiceLinea].numero === i) {
+      lineas.push(lineasOrdenadas[indiceLinea].contenido);
+      indiceLinea++;
+    } else {
+      lineas.push('');
+    }
+  }
+  return lineas.join('\n');
+}
+
+/**
+ * Obtiene los datos de un ejercicio por su ID
+ * @param {string} exerciseId - ID del ejercicio a obtener
+ * @returns {Promise<Object>} Promesa que se resuelve con los datos del ejercicio
+ */
+export async function getExerciseById(exerciseId) {
+  // Datos de respuesta
+  const ejercicio = {
+    id_ejercicio: "001",
+    titulo: "Suma de dos números",
+    enunciado: "Define una función llamada `sumar` que reciba dos parámetros y devuelva la suma. \nLa suma debe almacenarse en una variable llamada `res`, y esta debe ser retornada.",
+    lineas_visibles: [
+      {
+        numero: 2,
+        contenido: "    res = a + b"
+      },
+      {
+        numero: 7,
+        contenido: "}"
+      }
+    ]
+  };
+  
+  // Generar el código base
+  const codigoBase = generarCodigoBase(ejercicio.lineas_visibles);
+  
+  // Respuesta
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        ...ejercicio,
+        codigo_base: codigoBase
+      });
+    }, 700);
+  });
+}
