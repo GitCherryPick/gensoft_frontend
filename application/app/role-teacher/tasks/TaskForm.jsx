@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import PromiseButton from "@/components/core/PromiseButton"
 import { createTaskWithDetails } from "@/lib/tasks-teacher/task-service"
+import toast from "react-hot-toast"
 
 
 const inputStyles = "border-border/50 hover:border-border/70 focus:border-border/90"
@@ -15,33 +16,52 @@ export default function TaskForm({ code, getVisibleLines, onTaskCreated }) {
   const [comentarios, setComentarios] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const titleRef = useRef(null)
+  
+  const isFormValid = titleRef.current?.value?.trim() && enunciado.trim()
+
+  const resetForm = () => {
+    if (titleRef.current) titleRef.current.value = '';
+    setEnunciado('');
+    setComentarios('');
+  };
 
   const handleSubmit = async () => {
     try {
-      setIsSubmitting(true)
-      const titulo = titleRef.current?.value || 'Sin título'
+      setIsSubmitting(true);
+      const titulo = titleRef.current?.value || 'Sin título';
       
       const lineasVisibles = getVisibleLines();
-      // Reemplazar tabs por 2 espacios
       const codigoFormateado = code.replace(/\t/g, '  ');
       
       const result = await createTaskWithDetails({
         id_docente: "2003",
         titulo: titulo,
         enunciado: enunciado,
-        codigo_objetivo: codigoFormateado, // Código con tabs reemplazados por espacios
+        codigo_objetivo: codigoFormateado,
         lineas_visibles: lineasVisibles,
         comentario_docente: comentarios
-      })
+      });
 
-      console.log('Tarea creada:', result)
+      console.log('Tarea creada:', result);
+      toast.success('¡Tarea creada exitosamente!', {
+        duration: 4000,
+        position: 'top-center',
+      });
+      
+      // Reset form
+      resetForm();
+      
       if (onTaskCreated) {
-        onTaskCreated(result)
+        onTaskCreated(result);
       }
     } catch (error) {
-      console.error('Error al crear la tarea:', error)
+      console.error('Error al crear la tarea:', error);
+      toast.error('Error al crear la tarea. Por favor, inténtalo de nuevo.', {
+        duration: 4000,
+        position: 'top-center',
+      });
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
 
@@ -99,6 +119,7 @@ export default function TaskForm({ code, getVisibleLines, onTaskCreated }) {
             variant="default"
             className={`w-full text-sm h-10 min-h-10 ${buttonStyles}`}
             onClick={handleSubmit}
+            disabled={!isFormValid}
           >
             Crear tarea
           </PromiseButton>

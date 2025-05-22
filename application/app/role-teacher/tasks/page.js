@@ -13,8 +13,7 @@ export default function TasksPage() {
   const editorRef = useRef(null);
 
   const handleTaskCreated = (result) => {
-    console.log('Tarea creada desde el componente padre:', result)
-
+    console.log('Sep', result)
   }
 
   return (
@@ -39,3 +38,5 @@ export default function TasksPage() {
     </div>
   )
 }
+
+

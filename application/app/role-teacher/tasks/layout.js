@@ -4,10 +4,9 @@ export default function TasksLayout({ children }) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-none px-6 py-4">
-        <h1 className="text-2xl font-semibold text-white">Creación de actividad de réplica</h1>
+        <h1 className="text-2xl font-semibold text-white">Creación de actividad - Ejercicio de réplica</h1>
         <p className="text-sm text-gray-400 mt-1">
-          Actividad donde el estudiante debe resolver un ejercicio completando el código.
-          Se proporcionan guías paso a paso para que alcance la solución correcta.
+          El estudiante deberá llegar a la respuesta del ejercicio basado en el enunciado, pistas de codigo y correcciones generadas por IA.
         </p>
       </div>
 
@@ -17,3 +16,4 @@ export default function TasksLayout({ children }) {
     </div>
   );
 }
+

@@ -35,11 +35,11 @@ const PromiseButton = React.forwardRef(
     }
 
     const variantClasses = {
-      default: "bg-cta-1 text-black hover:bg-opacity-90",
-      secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-      outline: "border border-cta-1 bg-transparent text-cta-1 hover:bg-cta-1/10",
-      ghost: "text-cta-1 hover:bg-cta-1/10",
-      destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+      default: "bg-cta-1 text-black hover:bg-opacity-90 disabled:bg-cta-1/30 disabled:text-black/50 disabled:hover:bg-cta-1/30",
+      secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80 disabled:bg-secondary/30 disabled:text-secondary-foreground/50 disabled:hover:bg-secondary/30",
+      outline: "border border-cta-1 bg-transparent/0 text-cta-1 hover:bg-cta-1/10 disabled:border-cta-1/30 disabled:bg-transparent/0 disabled:text-cta-1/30 disabled:hover:bg-transparent/0",
+      ghost: "text-cta-1 hover:bg-cta-1/10 disabled:text-cta-1/20 disabled:hover:bg-transparent/0",
+      destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 disabled:bg-destructive/30 disabled:text-destructive-foreground/50 disabled:hover:bg-destructive/30",
     }
 
     return (
@@ -47,9 +47,10 @@ const PromiseButton = React.forwardRef(
         <motion.button
           ref={ref}
           className={cn(
-            "relative flex h-12 min-w-[100px] items-center justify-center rounded-md px-6 text-base font-semibold tracking-wide transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+            "relative flex h-12 min-w-[100px] items-center justify-center rounded-md px-6 text-base font-semibold tracking-wide transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-70",
             variantClasses[variant] || variantClasses.default,
             className,
+            disabled && 'disabled:opacity-70',
           )}
           onClick={handleClick}
           disabled={isLoading || disabled}
