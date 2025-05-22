@@ -169,28 +169,29 @@ export default function CodeEditorCopy({
   }
 
   return (
-    <div className="relative bg-zinc-800 font-mono text-sm leading-relaxed rounded-lg overflow-hidden">
-      <div className="flex h-64 overflow-hidden rounded-lg">
+    <div className="relative flex flex-col h-full w-full bg-zinc-800 font-mono text-lg leading-relaxed rounded-xl overflow-hidden border border-gray-700">
+      <div className="flex flex-1 overflow-hidden">
         <div
           ref={linesRef}
-          className="flex flex-col items-end text-indigo-400 p-2 select-none overflow-hidden border-r border-gray-600"
+          className="flex flex-col items-end text-indigo-400/80 px-6 py-4 select-none overflow-hidden border-r border-gray-700 bg-zinc-900/30"
         >
           {Array.from({ length: lines || 1 }, (_, i) => (
-            <div key={i} className="">{i + 1}</div>
+            <div key={i} className="min-h-[1.75em] leading-7">{i + 1}</div>
           ))}
         </div>
 
-        <div className="flex-1 relative code-editor-main">
+        <div className="flex-1 relative code-editor-main bg-zinc-900/50">
           <div 
             ref={highlightRef}
-            className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-auto px-4 py-2 whitespace-pre"
+            className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-auto px-6 py-4 whitespace-pre text-gray-200"
             aria-hidden="true"
           >
             {highlightedCode}
           </div>
           <textarea
             ref={textareaRef}
-            className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent caret-white px-4 py-2 resize-none focus:outline-none focus:ring-0 focus:ring-offset-0 focus:border-0 border-0 shadow-none whitespace-pre overflow-auto selection:bg-indigo-500/30"
+            className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent caret-white px-6 py-4 resize-none focus:outline-none focus:ring-0 focus:ring-offset-0 focus:border-0 border-0 shadow-none whitespace-pre overflow-auto selection:bg-indigo-500/30 text-gray-200 text-lg"
+            style={{ lineHeight: '1.75rem' }}
             value={codeInput}
             onChange={handleChange}
             onKeyDown={handleKeyDown}

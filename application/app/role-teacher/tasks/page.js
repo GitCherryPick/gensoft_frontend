@@ -13,11 +13,27 @@ export default function TasksPage() {
 
 
   return (
-    <div className="h-full w-full p-4">
-      <CodeEditorCopy
-        codeInput={code}
-        setCodeInput={setCode}
-      />
+    <div className="h-full flex flex-col lg:flex-row-reverse overflow-hidden gap-4 p-4">
+      {/* Columna derecha - Editor */}
+      <div className="flex-1 flex flex-col min-h-0">
+        <p className="text-sm text-gray-500/80 mb-2 px-1">
+          Escribe aquí la solución completa del ejercicio. Las líneas marcadas como visibles 
+          se mostrarán como pistas para el estudiante.
+        </p>
+        <div className="flex-1 min-h-0 rounded-lg overflow-hidden">
+          <CodeEditorCopy
+            codeInput={code}
+            setCodeInput={setCode}
+          />
+        </div>
+      </div>
+
+      {/* Columna izquierda - Contenido adicional */}
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="h-full rounded-lg p-4 overflow-auto">
+          <p className="text-gray-400">Área para configuraciones adicionales</p>
+        </div>
+      </div>
     </div>
   )
 }
