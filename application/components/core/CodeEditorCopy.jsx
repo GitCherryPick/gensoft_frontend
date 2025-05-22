@@ -44,6 +44,7 @@ const CodeEditorCopy = forwardRef(({
   codeInput,
   setCodeInput,
   children,
+  showLineVisibilityToggle = false,
 }, ref) => {
   const textareaRef = useRef(null);
   const linesRef = useRef(null);
@@ -214,10 +215,16 @@ const CodeEditorCopy = forwardRef(({
       <div className="flex flex-1 overflow-hidden">
         <div
           ref={linesRef}
-          className="flex flex-col items-start text-indigo-400/80 py-3 select-none overflow-hidden border-r border-gray-700 bg-zinc-900/30 min-w-[4rem]"
+          className={`flex flex-col items-start text-indigo-400/80 py-3 select-none overflow-hidden border-r border-gray-700 bg-zinc-900/30 ${
+            showLineVisibilityToggle ? 'min-w-[4.5rem]' : 'min-w-[3rem]'
+          }`}
           style={{
             lineHeight: '1.6rem',
-            height: '100%'
+            height: '100%',
+            paddingLeft: showLineVisibilityToggle ? '0.75rem' : '0.75rem',
+            paddingRight: '0.5rem',
+            boxSizing: 'border-box',
+            transition: 'min-width 0.2s ease, padding 0.2s ease'
           }}
         >
           <div className="flex flex-col" style={{ minHeight: '100%' }}>
@@ -236,23 +243,30 @@ const CodeEditorCopy = forwardRef(({
                     boxSizing: 'content-box'
                   }}
                 >
-                  <button
-                    onClick={() => toggleLineVisibility(lineNumber)}
-                    className={`w-6 h-6 flex items-center justify-center transition-colors ${isVisible ? 'text-[#B0A1FF]' : 'text-gray-400 hover:text-gray-200'}`}
-                    title={isVisible ? 'Ocultar línea' : 'Mostrar línea'}
-                  >
-                    {isVisible ? (
-                      <Eye className="w-3.5 h-3.5" />
-                    ) : (
-                      <EyeOff className="w-3.5 h-3.5 opacity-50" />
-                    )}
-                  </button>
+                  {showLineVisibilityToggle && (
+                    <button
+                      onClick={() => toggleLineVisibility(lineNumber)}
+                      className={`w-5 h-6 flex items-center justify-center transition-colors ${isVisible ? 'text-[#B0A1FF]' : 'text-gray-400 hover:text-gray-200'} mr-1`}
+                      title={isVisible ? 'Ocultar línea' : 'Mostrar línea'}
+                    >
+                      {isVisible ? (
+                        <Eye className="w-3.5 h-3.5" />
+                      ) : (
+                        <EyeOff className="w-3.5 h-3.5 opacity-50" />
+                      )}
+                    </button>
+                  )}
                   <span 
-                    className="text-xs text-gray-400 w-6 text-right flex-shrink-0"
+                    className="text-xs text-gray-400 flex-shrink-0"
                     style={{
                       lineHeight: '1.6rem',
                       height: '1.6rem',
-                      display: 'inline-block'
+                      display: 'inline-block',
+                      width: showLineVisibilityToggle ? '1.5rem' : '1.5rem',
+                      textAlign: 'right',
+                      paddingRight: showLineVisibilityToggle ? '0' : '0.25rem',
+                      transition: 'all 0.2s ease',
+                      marginLeft: showLineVisibilityToggle ? '0' : '0.25rem'
                     }}
                   >
                     {lineNumber}

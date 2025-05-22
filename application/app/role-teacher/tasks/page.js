@@ -32,6 +32,7 @@ export default function TasksPage() {
             ref={editorRef}
             codeInput={code}
             setCodeInput={setCode}
+            showLineVisibilityToggle={true}
           />
         </div>
       </div>
