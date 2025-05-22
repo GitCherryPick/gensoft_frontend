@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react"
 import dynamic from "next/dynamic"
+import TaskForm from "./TaskForm"
 
 // Import the copied code editor with SSR disabled
 const CodeEditorCopy = dynamic(
@@ -9,29 +10,30 @@ const CodeEditorCopy = dynamic(
 )
 
 export default function TasksPage() {
-  const [code, setCode] = useState(`# Ejemplo de script Python\ndef suma(a, b):\n    """Devuelve la suma de dos números"""\n    return a + b\n\nresultado = suma(3, 4)\nprint(f"La suma es: {resultado}")\n`)
+  const [code, setCode] = useState(`# Ejemplo de script Python\ndef suma(a, b):\n    \"\"\"Devuelve la suma de dos números\"\"\"\n    return a + b\n\nresultado = suma(3, 4)\nprint(f\"La suma es: {resultado}\")\n`)
 
+  const handleTaskCreated = (result) => {
+    console.log('Tarea creada desde el componente padre:', result)
+    // Aquí podrías mostrar una notificación o redirigir al usuario
+  }
 
   return (
-    <div className="h-full flex flex-col lg:flex-row-reverse overflow-hidden gap-4 p-4">
+    <div className="h-full flex flex-col lg:flex-row gap-4 p-4">
+      {/* Columna izquierda - Formulario */}
+      <div className="flex-1 flex flex-col min-h-0">
+        <TaskForm 
+          code={code} 
+          onTaskCreated={handleTaskCreated} 
+        />
+      </div>
+
       {/* Columna derecha - Editor */}
       <div className="flex-1 flex flex-col min-h-0">
-        <p className="text-sm text-gray-500/80 mb-2 px-1">
-          Escribe aquí la solución completa del ejercicio. Las líneas marcadas como visibles 
-          se mostrarán como pistas para el estudiante.
-        </p>
-        <div className="flex-1 min-h-0 rounded-lg overflow-hidden">
+        <div className="h-full flex flex-col rounded-lg overflow-hidden border border-border/30">
           <CodeEditorCopy
             codeInput={code}
             setCodeInput={setCode}
           />
-        </div>
-      </div>
-
-      {/* Columna izquierda - Contenido adicional */}
-      <div className="flex-1 flex flex-col min-h-0">
-        <div className="h-full rounded-lg p-4 overflow-auto">
-          <p className="text-gray-400">Área para configuraciones adicionales</p>
         </div>
       </div>
     </div>

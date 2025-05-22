@@ -59,3 +59,29 @@ export async function compareTaskCode(taskId, studentCode) {
   return response.json();
 }   
 
+// ----------------------------------
+
+/**
+ * Crea una nueva tarea con los detalles proporcionados
+ * @param {Object} taskData - Objeto con los datos de la tarea
+ * @param {string} taskData.id_docente - ID del docente que crea la tarea
+ * @param {string} taskData.titulo - Título de la tarea
+ * @param {string} taskData.enunciado - Enunciado completo de la tarea
+ * @param {string} taskData.codigo_objetivo - Código de ejemplo que cumple con el objetivo
+ * @param {number[]} taskData.lineas_visibles - Array con los números de línea que deben ser visibles
+ * @param {string} taskData.comentario_docente - Comentarios adicionales del docente
+ * @returns {Promise<Object>} Promesa que se resuelve con la respuesta del servidor
+ */
+export async function createTaskWithDetails(taskData) {
+  console.log('Datos de la tarea recibidos:', taskData);
+  // Simulando una respuesta exitosa
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        success: true,
+        message: 'Tarea creada exitosamente'
+      });
+    }, 500); // Simulamos un pequeño retraso de red
+  });
+}
+
