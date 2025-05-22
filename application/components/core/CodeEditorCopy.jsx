@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect, useMemo, useState } from "react";
+import { useRef, useEffect, useMemo, useState, forwardRef, useImperativeHandle } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 const PYTHON_SYNTAX = {
@@ -40,11 +40,11 @@ const PYTHON_SYNTAX = {
   }
 };
 
-export default function CodeEditorCopy({
+const CodeEditorCopy = forwardRef(({
   codeInput,
   setCodeInput,
   children,
-}) {
+}, ref) => {
   const textareaRef = useRef(null);
   const linesRef = useRef(null);
   const highlightRef = useRef(null);
@@ -63,6 +63,16 @@ export default function CodeEditorCopy({
       return newVisible;
     });
   };
+
+  // Función para obtener las líneas visibles como array ordenado
+  const getVisibleLines = () => {
+    return Array.from(visibleLines).sort((a, b) => a - b);
+  };
+
+  // Exponer la función al componente padre a través de ref
+  useImperativeHandle(ref, () => ({
+    getVisibleLines
+  }));
 
   const highlightCode = (code) => {
     let allMatches = [];
@@ -152,9 +162,31 @@ export default function CodeEditorCopy({
     setHighlightedCode(highlightCode(codeInput));
   }, [codeInput]);
 
+  // Actualizar líneas y limpiar visibilidad de líneas eliminadas
   useEffect(() => {
-    setLines(codeInput.split("\n").length);
-  }, [codeInput]);
+    const newLines = codeInput.split("\n");
+    setLines(newLines.length);
+    
+    // Si hay líneas visibles, verificar si alguna ya no existe
+    if (visibleLines.size > 0) {
+      const maxLine = newLines.length;
+      let hasChanges = false;
+      const newVisibleLines = new Set(visibleLines);
+      
+      // Eliminar referencias a líneas que ya no existen
+      visibleLines.forEach(line => {
+        if (line > maxLine) {
+          newVisibleLines.delete(line);
+          hasChanges = true;
+        }
+      });
+      
+      // Si hubo cambios, actualizar el estado
+      if (hasChanges) {
+        setVisibleLines(newVisibleLines);
+      }
+    }
+  }, [codeInput, visibleLines]);
 
   const handleKeyDown = (e) => {
     if (e.key === 'Tab') {
@@ -206,7 +238,7 @@ export default function CodeEditorCopy({
                 >
                   <button
                     onClick={() => toggleLineVisibility(lineNumber)}
-                    className="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-200 transition-colors flex-shrink-0"
+                    className={`w-6 h-6 flex items-center justify-center transition-colors ${isVisible ? 'text-[#B0A1FF]' : 'text-gray-400 hover:text-gray-200'}`}
                     title={isVisible ? 'Ocultar línea' : 'Mostrar línea'}
                   >
                     {isVisible ? (
@@ -241,11 +273,31 @@ export default function CodeEditorCopy({
               whiteSpace: 'pre',
               wordBreak: 'break-all',
               letterSpacing: 'normal',
-              tabSize: 2
+              tabSize: 2,
+              position: 'relative'
             }}
             aria-hidden="true"
           >
             {highlightedCode}
+            {Array.from({ length: lines || 1 }, (_, i) => {
+              const lineNumber = i + 1;
+              if (visibleLines.has(lineNumber)) {
+                return (
+                  <div 
+                    key={`highlight-${i}`}
+                    className="absolute left-0 right-0 bg-[#B0A1FF]/10 pointer-events-none"
+                    style={{ 
+                      top: `calc(0.75rem + ${i} * 1.6rem)`,
+                      height: '1.6rem',
+                      left: '1rem',
+                      right: '1rem',
+                      width: 'calc(100% - 2rem)'
+                    }}
+                  />
+                );
+              }
+              return null;
+            })}
           </div>
           <textarea
             ref={textareaRef}
@@ -267,4 +319,6 @@ export default function CodeEditorCopy({
       {children}
     </div>
   );
-}
+});
+
+export default CodeEditorCopy;

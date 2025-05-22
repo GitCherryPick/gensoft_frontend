@@ -10,7 +10,7 @@ import { createTaskWithDetails } from "@/lib/tasks-teacher/task-service"
 const inputStyles = "border-border/50 hover:border-border/70 focus:border-border/90"
 const buttonStyles = "border-border/50 hover:border-border/70"
 
-export default function TaskForm({ code, onTaskCreated }) {
+export default function TaskForm({ code, getVisibleLines, onTaskCreated }) {
   const [enunciado, setEnunciado] = useState("")
   const [comentarios, setComentarios] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -21,12 +21,16 @@ export default function TaskForm({ code, onTaskCreated }) {
       setIsSubmitting(true)
       const titulo = titleRef.current?.value || 'Sin título'
       
+      const lineasVisibles = getVisibleLines();
+      // Reemplazar tabs por 2 espacios
+      const codigoFormateado = code.replace(/\t/g, '  ');
+      
       const result = await createTaskWithDetails({
         id_docente: "2003",
         titulo: titulo,
         enunciado: enunciado,
-        codigo_objetivo: code,
-        lineas_visibles: [1, 2, 3],
+        codigo_objetivo: codigoFormateado, // Código con tabs reemplazados por espacios
+        lineas_visibles: lineasVisibles,
         comentario_docente: comentarios
       })
 
