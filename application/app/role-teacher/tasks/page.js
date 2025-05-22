@@ -3,7 +3,7 @@ import { useState } from "react"
 import dynamic from "next/dynamic"
 import TaskForm from "./TaskForm"
 
-// Import the copied code editor with SSR disabled
+
 const CodeEditorCopy = dynamic(
   () => import("@/components/core/CodeEditorCopy"),
   { ssr: false }
@@ -14,12 +14,11 @@ export default function TasksPage() {
 
   const handleTaskCreated = (result) => {
     console.log('Tarea creada desde el componente padre:', result)
-    // Aquí podrías mostrar una notificación o redirigir al usuario
+
   }
 
   return (
     <div className="h-full flex flex-col lg:flex-row gap-4 p-4">
-      {/* Columna izquierda - Formulario */}
       <div className="flex-1 flex flex-col min-h-0">
         <TaskForm 
           code={code} 
@@ -27,7 +26,6 @@ export default function TasksPage() {
         />
       </div>
 
-      {/* Columna derecha - Editor */}
       <div className="flex-1 flex flex-col min-h-0">
         <div className="h-full flex flex-col rounded-lg overflow-hidden border border-border/30">
           <CodeEditorCopy

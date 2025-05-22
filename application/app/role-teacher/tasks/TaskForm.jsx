@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import PromiseButton from "@/components/core/PromiseButton"
 import { createTaskWithDetails } from "@/lib/tasks-teacher/task-service"
 
-// Estilos locales
+
 const inputStyles = "border-border/50 hover:border-border/70 focus:border-border/90"
 const buttonStyles = "border-border/50 hover:border-border/70"
 
