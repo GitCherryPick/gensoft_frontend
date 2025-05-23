@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { getExerciseById } from '@/lib/tasks-teacher/task-service';
+import RightPanel from './RightPanel';
 
 const CodeEditorCopy = dynamic(
   () => import('@/components/core/CodeEditorCopy'),
@@ -64,9 +65,11 @@ export default function ReplicaPage() {
       </div>
       
       {/* Sección derecha */}
-      <div className="w-2/5 flex items-center justify-center border-l border-gray-200 dark:border-gray-700">
-        <span className="text-xl">derecha</span>
-      </div>
+      {exercise && (
+        <div className="w-2/5 border-l border-gray-200 dark:border-gray-700">
+          <RightPanel />
+        </div>
+      )}
     </div>
   )
 }
