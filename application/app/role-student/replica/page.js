@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { getExerciseById } from '@/lib/tasks-teacher/task-service';
+import { getExerciseById, evaluateStudentSolution } from '@/lib/tasks-teacher/task-service';
 import RightPanel from './RightPanel';
 
 const CodeEditorCopy = dynamic(
@@ -15,6 +15,25 @@ export default function ReplicaPage() {
   const [exercise, setExercise] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [evaluationResult, setEvaluationResult] = useState(null);
+
+  const handleHelpRequest = async () => {
+    console.log('Solicitando ayuda...');
+    try {
+      const resultado = await evaluateStudentSolution({
+        id_estudiante: '2003',
+        id_ejercicio: '2003',
+        codigo_fuente: code,
+        tiempo_redaccion: 10
+      });
+      console.log('Resultado de la evaluación:', resultado);
+      setEvaluationResult(resultado);
+      return resultado;
+    } catch (error) {
+      console.error('Error al evaluar la solución:', error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     const fetchExercise = async () => {
@@ -67,7 +86,11 @@ export default function ReplicaPage() {
       {/* Sección derecha */}
       {exercise && (
         <div className="w-2/5 border-l border-gray-200 dark:border-gray-700">
-          <RightPanel />
+          <RightPanel 
+            onHelpRequest={handleHelpRequest} 
+            code={code}
+            evaluationResult={evaluationResult}
+          />
         </div>
       )}
     </div>

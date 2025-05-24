@@ -171,6 +171,6 @@ export async function evaluateStudentSolution(solutionData) {
           "Tal vez podrías declarar una variable llamada 'res' justo antes del return."
         ]
       });
-    }, 900);
+    }, 2900);
   });
 }
