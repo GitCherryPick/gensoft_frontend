@@ -271,22 +271,18 @@ function generarCodigoBase(lineasVisibles) {
  */
 function convertirFormatoLineasVisibles(visibleLines, targetCode) {
   if (!visibleLines || !targetCode) return [];
+
   const lineasCodigo = targetCode.split('\n');
-  console.log('Líneas de código totales:', lineasCodigo);
-  let lineasAMostrar = [...visibleLines];
-  if (lineasAMostrar.length === 0 || !lineasAMostrar.includes(0)) {
-    lineasAMostrar.unshift(0);
-  }
-  console.log('Líneas a mostrar tras verificación:', lineasAMostrar);
-  return lineasAMostrar.map(numeroLinea => {
-    const resultado = {
-      numero: numeroLinea + 1,
-      contenido: lineasCodigo[numeroLinea] || ''
+
+  return visibleLines.map(lineaHumana => {
+    const index = lineaHumana - 1;
+    return {
+      numero: lineaHumana,
+      contenido: lineasCodigo[index] || ''
     };
-    console.log(`Línea ${numeroLinea} => ${resultado.numero}: '${resultado.contenido}'`);
-    return resultado;
   });
 }
+
 
 /**
  * Obtiene los datos de un ejercicio por su ID
