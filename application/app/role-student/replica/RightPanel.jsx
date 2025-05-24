@@ -12,8 +12,8 @@ export default function RightPanel({ code, onHelpRequest, initialAssistantData =
       id: 1,
       type: 'assistant',
       content: [
-        'Hola, soy tu asistente de programación. Estoy aquí para ayudarte con tus ejercicios de programación.',
-        'Puedes enviar tu código cuando estés listo. Recibirás sugerencias hasta que llegues a la solución correcta.'
+        'Puedes enviar tu código cuando estés listo',
+        'Recibirás sugerencias hasta que llegues a la solución correcta'
       ],
       evaluation: {},
       timestamp: new Date()
