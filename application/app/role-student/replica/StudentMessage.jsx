@@ -1,12 +1,10 @@
 "use client";
 
-import { User } from 'lucide-react';
-
 export default function StudentMessage({ content, code }) {
   return (
     <div className="flex justify-end mb-4">
-      <div className="flex items-start gap-3 max-w-[90%]">
-        <div className="flex flex-col items-end gap-2 w-full">
+      <div className="flex items-start justify-end w-full">
+        <div className="flex flex-col items-end gap-2 w-full max-w-[90%]">
           {content && (
             <div className="bg-transparent border border-gray-200 dark:border-gray-600 text-gray-800 dark:text-gray-200 px-4 py-2.5 rounded-tl-2xl rounded-bl-2xl rounded-tr-2xl text-[15px] leading-snug">
               {content}
@@ -22,9 +20,6 @@ export default function StudentMessage({ content, code }) {
               </pre>
             </div>
           )}
-        </div>
-        <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-300 flex-shrink-0">
-          <User size={14} />
         </div>
       </div>
     </div>

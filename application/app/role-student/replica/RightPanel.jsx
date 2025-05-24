@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import PromiseButton from "@/components/core/PromiseButton";
-import { MessageCircle, Bot } from 'lucide-react';
+import { Code2, Bot } from 'lucide-react';
 import StudentMessage from './StudentMessage';
 import AssistantMessage from './AssistantMessage';
 
@@ -11,7 +11,10 @@ export default function RightPanel({ code, onHelpRequest, initialAssistantData =
     {
       id: 1,
       type: 'assistant',
-      content: 'Puedes enviar tu código cuando estés listo. Recibirás sugerencias hasta que llegues a la solución correcta.',
+      content: [
+        'Hola, soy tu asistente de programación. Estoy aquí para ayudarte con tus ejercicios de programación.',
+        'Puedes enviar tu código cuando estés listo. Recibirás sugerencias hasta que llegues a la solución correcta.'
+      ],
       evaluation: {},
       timestamp: new Date()
     }
@@ -126,8 +129,8 @@ export default function RightPanel({ code, onHelpRequest, initialAssistantData =
           variant="outline"
           className="w-full flex items-center justify-center gap-2"
         >
-          <MessageCircle className="w-5 h-5" />
-          <span>Pedir ayuda con mi código</span>
+          <Code2 className="w-5 h-5" />
+          <span className="ml-2">Comprobar solución</span>
         </PromiseButton>
       </div>
     </div>
