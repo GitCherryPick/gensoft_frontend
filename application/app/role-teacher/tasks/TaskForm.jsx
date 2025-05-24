@@ -4,7 +4,7 @@ import { useState, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import PromiseButton from "@/components/core/PromiseButton"
-import { createTaskWithDetails } from "@/lib/tasks-teacher/task-service"
+import { createTaskWithDetails } from "@/lib/content/content-service"
 import toast from "react-hot-toast"
 
 
