@@ -291,7 +291,7 @@ function convertirFormatoLineasVisibles(visibleLines, targetCode) {
  */
 export async function getExerciseById(exerciseId) {
   try {
-    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/`, {
+    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/last`, {
       headers: defaultContentHeaders,
     });
 
