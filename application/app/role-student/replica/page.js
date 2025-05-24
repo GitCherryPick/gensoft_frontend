@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { getExerciseById, evaluateStudentSolution } from '@/lib/tasks-teacher/task-service';
+import { evaluateStudentSolution } from '@/lib/tasks-teacher/task-service';
+import { getExerciseById } from '@/lib/content/content-service';
 import RightPanel from './RightPanel';
 
 const CodeEditorCopy = dynamic(

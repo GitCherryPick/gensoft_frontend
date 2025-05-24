@@ -207,25 +207,143 @@ export async function uploadSlideContent(file, module_id, title = null) {
 // ------------------------------
 
 
-/**
- * Crea una nueva tarea con los detalles proporcionados
- * @param {Object} taskData - Objeto con los datos de la tarea
- * @param {string} taskData.id_docente - ID del docente que crea la tarea
- * @param {string} taskData.titulo - Título de la tarea
- * @param {string} taskData.enunciado - Enunciado completo de la tarea
- * @param {string} taskData.codigo_objetivo - Código de ejemplo que cumple con el objetivo
- * @param {number[]} taskData.lineas_visibles - Array con los números de línea que deben ser visibles
- * @param {string} taskData.comentario_docente - Comentarios adicionales del docente
- * @returns {Promise<Object>} Promesa que se resuelve con la respuesta del servidor
- */
 export async function createTaskWithDetails(taskData) {
   console.log('Datos de la tarea recibidos:', taskData);
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        success: true,
-        message: 'Tarea creada exitosamente'
-      });
-    }, 700);
+  
+  const requestBody = {
+    instructor_id: parseInt(taskData.id_docente, 10) || 0,
+    title: taskData.titulo || '',
+    prompt: taskData.enunciado || '',
+    target_code: taskData.codigo_objetivo || '',
+    visible_lines: Array.isArray(taskData.lineas_visibles) ? taskData.lineas_visibles : [],
+    instructor_comment: taskData.comentario_docente || ''
+  };
+
+  try {
+    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/`, {
+      method: 'POST',
+      headers: defaultContentHeaders,
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('Error en la respuesta del servidor:', errorData);
+      throw new Error(`Error al crear la tarea: ${response.status} - ${response.statusText}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Tarea creada exitosamente:', responseData);
+    return responseData;
+  } catch (error) {
+    console.error('Error al crear la tarea:', error);
+    throw error;
+  }
+}
+
+/**
+ * Genera el código base a partir de las líneas visibles
+ * @param {Array} lineasVisibles - Array de objetos con número y contenido de líneas visibles
+ * @returns {string} Código formateado con saltos de línea
+ */
+function generarCodigoBase(lineasVisibles) {
+  if (!lineasVisibles || lineasVisibles.length === 0) return '';
+  const lineasOrdenadas = [...lineasVisibles].sort((a, b) => a.numero - b.numero);
+  const maxLinea = lineasOrdenadas[lineasOrdenadas.length - 1].numero;
+  const lineas = [];
+  let indiceLinea = 0;
+  for (let i = 1; i <= maxLinea; i++) {
+    if (indiceLinea < lineasOrdenadas.length && lineasOrdenadas[indiceLinea].numero === i) {
+      lineas.push(lineasOrdenadas[indiceLinea].contenido);
+      indiceLinea++;
+    } else {
+      lineas.push('');
+    }
+  }
+  return lineas.join('\n');
+}
+
+/**
+ * Convierte el formato de líneas visibles del backend al formato esperado por el frontend
+ * @param {number[]} visibleLines - Array de números de línea que son visibles
+ * @param {string} targetCode - Código completo del ejercicio
+ * @returns {Array} Array de objetos con numero y contenido
+ */
+function convertirFormatoLineasVisibles(visibleLines, targetCode) {
+  if (!visibleLines || !targetCode) return [];
+  const lineasCodigo = targetCode.split('\n');
+  console.log('Líneas de código totales:', lineasCodigo);
+  let lineasAMostrar = [...visibleLines];
+  if (lineasAMostrar.length === 0 || !lineasAMostrar.includes(0)) {
+    lineasAMostrar.unshift(0);
+  }
+  console.log('Líneas a mostrar tras verificación:', lineasAMostrar);
+  return lineasAMostrar.map(numeroLinea => {
+    const resultado = {
+      numero: numeroLinea + 1,
+      contenido: lineasCodigo[numeroLinea] || ''
+    };
+    console.log(`Línea ${numeroLinea} => ${resultado.numero}: '${resultado.contenido}'`);
+    return resultado;
   });
+}
+
+/**
+ * Obtiene los datos de un ejercicio por su ID
+ * @param {string} exerciseId - ID del ejercicio a obtener
+ * @returns {Promise<Object>} Promesa que se resuelve con los datos del ejercicio
+ */
+export async function getExerciseById(exerciseId) {
+  try {
+    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/`, {
+      headers: defaultContentHeaders,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener el ejercicio: ${response.statusText}`);
+    }
+    const datosRecibidos = await response.json();
+    console.log('Datos recibidos del API:', datosRecibidos);
+    const ejercicioBackend = Array.isArray(datosRecibidos) ? datosRecibidos[0] : datosRecibidos;
+    console.log('Ejercicio seleccionado:', ejercicioBackend);
+    if (!ejercicioBackend || !ejercicioBackend.target_code) {
+      throw new Error('Datos de ejercicio inválidos o incompletos');
+    }
+    const lineasVisiblesTransformadas = convertirFormatoLineasVisibles(
+      ejercicioBackend.visible_lines || [],
+      ejercicioBackend.target_code
+    );
+    console.log('Líneas visibles transformadas:', lineasVisiblesTransformadas);
+    const ejercicio = {
+      id_ejercicio: ejercicioBackend.exercise_id?.toString() || '0',
+      titulo: ejercicioBackend.title || 'Sin título',
+      enunciado: ejercicioBackend.prompt || 'Sin enunciado',
+      lineas_visibles: lineasVisiblesTransformadas,
+      codigo_objetivo: ejercicioBackend.target_code,
+      comentario_docente: ejercicioBackend.instructor_comment || ''
+    };
+    const codigoBase = generarCodigoBase(ejercicio.lineas_visibles);
+    return {
+      ...ejercicio,
+      codigo_base: codigoBase
+    };
+  } catch (error) {
+    console.error('Error al obtener datos del ejercicio:', error);
+    const ejercicioEjemplo = {
+      id_ejercicio: "001",
+      titulo: "Suma de dos números (ejemplo fallback)",
+      enunciado: "Define una función llamada `sumar` que reciba dos parámetros y devuelva la suma.",
+      lineas_visibles: [
+        { numero: 2, contenido: "    res = a + b" },
+        { numero: 7, contenido: "}" }
+      ]
+    };
+    
+    const codigoBase = generarCodigoBase(ejercicioEjemplo.lineas_visibles);
+    
+    return {
+      ...ejercicioEjemplo,
+      codigo_base: codigoBase
+    };
+  }
 }
