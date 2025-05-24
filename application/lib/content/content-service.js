@@ -329,21 +329,6 @@ export async function getExerciseById(exerciseId) {
     };
   } catch (error) {
     console.error('Error al obtener datos del ejercicio:', error);
-    const ejercicioEjemplo = {
-      id_ejercicio: "001",
-      titulo: "Suma de dos números (ejemplo fallback)",
-      enunciado: "Define una función llamada `sumar` que reciba dos parámetros y devuelva la suma.",
-      lineas_visibles: [
-        { numero: 2, contenido: "    res = a + b" },
-        { numero: 7, contenido: "}" }
-      ]
-    };
-    
-    const codigoBase = generarCodigoBase(ejercicioEjemplo.lineas_visibles);
-    
-    return {
-      ...ejercicioEjemplo,
-      codigo_base: codigoBase
-    };
+    throw error;
   }
 }
