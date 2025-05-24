@@ -1,21 +1,21 @@
 "use client";
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useState } from "react";
 
 const PYTHON_SYNTAX = {
   keywords: {
     pattern: /\b(False|None|True|and|as|assert|async|await|break|class|continue|def|del|elif|else|except|finally|for|from|global|if|import|in|is|lambda|nonlocal|not|or|pass|raise|return|try|while|with|yield)\b/g,
     color: 'text-[#FF79C6]',
-    priority: 2
+    priority: 3
   },
   builtins: {
     pattern: /\b(abs|all|any|bin|bool|bytearray|bytes|callable|chr|classmethod|compile|complex|delattr|dict|dir|divmod|enumerate|eval|exec|filter|float|format|frozenset|getattr|globals|hasattr|hash|help|hex|id|input|int|isinstance|issubclass|iter|len|list|locals|map|max|memoryview|min|next|object|oct|open|ord|pow|print|property|range|repr|reversed|round|set|setattr|slice|sorted|staticmethod|str|sum|super|tuple|type|vars|zip)\b/g,
     color: 'text-[#8BE9FD]',
-    priority: 3
+    priority: 4
   },
   strings: {
     pattern: /("""[\s\S]*?"""|'''[\s\S]*?'''|"[^"\\]*(?:\\.[^"\\]*)*"|'[^'\\]*(?:\\.[^'\\]*)*')/g,
     color: 'text-[#F1FA8C]',
-    priority: 1
+    priority: 2
   },
   numbers: {
     pattern: /\b(\d+(\.\d+)?)\b/g,
@@ -25,7 +25,7 @@ const PYTHON_SYNTAX = {
   comments: {
     pattern: /#.*/g,
     color: 'text-[#6272A4]',
-    priority: 8
+    priority: 1
   },
   decorators: {
     pattern: /@[\w\d_.]+/g,
@@ -34,7 +34,7 @@ const PYTHON_SYNTAX = {
   },
   operators: {
     pattern: /[+\-*/%=<>!&|^~]+/g,
-    color: 'text-[#FF79C6]',
+    color: 'text-yellow-500',
     priority: 5
   }
 };
@@ -47,100 +47,98 @@ export default function CodeEditor({
   const textareaRef = useRef(null);
   const linesRef = useRef(null);
   const highlightRef = useRef(null);
+  const [highlightedCode, setHighlightedCode] = useState('');
 
   const highlightCode = (code) => {
     let matches = [];
-    Object.entries(PYTHON_SYNTAX).forEach(([type, { pattern, color }], priority) => {
-      pattern.lastIndex = 0;
+
+    Object.entries(PYTHON_SYNTAX).forEach(([type, { pattern, color, priority }]) => {
+      const regex = new RegExp(pattern.source, pattern.flags);
+      console.log(regex.lastIndex)
       let match;
-      while ((match = pattern.exec(code)) !== null) {
-        matches.push({ 
+      while ((match = regex.exec(code)) !== null) {
+        if (match.index === regex.lastIndex) {
+          regex.lastIndex++;
+        }
+
+        matches.push({
           start: match.index,
           end: match.index + match[0].length,
           color: color,
           text: match[0],
           priority,
-         });
+        });
       }
     });
+
     matches.sort((a, b) => {
       if (a.start !== b.start) {
         return a.start - b.start;
       }
       return a.priority - b.priority;
     });
+
+    // Filter overlapping matches based on priority
+    matches = matches.filter((match, index) => {
+      for (let i = 0; i < index; i++) {
+        const prevMatch = matches[i];
+        if (match.start < prevMatch.end && match.start >= prevMatch.start) {
+          return false;
+        }
+      }
+      return true;
+    });
+
     let result = [];
     let lastEnd = 0;
-    for( let i=0; i<matches.length; i++) {
-      const {start, end, color, text} = matches[i];
+    for (let i = 0; i < matches.length; i++) {
+      const { start, end, color, text } = matches[i];
       if (start > lastEnd) {
         result.push(
-          <span key={result.length} className="text-white">
+          <span key={`text-${lastEnd}-${start}`} className="text-white">
             {code.slice(lastEnd, start)}
           </span>
         );
       }
       result.push(
-        <span key={result.length} className={color}>
+        <span key={`highlight-${start}-${end}`} className={color}>
           {text}
         </span>
       );
       lastEnd = end;
     }
+
     if (lastEnd < code.length) {
       result.push(
-        <span key={result.length} className="text-white">
+        <span key={`text-${lastEnd}-${code.length}`} className="text-white">
           {code.slice(lastEnd)}
         </span>
       );
     }
+
     return result;
-    // let highlighted = code;
-    // let spans = [];
-    // let lastIndex = 0;
-
-    // const processMatch = (match, color, index) => {
-    //   if (index > lastIndex) {
-    //     spans.push(<span key={spans.length} className="text-white">{highlighted.slice(lastIndex, index)}</span>);
-    //   }
-    //   spans.push(<span key={spans.length} className={color}>{match}</span>);
-    //   lastIndex = index + match.length;
-    // };
-
-    // Object.entries(PYTHON_SYNTAX).forEach(([type, { pattern, color }]) => {
-    //   pattern.lastIndex = 0; // Reset el índice de regex
-    //   let match;
-    //   while ((match = pattern.exec(code)) !== null) {
-    //     processMatch(match[0], color, match.index);
-    //   }
-    // });
-
-    // if (lastIndex < code.length) {
-    //   spans.push(<span key={spans.length} className="text-white">{highlighted.slice(lastIndex)}</span>);
-    // }
-
-    // return spans;
   };
 
-  const highlightedCode = useMemo(() => highlightCode(codeInput), [codeInput]);
+  useEffect(() => {
+    setHighlightedCode(highlightCode(codeInput));
+  }, [codeInput]);
 
   useEffect(() => {
     const syncScroll = () => {
       if (!textareaRef.current || !highlightRef.current) return;
       highlightRef.current.scrollTop = textareaRef.current.scrollTop;
       highlightRef.current.scrollLeft = textareaRef.current.scrollLeft;
-      
+
       if (linesRef.current) {
         linesRef.current.scrollTop = textareaRef.current.scrollTop;
       }
     };
 
-    
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.addEventListener('scroll', syncScroll);
       textarea.addEventListener('input', syncScroll);
-      
+
       return () => {
         textarea.removeEventListener('scroll', syncScroll);
         textarea.removeEventListener('input', syncScroll);
@@ -167,8 +165,8 @@ export default function CodeEditor({
   }
 
   return (
-    <div className="relative bg-zinc-800 border border-gray-300 rounded-lg p-4 font-mono text-sm leading-relaxed">
-      <div className="flex h-64 overflow-hidden rounded-lg">
+    <div className="relative bg-zinc-800 border border-gray-300 rounded-lg p-4 font-mono text-sm leading-relaxed h-full">
+      <div className="flex h-full overflow-hidden rounded-lg min-h-0">
         <div
           ref={linesRef}
           className="flex flex-col items-end text-indigo-400 p-2 select-none overflow-hidden border-r border-gray-600"
@@ -179,7 +177,7 @@ export default function CodeEditor({
         </div>
 
         <div className="flex-1 relative code-editor-main">
-          <div 
+          <div
             ref={highlightRef}
             className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-auto px-4 py-2 whitespace-pre"
             aria-hidden="true"

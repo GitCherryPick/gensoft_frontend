@@ -5,7 +5,7 @@ import { getAllTaskCodes } from "@/lib/tasks-teacher/task-service";
 import { useEffect, useState } from "react";
 
 export default function CodeTask({
-  task_id = 4
+  task_id = 5
 }) {
   const [task, setTask] = useState({
     title: "",
@@ -14,7 +14,6 @@ export default function CodeTask({
 
   useEffect(()=>{
     getAllTaskCodes().then((data)=>{
-      console.log(data);
       setTask(data.find((task) => task.id === task_id));
     });
   }, []);

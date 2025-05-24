@@ -6,6 +6,7 @@ import OneDarkPro from '../../../public/theme/onedarkpro.json';
 import confetti from "canvas-confetti";
 import TestCaseResult from '../../../components/TestCaseResult'
 import { SANDBOX_API_BASE_URL, defaultContentHeaders } from '../../../lib/sandbox/sandbox-api-config';
+import CodeEditor from "@/components/core/CodeEditor";
 
 const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
@@ -20,35 +21,12 @@ export default function EditorPython() {
 
   const [pestanaActiva, setPestanaActiva] = useState('enunciado');
 
-  // 👇 Nuevos estados para el título y enunciado
   const [taskTitle, setTaskTitle] = useState("Cargando...");
   const [taskEnunciado, setTaskEnunciado] = useState("Cargando...");
 
-  const handleEditorDidMount = (monaco) => {
-    monaco.editor.defineTheme('OneDarkPro', {
-      base: 'vs-dark',
-      inherit: true,
-      ...OneDarkPro
-    });
-  };
-
+ 
   useEffect(() => {
     setIsCliente(true);
-
-    const cargarPyodide = async () => {
-      if (!window.loadPyodide) {
-        const script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js";
-        script.onload = async () => {
-          const pyodide = await window.loadPyodide();
-          setPyodide(pyodide);
-        };
-        document.body.appendChild(script);
-      } else {
-        const pyodide = await window.loadPyodide();
-        setPyodide(pyodide);
-      }
-    };
 
     const fetchTask = async () => {
       try {
@@ -61,8 +39,6 @@ export default function EditorPython() {
         setTaskEnunciado("No se pudo obtener el enunciado. Verifica que el servidor esté corriendo.");
       }
     };
-
-    cargarPyodide();
     fetchTask();
   }, []);
 
@@ -101,8 +77,6 @@ export default function EditorPython() {
           taskId: 1,
         }),
       });
-
-      console.log("code  ", codigo)
 
       setPestanaActiva("testcases")
       
@@ -170,7 +144,7 @@ export default function EditorPython() {
       </div>
 
       <div className="w-full max-w-8xl h-[600px] grid grid-cols-3 gap-x-4">
-        <div className="h-full bg-white text-black rounded-lg shadow p-4 overflow-auto bg-[#17181c] border border-[#52585a]">
+        <div className="h-full text-black rounded-lg shadow p-4 overflow-auto bg-[#17181c] border border-[#52585a]">
           <div className="flex border-b mb-4">
             <button
               onClick={() => setPestanaActiva('enunciado')}
@@ -213,16 +187,10 @@ export default function EditorPython() {
 
         <div className="h-full col-span-2 grid grid-cols-[6fr_3fr] gap-0">
           <div className="h-full bg-gray-900 rounded-l-lg overflow-hidden">
-            <Editor
-              height="100%"
-              defaultLanguage="python"
-              value={codigo}
-              theme="OneDarkPro"
-              beforeMount={handleEditorDidMount}
-              onChange={(valor) => {
-                if (valor !== undefined) setCodigo(valor);
-              }}
-            />
+            <CodeEditor
+              codeInput={codigo}
+              setCodeInput={setCodigo}
+            >Hola</CodeEditor>
           </div>
 
           <div className="h-full grid grid-rows-[1fr_auto] bg-black text-white rounded-r-lg overflow-hidden">
