@@ -21,12 +21,20 @@ export default function ReplicaPage() {
   const handleHelpRequest = async () => {
     console.log('Solicitando ayuda...');
     try {
+      if (!exercise) {
+        throw new Error('No hay datos del ejercicio disponibles');
+      }
+      
       const resultado = await evaluateStudentSolution({
         id_estudiante: '2003',
-        id_ejercicio: '2003',
+        id_ejercicio: exercise.id_ejercicio,
         codigo_fuente: code,
-        tiempo_redaccion: 10
+        tiempo_redaccion: 10,
+        consignas_docente: exercise.enunciado || '',
+        codigo_objetivo: exercise.codigo_objetivo || '',
+        contexto_ejercicio: exercise.comentario_docente || ''
       });
+      
       console.log('Resultado de la evaluación:', resultado);
       setEvaluationResult(resultado);
       return resultado;
