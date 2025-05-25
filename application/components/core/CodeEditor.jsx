@@ -42,6 +42,10 @@ const PYTHON_SYNTAX = {
 export default function CodeEditor({
   codeInput,
   setCodeInput,
+  linesIssues = {
+    line: 0,
+    color: ""
+  },
   children,
 }) {
   const textareaRef = useRef(null);
@@ -54,7 +58,6 @@ export default function CodeEditor({
 
     Object.entries(PYTHON_SYNTAX).forEach(([type, { pattern, color, priority }]) => {
       const regex = new RegExp(pattern.source, pattern.flags);
-      console.log(regex.lastIndex)
       let match;
       while ((match = regex.exec(code)) !== null) {
         if (match.index === regex.lastIndex) {
@@ -169,24 +172,63 @@ export default function CodeEditor({
       <div className="flex h-full overflow-hidden rounded-lg min-h-0">
         <div
           ref={linesRef}
-          className="flex flex-col items-end text-indigo-400 p-2 select-none overflow-hidden border-r border-gray-600"
+          className="flex flex-col items-end text-indigo-400 px-2 select-none overflow-hidden border-r border-gray-600"
         >
           {Array.from({ length: lines || 1 }, (_, i) => (
-            <div key={i} className="">{i + 1}</div>
+            <div 
+              key={i} 
+              className={`${linesIssues.line === i + 1 ? `${linesIssues.color} bg-opacity-35` : ''}h-[24px] flex items-center`}
+              style={{
+                height: '1.6rem',
+                minHeight: '1.6rem',
+                maxHeight: '1.6rem',
+                lineHeight: '1.6rem',
+                boxSizing: 'content-box'
+              }}
+            >
+              {i + 1}
+            </div>
           ))}
         </div>
 
         <div className="flex-1 relative code-editor-main">
-          <div
+          {linesIssues.line > 0 && (
+            <div 
+              className={`absolute w-full ${linesIssues.color} bg-opacity-35`} 
+              style={{
+                top: `${(linesIssues.line - 1) * 1.6}rem`,
+                height: '1.6rem',
+                minHeight: '1.6rem',
+                maxHeight: '1.6rem',
+                lineHeight: '1.6rem',
+              }}
+            />
+          )}
+          <div 
             ref={highlightRef}
-            className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-auto px-4 py-2 whitespace-pre"
+            className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-auto px-4 whitespace-pre leading-[24px]"
+            style={{ 
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              lineHeight: '1.6rem',
+              whiteSpace: 'pre',
+              wordBreak: 'break-all',
+              letterSpacing: 'normal',
+              tabSize: 2,
+              position: 'relative'
+            }}
             aria-hidden="true"
           >
             {highlightedCode}
           </div>
           <textarea
             ref={textareaRef}
-            className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent caret-white px-4 py-2 resize-none focus:outline-none whitespace-pre overflow-auto selection:bg-indigo-500/30"
+            className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent caret-white px-4 resize-none focus:outline-none whitespace-pre overflow-auto selection:bg-indigo-500/30 leading-[24px]"
+            style={{ 
+              lineHeight: '1.6rem',
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              letterSpacing: 'normal',
+              tabSize: 2
+            }}
             value={codeInput}
             onChange={(e) => setCodeInput(e.target.value)}
             onKeyDown={handleIndentation}

@@ -1,33 +1,26 @@
 'use client';
-
-import dynamic from 'next/dynamic';
-import React, { useEffect, useState } from "react";
-import OneDarkPro from '../../../public/theme/onedarkpro.json';
+import React, { useEffect, useState, useRef } from "react";
 import confetti from "canvas-confetti";
 import TestCaseResult from '../../../components/TestCaseResult'
 import { SANDBOX_API_BASE_URL, defaultContentHeaders } from '../../../lib/sandbox/sandbox-api-config';
-import CodeEditor from "@/components/core/CodeEditor";
-
-const Editor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
+import Sandbox from "./labs/Sandbox";
 
 export default function EditorPython() {
   const [isCliente, setIsCliente] = useState(false);
-  const [codigo, setCodigo] = useState("# Escribe tu código en Python aquí...");
+  const [testCases, setTestCases] = useState([]);
   const [salida, setSalida] = useState("");
   const [entrada, setEntrada] = useState("");
-  const [archivoGuardado, setArchivoGuardado] = useState("");
-  const [pyodide, setPyodide] = useState(null);
-  const [testCases, setTestCases] = useState([]);
+  const [codigo, setCodigo] = useState("# Escribe tu código en Python aquí...");
 
+  const sandboxRef = useRef();
   const [pestanaActiva, setPestanaActiva] = useState('enunciado');
 
   const [taskTitle, setTaskTitle] = useState("Cargando...");
   const [taskEnunciado, setTaskEnunciado] = useState("Cargando...");
 
- 
+
   useEffect(() => {
     setIsCliente(true);
-
     const fetchTask = async () => {
       try {
         const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks/1`);
@@ -44,26 +37,6 @@ export default function EditorPython() {
 
   if (!isCliente) return null;
 
-  const ejecutarCodigo = async () => {
-    await fetch(`${SANDBOX_API_BASE_URL}/execute`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        code: codigo,
-        call: entrada,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setSalida(data.output || data.error);
-      })
-      .catch((error) => {
-        setSalida("Error al ejecutar el código: " + error.message);
-      });
-  };
-
   const enviarCodigo = async () => {
     try {
       const res = await fetch("http://localhost:8010/enviar", {
@@ -79,44 +52,44 @@ export default function EditorPython() {
       });
 
       setPestanaActiva("testcases")
-      
+
       const data = await res.json();
       console.log("Respuesta del servidor:", data);
       setSalida(data.output || "Código enviado correctamente.");
       setTestCases(data.testCases || []);
-  
+
       if (data.generalVeredict === "Accepted") {
         const duration = 2 * 1000;
-  const animationEnd = Date.now() + duration;
-  const defaults = {
-    startVelocity: 30,
-    spread: 360,
-    ticks: 60,
-    zIndex: 1000,
-  };
+        const animationEnd = Date.now() + duration;
+        const defaults = {
+          startVelocity: 30,
+          spread: 360,
+          ticks: 60,
+          zIndex: 1000,
+        };
 
-  const interval = setInterval(function () {
-    const timeLeft = animationEnd - Date.now();
+        const interval = setInterval(function () {
+          const timeLeft = animationEnd - Date.now();
 
-    if (timeLeft <= 0) {
-      return clearInterval(interval);
-    }
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
 
-    const particleCount = 100 * (timeLeft / duration);
+          const particleCount = 100 * (timeLeft / duration);
 
-    confetti(Object.assign({}, defaults, {
-      particleCount,
-      origin: { x: Math.random() * 0.2, y: Math.random() * 0.3 },
-      colors: ['#00ffcc', '#33cc33', '#99ff66', '#ffffff'],
-    }));
+          confetti(Object.assign({}, defaults, {
+            particleCount,
+            origin: { x: Math.random() * 0.2, y: Math.random() * 0.3 },
+            colors: ['#00ffcc', '#33cc33', '#99ff66', '#ffffff'],
+          }));
 
-    confetti(Object.assign({}, defaults, {
-        particleCount,
-        origin: { x: 1 - Math.random() * 0.2, y: Math.random() * 0.3 },
-        colors: ['#00ffcc', '#33cc33', '#99ff66', '#ffffff'],
-      }));
-    }, 200);
-        
+          confetti(Object.assign({}, defaults, {
+            particleCount,
+            origin: { x: 1 - Math.random() * 0.2, y: Math.random() * 0.3 },
+            colors: ['#00ffcc', '#33cc33', '#99ff66', '#ffffff'],
+          }));
+        }, 200);
+
       }
     } catch (error) {
       console.error("Error al enviar:", error);
@@ -125,18 +98,19 @@ export default function EditorPython() {
   };
 
   const guardarArchivo = () => {
-    const blob = new Blob([codigo], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "codigo.py";
-    a.click();
-    URL.revokeObjectURL(url);
-    setArchivoGuardado("Archivo guardado como codigo.py");
-  };
+    if(sandboxRef.current) {
+      sandboxRef.current.saveFile();
+    }
+  }
+
+  const ejecutarCodigo = () => {
+    if(sandboxRef.current) {
+      sandboxRef.current.executeCode();
+    }
+  }
 
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full p-4 space-y-4">
+    <div className="flex flex-col items-center justify-center h-full w-full p-4 space-y-4 overflow-auto">
       <div className="space-x-4">
         <button onClick={guardarArchivo} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
         <button onClick={ejecutarCodigo} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Ejecutar</button>
@@ -184,35 +158,15 @@ export default function EditorPython() {
             </div>
           )}
         </div>
-
-        <div className="h-full col-span-2 grid grid-cols-[6fr_3fr] gap-0">
-          <div className="h-full bg-gray-900 rounded-l-lg overflow-hidden">
-            <CodeEditor
-              codeInput={codigo}
-              setCodeInput={setCodigo}
-            >Hola</CodeEditor>
-          </div>
-
-          <div className="h-full grid grid-rows-[1fr_auto] bg-black text-white rounded-r-lg overflow-hidden">
-            <div className="p-4 overflow-auto text-sm border-b border-gray-700">
-              <strong>Salida:</strong>
-              <pre>{salida}</pre>
-              {archivoGuardado && (
-                <div className="text-green-400 mt-2">{archivoGuardado}</div>
-              )}
-            </div>
-            <div className="p-4 bg-gray-900 border-t border-gray-700">
-              <label htmlFor="entrada" className="block font-bold mb-1">Entrada:</label>
-              <textarea
-                id="entrada"
-                className="w-full h-20 p-2 border border-gray-600 bg-transparent rounded-md focus:outline-none focus:ring-1 focus:ring-cta-1 focus:border-cta-1 resize-none text-white"
-                placeholder="Escribe aquí tus valores de entrada..."
-                value={entrada}
-                onChange={(e) => setEntrada(e.target.value)}
-              />
-            </div>
-          </div>
-        </div>
+        <Sandbox 
+          codigo={codigo} 
+          setCodigo={setCodigo} 
+          ref={sandboxRef} 
+          salida={salida}
+          setSalida={setSalida}
+          entrada={entrada}
+          setEntrada={setEntrada}
+        />
       </div>
     </div>
   );

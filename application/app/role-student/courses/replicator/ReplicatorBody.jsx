@@ -26,7 +26,8 @@ export default function ReplicatorBody({ task_id }) {
         ]);
         
         setReferenceCode(referenceData.expected_code);
-        setStudentCode(templateData.template_code);
+        console.log(getTaskTemplateCode(task_id), "jb")
+        setStudentCode(referenceData.template_code);
       } catch (error) {
         console.error("Error fetching:", error);
         setMoodAlert({

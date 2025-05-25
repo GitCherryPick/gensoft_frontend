@@ -1,14 +1,14 @@
 import { TASK_API_BASE_URL, defaultTaskHeaders } from "./task-api-config";
 
 export async function getAllTaskCodes() {
-  const response = await fetch(`${TASK_API_BASE_URL}/taskcode`, {
+  const response = await fetch(`${TASK_API_BASE_URL}/sandbox/taskcode/?skip=0&limit=100`, {
     headers: defaultTaskHeaders,
   });
   return response.json();
 }
 
 export async function createTask(taskData) {
-  const response = await fetch(`${TASK_API_BASE_URL}/taskcode`, {
+  const response = await fetch(`${TASK_API_BASE_URL}/sandbox/taskcode`, {
     method: 'POST',
     headers: defaultTaskHeaders,
     body: JSON.stringify(taskData),
@@ -17,7 +17,7 @@ export async function createTask(taskData) {
 }
 
 export async function updateTask(taskId, taskData) {
-  const response = await fetch(`${TASK_API_BASE_URL}/taskcode/${taskId}`, {
+  const response = await fetch(`${TASK_API_BASE_URL}/sandbox/taskcode/${taskId}`, {
     method: 'PUT',
     headers: defaultTaskHeaders,
     body: JSON.stringify(taskData),
@@ -26,7 +26,7 @@ export async function updateTask(taskId, taskData) {
 }
 
 export async function deleteTask(taskId) {
-  const response = await fetch(`${TASK_API_BASE_URL}/taskcode/${taskId}`, {
+  const response = await fetch(`${TASK_API_BASE_URL}/sandbox/taskcode/${taskId}`, {
     method: 'DELETE',
     headers: defaultTaskHeaders,
   });
@@ -34,21 +34,21 @@ export async function deleteTask(taskId) {
 }   
 
 export async function getTaskReferenceCode(taskId) {
-  const response = await fetch(`${TASK_API_BASE_URL}/taskcode/${taskId}`, {
+  const response = await fetch(`${TASK_API_BASE_URL}/sandbox/taskcode/${taskId}`, {
     headers: defaultTaskHeaders,
   });
   return response.json();
 }
 
 export async function getTaskTemplateCode(taskId) {
-  const response = await fetch(`${TASK_API_BASE_URL}/taskcode/${taskId}/template`, {
+  const response = await fetch(`${TASK_API_BASE_URL}/sandbox/taskcode/${taskId}/template`, {
     headers: defaultTaskHeaders,
   });
   return response.json();
 }
 
 export async function compareTaskCode(taskId, studentCode) {
-  const response = await fetch(`${TASK_API_BASE_URL}/codereplicated`, {
+  const response = await fetch(`${TASK_API_BASE_URL}/sandbox/codereplicated`, {
     method: 'POST',
     headers: defaultTaskHeaders,
     body: JSON.stringify({
