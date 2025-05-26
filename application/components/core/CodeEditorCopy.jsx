@@ -35,7 +35,7 @@ const PYTHON_SYNTAX = {
   },
   operators: {
     pattern: /[+\-*/%=<>!&|^~]+/g,
-    color: 'text-[#FF79C6]',
+    color: 'text-yellow-500',
     priority: 5
   }
 };
