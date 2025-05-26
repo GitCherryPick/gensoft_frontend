@@ -74,12 +74,18 @@ export default function ComponentFormLoginCard({ onBack }) {
               className="bg-transparent border-neutral-700/50 focus:border-blue-500/50"
             />
 
-            <div className="text-left mt-1">
+            <div className="flex justify-between items-center text-xs">
               <Link
                 href={ROUTES.RECOVER_PASSWORD.ROOT}
                 className="text-variant-3 text-xs hover:text-light-1 transition-colors"
               >
                 ¿Olvidaste tu contraseña?
+              </Link>
+              <Link
+                href={ROUTES.SIGNUP}
+                className="text-blue-400 hover:underline transition-colors"
+              >
+                Regístrate
               </Link>
             </div>
           </div>
