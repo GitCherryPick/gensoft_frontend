@@ -41,6 +41,20 @@ export default function EditorPython() {
 
   useEffect(() => {
     setIsCliente(true);
+    const cargarPyodide = async () => {
+      if (!window.loadPyodide) {
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js";
+        script.onload = async () => {
+          const pyodide = await window.loadPyodide();
+          setPyodide(pyodide);
+        };
+        document.body.appendChild(script);
+      } else {
+        const pyodide = await window.loadPyodide();
+        setPyodide(pyodide);
+      }
+    };
     const fetchTask = async () => {
       try {
         const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks/1`);
@@ -149,10 +163,7 @@ export default function EditorPython() {
             <span className="font-bold text-green-700"> {score} / {nuumberCases}</span>
           </div>
         </div>
-
-
-
-
+      </div>
       <div className="w-full max-w-8xl h-[600px] grid grid-cols-3 gap-x-4">
         <div className="h-full text-black rounded-lg shadow p-4 overflow-auto bg-[#17181c] border border-[#52585a]">
           <div className="flex border-b mb-4">
