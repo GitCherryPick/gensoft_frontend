@@ -17,9 +17,10 @@ export default function EditorPython() {
   const [archivoGuardado, setArchivoGuardado] = useState("");
   const [pyodide, setPyodide] = useState(null);
   const [testCases, setTestCases] = useState([]);
-
+  const [score, setScore] = useState(0);
   const [pestanaActiva, setPestanaActiva] = useState('enunciado');
-
+  const [nuumberCases, setNumberCases] = useState("--");
+  
   // 👇 Nuevos estados para el título y enunciado
   const [taskTitle, setTaskTitle] = useState("Cargando...");
   const [taskEnunciado, setTaskEnunciado] = useState("Cargando...");
@@ -31,6 +32,22 @@ export default function EditorPython() {
       ...OneDarkPro
     });
   };
+
+  const fetchScore = async () => {
+    try {
+      const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks/getScore?task_id=${1}&user_id=${1}`, {
+        method: "GET"
+      });
+      const data = await response.json();
+      console.log("response ", data);
+      if(data.score > score){
+        setScore(data.score);
+      }
+      setNumberCases(data.score);
+    } catch(error) {
+
+    }
+  }
 
   useEffect(() => {
     setIsCliente(true);
@@ -62,8 +79,11 @@ export default function EditorPython() {
       }
     };
 
+    
+    console.log("score  ", score);
     cargarPyodide();
     fetchTask();
+    fetchScore();
   }, []);
 
   if (!isCliente) return null;
@@ -96,7 +116,7 @@ export default function EditorPython() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: 1,
+          UserId: 1,
           code: codigo,
           taskId: 1,
         }),
@@ -110,7 +130,7 @@ export default function EditorPython() {
       console.log("Respuesta del servidor:", data);
       setSalida(data.output || "Código enviado correctamente.");
       setTestCases(data.testCases || []);
-  
+      fetchScore();
       if (data.generalVeredict === "Accepted") {
         const duration = 2 * 1000;
   const animationEnd = Date.now() + duration;
@@ -163,11 +183,24 @@ export default function EditorPython() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full p-4 space-y-4">
-      <div className="space-x-4">
-        <button onClick={guardarArchivo} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
-        <button onClick={ejecutarCodigo} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Ejecutar</button>
-        <button onClick={enviarCodigo} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Enviar</button>
+      <div className="relative w-full flex items-center justify-center px-4 m-4">
+        {/* Botones centrados al medio */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 flex space-x-4">
+          <button onClick={guardarArchivo} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
+          <button onClick={ejecutarCodigo} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Ejecutar</button>
+          <button onClick={enviarCodigo} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Enviar</button>
+        </div>
+
+        {/* Puntaje a la derecha */}
+        <div className="absolute right-[5%] w-[180px] bg-gray-100 px-4 py-2 rounded border border-gray-300 shadow">
+          <div className="flex justify-center items-center"> {/* Contenedor flex centrado */}
+            <span className="text-gray-700 font-medium">Puntaje: </span>
+            <span className="font-bold text-green-700"> {score} / {nuumberCases}</span>
+          </div>
+        </div>
       </div>
+
+
 
       <div className="w-full max-w-8xl h-[600px] grid grid-cols-3 gap-x-4">
         <div className="h-full bg-white text-black rounded-lg shadow p-4 overflow-auto bg-[#17181c] border border-[#52585a]">
