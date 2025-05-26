@@ -42,7 +42,7 @@ const Sandbox = forwardRef(({
   };
 
   useEffect(() => {
-    if (linesAux.line !== 0) {
+    if (linesAux.line !== 0 && linesIssues.line == 0 || linesIssues.line == "") {
       updateLinesIssues(linesAux);
     }
   }, [linesAux]);
