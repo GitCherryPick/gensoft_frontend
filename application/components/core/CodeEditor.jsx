@@ -177,7 +177,7 @@ export default function CodeEditor({
           {Array.from({ length: lines || 1 }, (_, i) => (
             <div 
               key={i} 
-              className={`${linesIssues.line === i + 1 ? `${linesIssues.color} bg-opacity-35` : ''}h-[24px] flex items-center`}
+              className={`${linesIssues.line === i + 1 ? `${linesIssues.color} bg-opacity-5` : ''}h-[24px] flex items-center`}
               style={{
                 height: '1.6rem',
                 minHeight: '1.6rem',

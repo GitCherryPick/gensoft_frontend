@@ -166,6 +166,7 @@ export default function EditorPython() {
           setSalida={setSalida}
           entrada={entrada}
           setEntrada={setEntrada}
+          taskEnunciado={taskEnunciado}
         />
       </div>
     </div>

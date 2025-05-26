@@ -1,7 +1,8 @@
-import { useState, useImperativeHandle, forwardRef } from "react";
+import { useState, useImperativeHandle, forwardRef, useEffect } from "react";
 import CodeEditor from "@/components/core/CodeEditor"
 import PopOverError from "./PopOverError";
 import { SANDBOX_API_BASE_URL } from "@/lib/sandbox/sandbox-api-config";
+import { getWarningsFromAI } from "@/lib/sandbox/sandbox-service";
 
 const Sandbox = forwardRef(({
   codigo,
@@ -10,6 +11,7 @@ const Sandbox = forwardRef(({
   setEntrada,
   salida,
   setSalida,
+  taskEnunciado,
   children
 }, ref) => {
   const [linesIssues, setLinesIssues] = useState({
@@ -17,50 +19,98 @@ const Sandbox = forwardRef(({
     color: ""
   });
   const [archivoGuardado, setArchivoGuardado] = useState("");
+  const [warnings, setWarnings] = useState([]);
+  const [linesAux, setLinesAux] = useState({
+    line: 0,
+    error: ""
+  });
+  const errorColors = {
+    'SyntaxError': 'bg-green-500',
+    'IndentationError': 'bg-pink-500',
+    'RuntimeError': 'bg-red-500',
+    'TimeOut': 'bg-red-500',
+    'TypeError': 'bg-cyan-500',
+    'ValueError': 'bg-purple-500',
+    'IndexError': 'bg-orange-500',
+    'AttributeError': 'bg-rose-500',
+    'KeyError': 'bg-lime-500',
+    'ZeroDivisionError': 'bg-indigo-500',
+    'ImportError': 'bg-teal-500',
+    'UnusedVariable': 'bg-fuchsia-500',
+    'NameError': 'bg-yellow-500',
+    'UnboundLocalError': 'bg-yellow-500'
+  };
+
+  useEffect(() => {
+    if (linesAux.line !== 0) {
+      updateLinesIssues(linesAux);
+    }
+  }, [linesAux]);
+
+  const updateLinesIssues = (issueData) => {
+
+    if (!issueData || issueData.line === 0) {
+      setLinesIssues({ line: 0, color: "" })
+    }
+    if (issueData.error) {
+      const errorType = issueData.error.split(':')[0];
+      setLinesIssues({
+        line: issueData.line,
+        color: errorColors[errorType] || ''
+      });
+    }
+  }
+
+  const getWarnings = async (execData) => {
+    try {
+      const codeData = {
+        codigo_estudiante: codigo,
+        enunciado: taskEnunciado,
+        llamada_funcion: entrada,
+        resultado_obtenido: execData.output || execData.error,
+      }
+      const response = await getWarningsFromAI(codeData);
+      setWarnings(response.warnings || []);
+
+      const primerError = response.errores;
+      if (primerError?.line !== 0) {
+        setLinesAux({
+          line: response.errores.line,
+          error: response.errores.error
+        });
+        //updateLinesIssues(primerError);
+      }
+    } catch (error) {
+      console.error("Error en getWarnings:", error);
+    }
+  }
 
   const executeCode = async () => {
-    setLinesIssues({
-      line: 0,
-      color:''
-    });
-    await fetch(`${SANDBOX_API_BASE_URL}/sandbox/execute`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        code: codigo,
-        call: entrada,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setSalida(data.output || data.error);
-        const errorColors = {
-          'SyntaxError': 'bg-green-500',
-          'RuntimeError': 'bg-red-500', 
-          'TypeError': 'bg-cyan-500',
-          'ValueError': 'bg-purple-500',
-          'IndexError': 'bg-orange-500',
-          'AttributeError': 'bg-rose-500',
-          'KeyError': 'bg-lime-500',
-          'ZeroDivisionError': 'bg-indigo-500',
-          'ImportError': 'bg-teal-500',
-          'UnusedVariable': 'bg-fuchsia-500',
-          'NameError': 'bg-yellow-500',
-        };
-        
-        if (data.error) {
-          const errorType = data.error.split(':')[0];
-          setLinesIssues({
-            line: data.line,
-            color: errorColors[errorType] || ''
-          });
-        }
-      })
-      .catch((error) => {
-        setSalida("Error al ejecutar el código: " + error.message);
+    try {
+      setLinesIssues({
+        line: 0,
+        color: ''
       });
+      const response = await fetch(`${SANDBOX_API_BASE_URL}/sandbox/execute`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          code: codigo,
+          call: entrada,
+        }),
+      });
+
+      const data = await response.json();
+      setSalida(data.output || data.error);
+
+      await getWarnings(data);
+      updateLinesIssues(data);
+    } catch (error) {
+      setSalida("Error al ejecutar el código: " + error.message);
+      console.error("Error en executeCode:", error);
+    }
   };
 
   function saveFile() {
@@ -74,7 +124,7 @@ const Sandbox = forwardRef(({
     setArchivoGuardado("Archivo guardado como codigo.py");
   }
 
-  useImperativeHandle(ref, ()=>({
+  useImperativeHandle(ref, () => ({
     saveFile,
     executeCode
   }))
@@ -95,6 +145,16 @@ const Sandbox = forwardRef(({
         <div className="p-4 overflow-auto text-sm border-b border-gray-700">
           <strong>Salida:</strong>
           <pre>{salida}</pre>
+          {warnings && (
+            <div className="mt-2">
+              <strong>Warnings:</strong>
+              <ul className="list-disc pl-5">
+                {warnings.map((warning, index) => (
+                  <li key={index}>{warning}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           {archivoGuardado && (
             <div className="text-green-400 mt-2">{archivoGuardado}</div>
           )}

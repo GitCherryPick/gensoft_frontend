@@ -56,6 +56,10 @@ export default function PopOverError() {
             <div className="h-[10px] w-[10px] rounded-sm outline -outline-offset-1 bg-fuchsia-500 outline-black/10 dark:outline-white/10"></div>
             <p>Variable sin utilizar</p>
           </div>
+          <div className="flex items-center gap-2">
+            <div className="h-[10px] w-[10px] rounded-sm outline -outline-offset-1 bg-pink-500 outline-black/10 dark:outline-white/10"></div>
+            <p>Indentación incorrecta</p>
+          </div>
         </div>
       </PopoverContent>
     </Popover>
