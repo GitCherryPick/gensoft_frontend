@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { getExerciseById, evaluateStudentSolution } from '@/lib/tasks-teacher/task-service';
+import { evaluateStudentSolution } from '@/lib/tasks-teacher/task-service';
+import { getExerciseById } from '@/lib/content/content-service';
 import RightPanel from './RightPanel';
 
 const CodeEditorCopy = dynamic(
@@ -20,12 +21,20 @@ export default function ReplicaPage() {
   const handleHelpRequest = async () => {
     console.log('Solicitando ayuda...');
     try {
+      if (!exercise) {
+        throw new Error('No hay datos del ejercicio disponibles');
+      }
+      
       const resultado = await evaluateStudentSolution({
         id_estudiante: '2003',
-        id_ejercicio: '2003',
+        id_ejercicio: exercise.id_ejercicio,
         codigo_fuente: code,
-        tiempo_redaccion: 10
+        tiempo_redaccion: 10,
+        consignas_docente: exercise.enunciado || '',
+        codigo_objetivo: exercise.codigo_objetivo || '',
+        contexto_ejercicio: exercise.comentario_docente || ''
       });
+      
       console.log('Resultado de la evaluación:', resultado);
       setEvaluationResult(resultado);
       return resultado;
@@ -53,27 +62,26 @@ export default function ReplicaPage() {
     fetchExercise();
   }, []);
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-red-500">{error}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="flex h-full w-full p-4 gap-4">
-      {/* Editor de código */}
       <div className="w-3/5 flex flex-col h-full p-4">
         <div 
-          className={`space-y-2 mb-4 transition-all duration-300 ease-in-out ${exercise ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}
+          className="space-y-2 mb-4"
         >
-          <h2 className="text-lg font-semibold animate-fade-in">
-            {exercise?.titulo}
-          </h2>
-          <p className="text-sm text-gray-800 dark:text-gray-200 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            {exercise?.enunciado.split('. ')[0]}
-          </p>
+          {error ? (
+            <h2 className="text-lg font-semibold text-red-600 animate-fade-in">
+              Error: {error}
+            </h2>
+          ) : (
+            <>
+              <h2 className="text-lg font-semibold animate-fade-in">
+                {exercise?.titulo}
+              </h2>
+              <p className="text-sm text-gray-800 dark:text-gray-200 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                {exercise?.enunciado?.split('. ')[0]}
+              </p>
+            </>
+          )}
         </div>
         <div className="flex-1 overflow-hidden">
           <CodeEditorCopy
@@ -83,16 +91,23 @@ export default function ReplicaPage() {
         </div>
       </div>
       
-      {/* Sección derecha */}
-      {exercise && (
-        <div className="w-2/5 border-l border-gray-200 dark:border-gray-700">
-          <RightPanel 
-            onHelpRequest={handleHelpRequest} 
-            code={code}
-            evaluationResult={evaluationResult}
-          />
-        </div>
-      )}
+      <div className="w-2/5 border-l border-gray-200 dark:border-gray-700">
+        {!loading && (
+          error ? (
+            <div className="p-4">
+              <p className="text-sm text-gray-500">No hay información adicional disponible</p>
+            </div>
+          ) : (
+            exercise && (
+              <RightPanel 
+                onHelpRequest={handleHelpRequest} 
+                code={code}
+                evaluationResult={evaluationResult}
+              />
+            )
+          )
+        )}
+      </div>
     </div>
   )
 }

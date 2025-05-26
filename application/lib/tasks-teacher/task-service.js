@@ -61,116 +61,47 @@ export async function compareTaskCode(taskId, studentCode) {
 
 // ----------------------------------
 
-/**
- * Crea una nueva tarea con los detalles proporcionados
- * @param {Object} taskData - Objeto con los datos de la tarea
- * @param {string} taskData.id_docente - ID del docente que crea la tarea
- * @param {string} taskData.titulo - Título de la tarea
- * @param {string} taskData.enunciado - Enunciado completo de la tarea
- * @param {string} taskData.codigo_objetivo - Código de ejemplo que cumple con el objetivo
- * @param {number[]} taskData.lineas_visibles - Array con los números de línea que deben ser visibles
- * @param {string} taskData.comentario_docente - Comentarios adicionales del docente
- * @returns {Promise<Object>} Promesa que se resuelve con la respuesta del servidor
- */
-export async function createTaskWithDetails(taskData) {
-  console.log('Datos de la tarea recibidos:', taskData);
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        success: true,
-        message: 'Tarea creada exitosamente'
-      });
-    }, 700);
-  });
-}
 
 /**
- * Genera el código base a partir de las líneas visibles
- * @param {Array} lineasVisibles - Array de objetos con número y contenido de líneas visibles
- * @returns {string} Código formateado con saltos de línea
- */
-function generarCodigoBase(lineasVisibles) {
-  if (!lineasVisibles || lineasVisibles.length === 0) return '';
-  const lineasOrdenadas = [...lineasVisibles].sort((a, b) => a.numero - b.numero);
-  const maxLinea = lineasOrdenadas[lineasOrdenadas.length - 1].numero;
-  const lineas = [];
-  let indiceLinea = 0;
-  for (let i = 1; i <= maxLinea; i++) {
-    if (indiceLinea < lineasOrdenadas.length && lineasOrdenadas[indiceLinea].numero === i) {
-      lineas.push(lineasOrdenadas[indiceLinea].contenido);
-      indiceLinea++;
-    } else {
-      lineas.push('');
-    }
-  }
-  return lineas.join('\n');
-}
-
-/**
- * Obtiene los datos de un ejercicio por su ID
- * @param {string} exerciseId - ID del ejercicio a obtener
- * @returns {Promise<Object>} Promesa que se resuelve con los datos del ejercicio
- */
-export async function getExerciseById(exerciseId) {
-  // Datos de respuesta
-  const ejercicio = {
-    id_ejercicio: "001",
-    titulo: "Suma de dos números",
-    enunciado: "Define una función llamada `sumar` que reciba dos parámetros y devuelva la suma. \nLa suma debe almacenarse en una variable llamada `res`, y esta debe ser retornada.",
-    lineas_visibles: [
-      {
-        numero: 2,
-        contenido: "    res = a + b"
-      },
-      {
-        numero: 7,
-        contenido: "}"
-      }
-    ]
-  };
-  
-  // Generar el código base
-  const codigoBase = generarCodigoBase(ejercicio.lineas_visibles);
-  
-  // Respuesta
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        ...ejercicio,
-        codigo_base: codigoBase
-      });
-    }, 700);
-  });
-}
-
-/**
- * Evalúa la solución de un estudiante para un ejercicio de réplica
- * @param {Object} solutionData - Datos de la solución del estudiante
- * @param {string} solutionData.id_estudiante - ID del estudiante
- * @param {string} solutionData.id_ejercicio - ID del ejercicio
- * @param {string} solutionData.codigo_fuente - Código fuente del estudiante
- * @param {number} solutionData.tiempo_redaccion - Tiempo en segundos que tomó escribir la solución
- * @returns {Promise<Object>} Resultado de la evaluación con análisis detallado
+ * {
+ *   codigo_fuente: "código_del_estudiante",
+ *   codigo_objetivo: "código_objetivo_completo",
+ *   consignas_docente: "Descripción del ejercicio que ve el estudiante",
+ *   contexto_ejercicio: "Información adicional para el contexto del ejercicio",
+ *   id_ejercicio: "identificador_del_ejercicio",
+ *   id_estudiante: "identificador_del_estudiante",
+ *   tiempo_redaccion: 10 // tiempo en segundos
+ * }
  */
 export async function evaluateStudentSolution(solutionData) {
   console.log('Datos recibidos en evaluateStudentSolution:', solutionData);
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        errores_sintacticos: [],
-        ejecucion_simulada_exitosa: true,
-        salida_estandar: "",
-        estructura_igual_a_objetivo: false,
-        puntaje_similitud: 0.68,
-        diferencias_detectadas: [
-          "El estudiante no declaró la variable 'res'.",
-          "El resultado se retorna directamente en lugar de guardarse en una variable."
-        ],
-        pistas_generadas: [
-          "¿Estás usando una variable para guardar el resultado antes del return?",
-          "Tal vez podrías declarar una variable llamada 'res' justo antes del return."
-        ]
-      });
-    }, 2900);
-  });
+  try {
+    const response = await fetch(`${TASK_API_BASE_URL}/sandbox/ai-feedback/replicator`, {
+      method: 'POST',
+      headers: defaultTaskHeaders,
+      body: JSON.stringify({
+        codigo_estudiante: solutionData.codigo_fuente,
+        codigo_objetivo: solutionData.codigo_objetivo,
+        consignas_docente: solutionData.consignas_docente,
+        contexto_ejercicio: solutionData.contexto_ejercicio || ''
+      })
+    });
+    if (!response.ok) {
+      throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
+    }
+    const result = await response.json();
+    console.log('Respuesta del servidor de evaluación:', result);
+    return result;
+  } catch (error) {
+    console.error('Error al evaluar la solución:', error);
+    return {
+      errores_sintacticos: [],
+      ejecucion_simulada_exitosa: false,
+      salida_estandar: "",
+      estructura_igual_a_objetivo: false,
+      puntaje_similitud: 0,
+      diferencias_detectadas: ["Error al procesar la evaluación"],
+      pistas_generadas: ["Ocurrió un error al evaluar tu solución. Por favor, inténtalo de nuevo más tarde."]
+    };
+  }
 }

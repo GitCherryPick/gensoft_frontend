@@ -19,8 +19,8 @@ export default function AssistantMessage({ content, evaluation = {}, isRecommend
 
   const hasEvaluation = evaluation && Object.keys(evaluation).length > 0;
   const hasSimilarityScore = evaluation?.puntaje_similitud !== undefined;
-  const hasExecutionStatus = evaluation?.ejecucion_simulada_exitosa !== undefined;
-  const hasRecommendations = evaluation?.pistas_generadas?.length > 0;
+  const hasExecutionStatus = evaluation?.estructura_igual_a_objetivo !== undefined;
+  const hasRecommendations = evaluation?.pistas_generadas?.length > 0 && !evaluation?.estructura_igual_a_objetivo;
 
   // Determinar cuál es el primer y último mensaje visible
   const hasAnyContent = content && (Array.isArray(content) ? content.length > 0 : true);
@@ -62,18 +62,18 @@ export default function AssistantMessage({ content, evaluation = {}, isRecommend
               ${firstVisibleMessage === 'execution' ? 'rounded-tl-2xl ' : ''}
               ${lastVisibleMessage === 'execution' ? 'rounded-bl-2xl ' : ''}
               rounded-r-2xl`}>
-              {evaluation.ejecucion_simulada_exitosa 
-                ? 'Sintaxis correcta' 
-                : 'Error en la sintaxis'}
+              {evaluation.estructura_igual_a_objetivo 
+                ? '¡Excelente! 🎉 Has resuelto el ejercicio correctamente. ¡Felicidades! 👏' 
+                : 'Respuesta parcialmente correcta'}
             </div>
           )}
 
-          {hasSimilarityScore && (
+          {hasSimilarityScore && !evaluation?.estructura_igual_a_objetivo && (
             <div className={`${baseMessageStyle} 
               ${firstVisibleMessage === 'similarity' ? 'rounded-tl-2xl ' : ''}
               ${lastVisibleMessage === 'similarity' ? 'rounded-bl-2xl ' : ''}
               rounded-r-2xl`}>
-              Similitud: <span className="font-medium">{Math.round(evaluation.puntaje_similitud * 100)}%</span>
+              Similitud: <span className="font-medium">{evaluation.puntaje_similitud * 10}%</span>
             </div>
           )}
 
