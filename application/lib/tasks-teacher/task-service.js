@@ -76,7 +76,7 @@ export async function compareTaskCode(taskId, studentCode) {
 export async function evaluateStudentSolution(solutionData) {
   console.log('Datos recibidos en evaluateStudentSolution:', solutionData);
   try {
-    const response = await fetch(`${TASK_API_BASE_URL}/ai-feedback/replicator`, {
+    const response = await fetch(`${TASK_API_BASE_URL}/sandbox/ai-feedback/replicator`, {
       method: 'POST',
       headers: defaultTaskHeaders,
       body: JSON.stringify({
