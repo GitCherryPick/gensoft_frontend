@@ -37,6 +37,7 @@ export const ROUTES = {
     CONTENT: "/role-teacher/content",
     PROFILE: "/role-teacher/profile",
     TASKS: "/role-teacher/tasks",
+    EXERCISES: "/role-teacher/exercises"
   },
 };
 
