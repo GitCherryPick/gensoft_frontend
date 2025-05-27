@@ -10,8 +10,6 @@ export default function EditorPython() {
   const [testCases, setTestCases] = useState([]);
   const [salida, setSalida] = useState("");
   const [entrada, setEntrada] = useState("");
-  const [archivoGuardado, setArchivoGuardado] = useState("");
-  const [pyodide, setPyodide] = useState(null);
   const [score, setScore] = useState(0);
   const [pestanaActiva, setPestanaActiva] = useState('enunciado');
   const [nuumberCases, setNumberCases] = useState("--");
@@ -41,20 +39,6 @@ export default function EditorPython() {
 
   useEffect(() => {
     setIsCliente(true);
-    const cargarPyodide = async () => {
-      if (!window.loadPyodide) {
-        const script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js";
-        script.onload = async () => {
-          const pyodide = await window.loadPyodide();
-          setPyodide(pyodide);
-        };
-        document.body.appendChild(script);
-      } else {
-        const pyodide = await window.loadPyodide();
-        setPyodide(pyodide);
-      }
-    };
     const fetchTask = async () => {
       try {
         const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks/1`);
@@ -66,8 +50,6 @@ export default function EditorPython() {
         setTaskEnunciado("No se pudo obtener el enunciado. Verifica que el servidor esté corriendo.");
       }
     };
-    console.log("score  ", score);
-    cargarPyodide();
     fetchTask();
     fetchScore();
   }, []);
@@ -147,7 +129,7 @@ export default function EditorPython() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full p-4 space-y-4">
+    <div className="flex flex-col items-center justify-center h-full w-full p-4 space-y-4 overflow-auto">
       <div className="relative w-full flex items-center justify-center px-4 m-4">
         {/* Botones centrados al medio */}
         <div className="absolute left-1/2 transform -translate-x-1/2 flex space-x-4">
