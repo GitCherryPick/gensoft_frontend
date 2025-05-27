@@ -17,7 +17,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen custom-scrollbar">
       <div className="w-full max-w-6xl mx-auto px-4">
         <div className="md:flex p-6">
           <div className="md:w-1/4 flex justify-center md:justify-start">
@@ -117,6 +117,33 @@ export default function ProfilePage() {
           </Tabs>
         </div>
       </div>
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #374151;
+          border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #6366f1;
+          border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #4f46e5;
+        }
+        
+        /* Para Firefox */
+        .custom-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: #6366f1 #374151;
+        }
+      `}</style>
+
     </div>
   );
 }
