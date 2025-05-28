@@ -65,3 +65,4 @@ export async function getCurrentUser() {
     role: "student",
   };
 }
+
