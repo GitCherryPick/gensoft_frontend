@@ -34,6 +34,7 @@ export const ROUTES = {
   TEACHER: {
     ROOT: "/role-teacher",
     STUDENTS: "/role-teacher/students",
+    ACTIVITY: "/role-teacher/activity",
     CONTENT: "/role-teacher/content",
     PROFILE: "/role-teacher/profile",
     TASKS: "/role-teacher/tasks",
@@ -105,6 +106,11 @@ export function getNavLinks(role) {
           label: "Alumnos",
           href: ROUTES.TEACHER.STUDENTS,
           icon: "IconUsers",
+        },
+        {
+          label: "Actividad",
+          href: ROUTES.TEACHER.ACTIVITY,
+          icon: "IconActivity",
         },
         {
           label: "Gestión de Contenido",

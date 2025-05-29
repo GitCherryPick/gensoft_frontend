@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconUsers, IconArrowLeft, IconBook, IconUser, IconListCheck } from "@tabler/icons-react"
+import { IconUsers, IconArrowLeft, IconBook, IconUser, IconListCheck, IconActivity } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -19,6 +19,11 @@ export default function TeacherLayout({ children }) {
       label: "Alumnos",
       href: ROUTES.TEACHER.STUDENTS,
       icon: <IconUsers className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Actividad",
+      href: ROUTES.TEACHER.ACTIVITY,
+      icon: <IconActivity className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Gestión de Contenido",

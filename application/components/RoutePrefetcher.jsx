@@ -20,6 +20,7 @@ export default function RoutePrefetcher() {
 
     router.prefetch(ROUTES.TEACHER.ROOT)
     router.prefetch(ROUTES.TEACHER.STUDENTS)
+    router.prefetch(ROUTES.TEACHER.ACTIVITY)
     router.prefetch(ROUTES.TEACHER.CONTENT)
   }, [router])
 
