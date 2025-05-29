@@ -61,8 +61,35 @@ export async function getCurrentUser() {
   return {
     id: 1,
     name: "Usuario Demo",
-    username: "usuariodemo",
+    email: "demo@example.com",
     role: "student",
   };
 }
 
+/**
+ * Obtiene todos los usuarios registrados en el sistema.
+ * @returns {Promise<Array>} Un array de objetos con la información de los usuarios.
+ * Cada usuario tiene la siguiente estructura:
+ * {
+ *   id: number,
+ *   username: string,
+ *   email: string,
+ *   full_name: string,
+ *   status: string,
+ *   created_at: string,
+ *   updated_at: string,
+ *   last_login: string | null
+ * }
+ */
+export async function getAllUsers() {
+  try {
+    const response = await fetch("http://localhost:8006/users/");
+    if (!response.ok) {
+      throw new Error("Error al obtener los usuarios");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error al obtener los usuarios:", error);
+    throw error;
+  }
+}
