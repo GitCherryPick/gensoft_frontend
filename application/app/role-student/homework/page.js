@@ -14,7 +14,7 @@ const assignedExercises = [
     dueTime: "14:00", 
     status: "Pendiente", 
     description: "Crea una lista en Python y realiza operaciones básicas.", 
-    priority: "Alta", 
+    type: "Réplica", 
     course: "Listas y Tuplas" 
   },
   { 
@@ -24,7 +24,7 @@ const assignedExercises = [
     dueTime: "09:30", 
     status: "Atrasado", 
     description: "Resolver 10 ejercicios básicos de Python.", 
-    priority: "Media", 
+    type: "Laboratorio", 
     course: "Introducción a Python" 
   },
   { 
@@ -34,7 +34,7 @@ const assignedExercises = [
     dueTime: "16:00", 
     status: "Pendiente", 
     description: "Ejercicios avanzados con listas en Python.", 
-    priority: "Baja", 
+    type: "Réplica", 
     course: "Listas y Tuplas" 
   },
   { 
@@ -44,7 +44,7 @@ const assignedExercises = [
     dueTime: "11:00", 
     status: "Completado", 
     description: "Crea y resuelve funciones en Python.", 
-    priority: "Alta", 
+    type: "Laboratorio", 
     course: "Funciones en Python" 
   },
 ];
@@ -56,7 +56,7 @@ export default function Homework() {
   const [filteredExercises, setFilteredExercises] = useState(assignedExercises);
   const [statusFilter, setStatusFilter] = useState("Todos");
   const [timeFilter, setTimeFilter] = useState("Todos");
-  const [priorityFilter, setPriorityFilter] = useState("Todas");
+  const [typeFilter, setTypeFilter] = useState("Todas");
   const [courseFilter, setCourseFilter] = useState("Todos");
   const [sortBy, setSortBy] = useState("dueDateAsc");
   const [searchQuery, setSearchQuery] = useState("");
@@ -98,9 +98,9 @@ export default function Homework() {
       });
     }
 
-    // Filtrar por prioridad
-    if (priorityFilter !== "Todas") {
-      filtered = filtered.filter((exercise) => exercise.priority === priorityFilter);
+    // Filtrar por tipo
+    if (typeFilter !== "Todas") {
+      filtered = filtered.filter((exercise) => exercise.type === typeFilter);
     }
 
     // Filtrar por curso
@@ -129,7 +129,7 @@ export default function Homework() {
     }
 
     setFilteredExercises(filtered);
-  }, [statusFilter, timeFilter, priorityFilter, courseFilter, sortBy, searchQuery, exercises]);
+  }, [statusFilter, timeFilter, typeFilter, courseFilter, sortBy, searchQuery, exercises]);
 
   if (!isMounted) return null;
 
@@ -142,9 +142,9 @@ export default function Homework() {
     return "bg-yellow-900/50 text-yellow-300";
   };
 
-  const getPriorityStyles = (priority) => {
-    if (priority === "Alta") return "bg-red-900/50 text-red-300";
-    if (priority === "Media") return "bg-orange-900/50 text-orange-300";
+  const getTypeStyles = (type) => {
+    if (type === "Laboratorio") return "bg-blue-900/50 text-blue-300";
+    if (type === "Réplica") return "bg-orange-900/50 text-orange-300";
     return "bg-gray-900/50 text-gray-300";
   };
 
@@ -160,7 +160,7 @@ export default function Homework() {
   const resetFilters = () => {
     setStatusFilter("Todos");
     setTimeFilter("Todos");
-    setPriorityFilter("Todas");
+    setTypeFilter("Todas");
     setCourseFilter("Todos");
     setSortBy("dueDateAsc");
     setSearchQuery("");
@@ -268,25 +268,24 @@ export default function Homework() {
                 </select>
               </div>
 
-              {/* Filtro por Prioridad */}
+              {/* Filtro por tipo */}
               <div className="relative">
                 <select
-                  value={priorityFilter}
-                  onChange={(e) => setPriorityFilter(e.target.value)}
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value)}
                   className={`w-full p-2 border rounded-lg appearance-none bg-dark-2 text-sm transition-all text-light-2 ${
-                    priorityFilter !== "Todas"
+                    typeFilter !== "Todas"
                       ? "border-cta-1 ring-1 ring-cta-1"
                       : "border-neutral-700"
                   } focus:ring-2 focus:ring-cta-1 focus:border-cta-1`}
                 >
-                  <option value="Todas" className="bg-dark-2 text-light-2">Prioridad: Todas</option>
-                  <option value="Alta" className="bg-dark-2 text-light-2">Alta</option>
-                  <option value="Media" className="bg-dark-2 text-light-2">Media</option>
-                  <option value="Baja" className="bg-dark-2 text-light-2">Baja</option>
+                  <option value="Todas" className="bg-dark-2 text-light-2">Tipo: Todas</option>
+                  <option value="Laboratorio" className="bg-dark-2 text-light-2">Laboratorio</option>
+                  <option value="Réplica" className="bg-dark-2 text-light-2">Réplica</option>
                 </select>
               </div>
 
-              {/* Filtro por Curso (ajustado para Python) */}
+              {/* Filtro por Curso */}
               <div className="relative">
                 <select
                   value={courseFilter}
@@ -384,7 +383,7 @@ export default function Homework() {
                         </span>
                       </div>
                       <p className="text-light-3 text-sm mb-2">{exercise.description}</p>
-                      {/* Fecha con ícono de calendario */}
+                      {/* Fecha */}
                       <div className="flex items-center text-sm text-light-3 mb-2">
                         <svg
                           className="w-5 h-5 mr-2"
@@ -402,7 +401,7 @@ export default function Homework() {
                         </svg>
                         Fecha de entrega: {formatDate(exercise.dueDate)}
                       </div>
-                      {/* Hora con ícono de reloj */}
+                      {/* Hora */}
                       <div className="flex items-center text-sm text-light-3 mb-2">
                         <svg
                           className="w-5 h-5 mr-2"
@@ -422,22 +421,22 @@ export default function Homework() {
                       </div>
                       <div className="flex items-center text-sm text-light-3 mb-4">
                         <span
-                          className={`text-xs font-medium px-2 py-1 rounded-full ${getPriorityStyles(
-                            exercise.priority
+                          className={`text-xs font-medium px-2 py-1 rounded-full ${getTypeStyles(
+                            exercise.type
                           )}`}
                         >
-                          Prioridad: {exercise.priority}
+                          Tipo: {exercise.type}
                         </span>
                       </div>
                       <button
-                      className={`w-full py-2 rounded-lg transition-colors duration-200 ${
-                        exercise.status === "Pendiente"
-                          ? "bg-purple-700 text-white hover:bg-purple-800"
-                          : "bg-neutral-700 text-light-2 hover:bg-neutral-600"
-                      }`}
-                    >
-                      {exercise.status === "Pendiente" ? "Enviar Solución" : "Ver Detalles"}
-                    </button>
+                        className={`w-full py-2 rounded-lg transition-colors duration-200 ${
+                          exercise.status === "Pendiente"
+                            ? "bg-cta-1 text-dark-1 hover:bg-cta-1/80"
+                            : "bg-neutral-700 text-light-2 hover:bg-neutral-600"
+                        }`}
+                      >
+                        {exercise.status === "Pendiente" ? "Enviar Solución" : "Ver Detalles"}
+                      </button>
                     </motion.div>
                   ))}
                 </AnimatePresence>
