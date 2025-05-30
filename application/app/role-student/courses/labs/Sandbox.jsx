@@ -75,8 +75,8 @@ const Sandbox = forwardRef(({
       const primerError = response.errores;
       if (primerError?.line !== 0) {
         setLinesAux({
-          line: response.errores.line,
-          error: response.errores.error
+          line: response.errores?.line || 0,
+          error: response.errores?.error || ""
         });
         //updateLinesIssues(primerError);
       }
