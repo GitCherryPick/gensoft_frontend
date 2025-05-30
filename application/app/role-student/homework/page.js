@@ -429,14 +429,14 @@ export default function Homework() {
                         </span>
                       </div>
                       <button
-                        className={`w-full py-2 rounded-lg transition-colors duration-200 ${
-                          exercise.status === "Pendiente"
-                            ? "bg-cta-1 text-dark-1 hover:bg-cta-1/80"
-                            : "bg-neutral-700 text-light-2 hover:bg-neutral-600"
-                        }`}
-                      >
-                        {exercise.status === "Pendiente" ? "Enviar Solución" : "Ver Detalles"}
-                      </button>
+                    className={`w-full py-2 rounded-lg transition-colors duration-200 ${
+                      exercise.status === "Pendiente"
+                        ? "bg-purple-500 text-white hover:bg-purple-800"
+                        : "bg-neutral-700 text-light-2 hover:bg-neutral-600"
+                    }`}
+                  >
+                    {exercise.status === "Pendiente" ? "Enviar Solución" : "Ver Detalles"}
+                  </button>
                     </motion.div>
                   ))}
                 </AnimatePresence>
