@@ -43,6 +43,11 @@ export default function StudentLayout({ children }) {
       icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
+      label: "Tareas",
+      href: ROUTES.STUDENT.HOMEWORK,
+      icon: <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
       label: "Cerrar Sesión",
       href: ROUTES.HOME,
       icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
