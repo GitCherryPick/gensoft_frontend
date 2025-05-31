@@ -91,6 +91,27 @@ export async function evaluateStudentSolution(solutionData) {
     }
     const result = await response.json();
     console.log('Respuesta del servidor de evaluación:', result);
+    
+    // Registrar submission
+    try {
+      await registerReplicationSubmission({
+        user_id: solutionData.id_estudiante,
+        exercise_id: solutionData.id_ejercicio,
+        student_code: solutionData.codigo_fuente,
+        typing_duration_seconds: solutionData.tiempo_redaccion || 0,
+        errores_sintacticos: result.errores_sintacticos || [],
+        ejecucion_simulada_exitosa: result.ejecucion_simulada_exitosa || false,
+        estructura_igual_a_objetivo: result.estructura_igual_a_objetivo || false,
+        puntaje_similitud: result.puntaje_similitud || 0,
+        diferencias_detectadas: result.diferencias_detectadas || [],
+        pistas_generadas: result.pistas_generadas || [],
+        is_passed: result.estructura_igual_a_objetivo || false
+      });
+      console.log('Registro de sumisión completado');
+    } catch (regError) {
+      console.error('Error al registrar la sumisión:', regError);
+    }
+    
     return result;
   } catch (error) {
     console.error('Error al evaluar la solución:', error);
@@ -121,4 +142,39 @@ export async function getReplicaExercises() {
   }
   
   return response.json();
+}
+
+/**
+ * Registra el histórico de sumisiones de ejercicios de replicación
+ * @param {Object} submissionData - Datos de la sumisión
+ * @param {string|number} submissionData.user_id - ID del estudiante
+ * @param {string|number} submissionData.exercise_id - ID del ejercicio
+ * @param {string} submissionData.student_code - Código enviado por el estudiante
+ * @param {number} submissionData.typing_duration_seconds - Tiempo de escritura en segundos
+ * @param {Array<string>} submissionData.errores_sintacticos - Errores sintácticos encontrados
+ * @param {boolean} submissionData.ejecucion_simulada_exitosa - Si la ejecución simulada fue exitosa
+ * @param {boolean} submissionData.estructura_igual_a_objetivo - Si la estructura coincide con el objetivo
+ * @param {number} submissionData.puntaje_similitud - Puntaje de similitud (0-1)
+ * @param {Array<string>} submissionData.diferencias_detectadas - Diferencias detectadas
+ * @param {Array<string>} submissionData.pistas_generadas - Pistas generadas
+ * @param {boolean} submissionData.is_passed - Si el ejercicio fue aprobado
+ * @returns {Promise<Object>} - Resultado del registro
+ */
+async function registerReplicationSubmission(submissionData) {
+  console.log('Registrando sumisión:', submissionData);
+  try {
+    const response = await fetch(`${TASK_API_BASE_URL}/replication-submissions/`, {
+      method: 'POST',
+      headers: defaultTaskHeaders,
+      body: JSON.stringify(submissionData)
+    });
+    if (!response.ok) {
+      throw new Error(`Error al registrar sumisión: ${response.status} ${response.statusText}`);
+    }
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error en registerReplicationSubmission:', error);
+    throw error;
+  }
 }

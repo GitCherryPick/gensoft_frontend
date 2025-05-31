@@ -17,6 +17,26 @@ export default function ReplicaPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [evaluationResult, setEvaluationResult] = useState(null);
+  const [typingStartTime, setTypingStartTime] = useState(null);
+  const [isTyping, setIsTyping] = useState(false);
+
+  const handleCodeChange = (newCode) => {
+    if (!isTyping && newCode.trim() !== '') {
+      setIsTyping(true);
+      setTypingStartTime(new Date());
+    } else if (isTyping && newCode.trim() === '') {
+      setIsTyping(false);
+      setTypingStartTime(null);
+    }
+    setCode(newCode);
+  };
+
+  const calculateTypingTime = () => {
+    if (!typingStartTime) return 0;
+    const endTime = new Date();
+    const timeDiff = (endTime - typingStartTime) / 1000;
+    return Math.round(timeDiff);
+  };
 
   const handleHelpRequest = async () => {
     console.log('Solicitando ayuda...');
@@ -25,11 +45,16 @@ export default function ReplicaPage() {
         throw new Error('No hay datos del ejercicio disponibles');
       }
       
+      const tiempoRedaccion = calculateTypingTime();
+      
+      setIsTyping(false);
+      setTypingStartTime(null);
+      
       const resultado = await evaluateStudentSolution({
         id_estudiante: '2003',
         id_ejercicio: exercise.id_ejercicio,
         codigo_fuente: code,
-        tiempo_redaccion: 10,
+        tiempo_redaccion: tiempoRedaccion,
         consignas_docente: exercise.enunciado || '',
         codigo_objetivo: exercise.codigo_objetivo || '',
         contexto_ejercicio: exercise.comentario_docente || ''
@@ -86,7 +111,7 @@ export default function ReplicaPage() {
         <div className="flex-1 overflow-hidden">
           <CodeEditorCopy
             codeInput={code}
-            setCodeInput={setCode}
+            setCodeInput={handleCodeChange}
           />
         </div>
       </div>
