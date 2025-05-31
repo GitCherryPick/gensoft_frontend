@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { getCurrentUser } from '@/lib/auth/auth-service';
 import dynamic from 'next/dynamic';
 import { evaluateStudentSolution } from '@/lib/tasks-teacher/task-service';
 import { getExerciseById } from '@/lib/content/content-service';
@@ -19,6 +20,7 @@ export default function ReplicaPage() {
   const [evaluationResult, setEvaluationResult] = useState(null);
   const [typingStartTime, setTypingStartTime] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const handleCodeChange = (newCode) => {
     if (!isTyping && newCode.trim() !== '') {
@@ -50,8 +52,10 @@ export default function ReplicaPage() {
       setIsTyping(false);
       setTypingStartTime(null);
       
+      const userId = currentUser?.id || '1';
+      
       const resultado = await evaluateStudentSolution({
-        id_estudiante: '2003',
+        id_estudiante: userId,
         id_ejercicio: exercise.id_ejercicio,
         codigo_fuente: code,
         tiempo_redaccion: tiempoRedaccion,
@@ -70,10 +74,24 @@ export default function ReplicaPage() {
   };
 
   useEffect(() => {
+    const loadCurrentUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Error al cargar el usuario actual:', error);
+      }
+    };
+
+    loadCurrentUser();
+  }, []);
+
+  useEffect(() => {
     const fetchExercise = async () => {
       try {
         setLoading(true);
-        const exerciseData = await getExerciseById('2003');
+        const userId = currentUser?.id || '2003';
+        const exerciseData = await getExerciseById(userId);
         setExercise(exerciseData);
         setCode(exerciseData.codigo_base);
       } catch (err) {
@@ -84,8 +102,10 @@ export default function ReplicaPage() {
       }
     };
 
-    fetchExercise();
-  }, []);
+    if (currentUser) {
+      fetchExercise();
+    }
+  }, [currentUser]);
 
   return (
     <div className="flex h-full w-full p-4 gap-4">
