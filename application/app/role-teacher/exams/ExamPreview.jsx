@@ -4,7 +4,7 @@ import { Clock, FileText, GraduationCap } from "lucide-react";
 const ExamPreview = ({ exam, questionTypes }) => {
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="bg-gradient-to-br from-blue-600 to-purple-700 rounded-2xl p-8 mb-8 text-white shadow-2xl">
+      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl p-8 mb-8 text-white shadow-2xl">
         <div className="flex items-center space-x-3 mb-4">
           <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
             <GraduationCap size={24} />

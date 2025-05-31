@@ -76,7 +76,7 @@ const ExamCreator = () => {
                   onClick={() => setCurrentView("preview")}
                   className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-all duration-200 ${
                     currentView === "preview"
-                      ? "bg-gradient-to-r from-green-500 to-teal-600 text-white shadow-lg"
+                      ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
                       : "text-gray-400 hover:text-white hover:bg-gray-700/50"
                   }`}
                 >
@@ -87,7 +87,7 @@ const ExamCreator = () => {
                   onClick={() => setCurrentView("settings")}
                   className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-all duration-200 ${
                     currentView === "settings"
-                      ? "bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-lg"
+                      ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
                       : "text-gray-400 hover:text-white hover:bg-gray-700/50"
                   }`}
                 >

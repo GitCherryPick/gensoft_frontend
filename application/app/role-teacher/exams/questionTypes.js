@@ -1,32 +1,32 @@
-import { Circle, CheckCircle, FileText, Code } from "lucide-react";
+import { CheckCircle, CheckSquare, FileCode, Code } from "lucide-react";
 
 export const questionTypes = [
   {
     type: "multiple-choice",
-    label: "Selección Múltiple",
-    icon: <Circle size={20} />,
-    gradient: "from-purple-500 to-blue-500",
+    label: "Selección Unica",
+    icon: <CheckCircle size={20} />,
+    gradient: "from-rose-300 to-pink-600",
     description: "Una sola respuesta correcta",
   },
   {
     type: "multiple-select",
     label: "Selección Múltiple",
-    icon: <CheckCircle size={20} />,
-    gradient: "from-green-500 to-teal-500",
+    icon: <CheckSquare size={20} />,
+    gradient: "from-violet-300 to-purple-600",
     description: "Múltiples respuestas correctas",
   },
   {
     type: "Replication",
     label: "Replicación de codigo",
-    icon: <FileText size={20} />,
-    gradient: "from-orange-500 to-red-500",
+    icon: <FileCode size={20} />,
+    gradient: "from-emerald-300 to-teal-600",
     description: "Replicar el codigo",
   },
   {
     type: "CodeWithTest",
     label: "Código Python",
     icon: <Code size={20} />,
-    gradient: "from-cyan-500 to-indigo-600",
+    gradient: "from-sky-300 to-blue-600",
     description: "Ejercicio de programación",
   },
 ];
