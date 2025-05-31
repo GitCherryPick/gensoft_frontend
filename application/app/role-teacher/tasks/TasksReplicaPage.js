@@ -13,7 +13,7 @@ const ComponentReplicaList = dynamic(
   )}
 );
 
-export default function TasksReplicaPage() {
+export default function TasksReplicaPage({ onCreateNew }) {
   const [selectedExercise, setSelectedExercise] = useState(null);
 
   const handleExerciseSelect = useCallback((exercise) => {
@@ -32,6 +32,7 @@ export default function TasksReplicaPage() {
           selectedExercise={selectedExercise}
           onExerciseSelect={handleExerciseSelect}
           onRefresh={handleRefresh}
+          onCreateNew={onCreateNew}
         />
       </div>
 

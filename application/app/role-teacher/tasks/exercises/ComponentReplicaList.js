@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { getReplicaExercises } from '@/lib/tasks-teacher/task-service';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import FadeIn from "@/components/animations/FadeIn";
@@ -18,11 +18,11 @@ export default function ComponentReplicaList({
   selectedExercise: externalSelectedExercise, 
   onExerciseSelect, 
   onRefresh,
+  onCreateNew,
   autoSelectFirst = true 
 }) {
   const [exercises, setExercises] = useState([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState(null);
   const [internalSelectedExercise, setInternalSelectedExercise] = useState(null);
   
@@ -32,14 +32,9 @@ export default function ComponentReplicaList({
     }
   }, [externalSelectedExercise]);
 
-  const fetchExercises = useCallback(async (isRefresh = false) => {
+  const fetchExercises = async () => {
     try {
-      if (isInitialLoad) {
-        setError(null);
-      } else if (!isRefresh) {
-        setIsRefreshing(true);
-      }
-      
+      setError(null);
       const data = await getReplicaExercises();
       setExercises(data);
       
@@ -52,33 +47,23 @@ export default function ComponentReplicaList({
       return data;
     } catch (err) {
       console.error('Error al cargar los ejercicios:', err);
-      if (isInitialLoad) {
-        setError('Error al cargar los ejercicios. Por favor, intente de nuevo más tarde.');
-      }
+      setError('Error al cargar los ejercicios. Por favor, intente de nuevo más tarde.');
       return [];
     } finally {
-      if (isInitialLoad) {
-        setIsInitialLoad(false);
-      } else if (!isRefresh) {
-        setIsRefreshing(false);
-      }
+      setIsInitialLoad(false);
     }
-  }, [onExerciseSelect, autoSelectFirst, externalSelectedExercise]);
+  };
 
   useEffect(() => {
     fetchExercises();
   }, [fetchExercises]);
 
-  const handleExerciseSelect = useCallback((exercise) => {
+  const handleExerciseSelect = (exercise) => {
     setInternalSelectedExercise(exercise);
     onExerciseSelect?.(exercise);
-  }, [onExerciseSelect]);
+  };
 
-  const handleRefresh = useCallback(async () => {
-    const data = await fetchExercises(true);
-    onRefresh?.(data);
-    return data;
-  }, [fetchExercises, onRefresh]);
+
 
   if (isInitialLoad) {
     return (
@@ -112,22 +97,15 @@ export default function ComponentReplicaList({
             <h1 className="text-xl font-semibold">Ejercicios de Réplica</h1>
             <p className="text-sm text-gray-600">Selecciona un ejercicio para ver los detalles</p>
           </div>
-          <div className="relative">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className={`h-10 w-10 rounded-md border ${isRefreshing ? 'border-transparent' : 'border-gray-500'} hover:bg-dark-1 hover:border-cta-1 group transition-colors`}
-              title="Actualizar lista de ejercicios"
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-            >
-              {isRefreshing ? (
-                <Plus className="h-5 w-5 text-gray-500 transition-colors" />
-              ) : (
-                <Plus className="h-5 w-5 text-gray-500 transition-colors" />
-              )}
-            </Button>
-          </div>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-10 w-10 rounded-md border border-gray-500 hover:bg-dark-1 hover:border-cta-1 group transition-colors"
+            title="Crear nuevo ejercicio"
+            onClick={onCreateNew}
+          >
+            <Plus className="h-5 w-5 text-gray-500 group-hover:text-cta-1 transition-colors" />
+          </Button>
         </div>
       </div>
       
