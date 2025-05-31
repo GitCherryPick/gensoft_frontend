@@ -17,6 +17,9 @@ export default function ExerciseCreate({ onBack }) {
 
   const handleTaskCreated = (result) => {
     console.log('Tarea creada:', result);
+    if (result && onBack) {
+      onBack();
+    }
   };
 
   return (

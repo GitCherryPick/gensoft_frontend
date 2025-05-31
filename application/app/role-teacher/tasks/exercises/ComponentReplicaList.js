@@ -47,7 +47,7 @@ export default function ComponentReplicaList({
       return data;
     } catch (err) {
       console.error('Error al cargar los ejercicios:', err);
-      setError('Error al cargar los ejercicios. Por favor, intente de nuevo más tarde.');
+      setError('Error en Management Service.');
       return [];
     } finally {
       setIsInitialLoad(false);
@@ -67,24 +67,27 @@ export default function ComponentReplicaList({
 
   if (isInitialLoad) {
     return (
-      <div className="flex items-center justify-center h-32 text-sm text-gray-500">
-        Cargando ejercicios...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-4 text-red-600 text-sm">
-        {error}
-      </div>
-    );
-  }
-
-  if (exercises.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-32 text-sm text-gray-500">
-        No hay ejercicios disponibles
+      <div className="h-full flex flex-col">
+        <div className="p-4 border-b">
+          <div className="flex items-start justify-between mb-1">
+            <div>
+              <h1 className="text-xl font-semibold">Ejercicios de Réplica</h1>
+              <p className="text-sm text-gray-600">Selecciona un ejercicio para ver los detalles</p>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="h-10 w-10 rounded-md border border-gray-500 hover:bg-dark-1 hover:border-cta-1 group transition-colors"
+              title="Crear nuevo ejercicio"
+              onClick={onCreateNew}
+            >
+              <Plus className="h-5 w-5 text-gray-500 group-hover:text-cta-1 transition-colors" />
+            </Button>
+          </div>
+        </div>
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-sm text-gray-500">Cargando ejercicios...</p>
+        </div>
       </div>
     );
   }
@@ -112,6 +115,18 @@ export default function ComponentReplicaList({
       <div className="flex-1 overflow-hidden">
         <ScrollArea className="h-full">
           <div className="py-4">
+            {error ? (
+              <div className="h-full flex items-center justify-center p-4">
+                <div className="text-center text-red-600 dark:text-red-400">
+                  <p className="font-medium">Error al cargar los ejercicios</p>
+                  <p className="text-sm mt-1">{error}</p>
+                </div>
+              </div>
+            ) : exercises.length === 0 ? (
+              <div className="h-full flex items-center justify-center p-4">
+                <p className="text-sm text-gray-500">No hay ejercicios disponibles</p>
+              </div>
+            ) : (
             <div className="space-y-1">
               {exercises.map((exercise, index) => (
                 <FadeIn key={exercise.exercise_id} delay={0.1 + index * 0.05} duration={0.3}>
@@ -124,13 +139,8 @@ export default function ComponentReplicaList({
                       } cursor-pointer transition-colors`}
                     onClick={() => handleExerciseSelect(exercise)}
                   >
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mr-3">
-                        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                          {index + 1}
-                        </span>
-                      </div>
-                      <div>
+                    <div className="flex items-center w-full">
+                      <div className="w-full">
                         <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-0.5">
                           {exercise.title || 'Ejercicio sin título'}
                         </h3>
@@ -145,6 +155,7 @@ export default function ComponentReplicaList({
                 </FadeIn>
               ))}
             </div>
+            )}
           </div>
         </ScrollArea>
       </div>
