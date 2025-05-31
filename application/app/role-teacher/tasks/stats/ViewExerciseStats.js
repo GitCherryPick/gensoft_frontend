@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Code2, FileText } from 'lucide-react';
 import { getReplicationSubmissions } from '@/lib/tasks-teacher/task-service';
+import ProgressChart from './ProgressChart';
 
 export default function ExerciseDetailPanel({ selectedExercise }) {
   const [submissions, setSubmissions] = useState([]);
@@ -64,6 +65,11 @@ export default function ExerciseDetailPanel({ selectedExercise }) {
       </div>
       <div className="flex-1 p-4 overflow-y-auto">
         <div className="space-y-6">
+          {/* Gráfico de progreso */}
+          <div className="w-full">
+            <ProgressChart submissions={submissions} />
+          </div>
+          
           {selectedExercise.code && (
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm font-medium">
@@ -98,9 +104,9 @@ export default function ExerciseDetailPanel({ selectedExercise }) {
             ) : (
               <div className="mt-4">
                 <div className="text-sm font-medium mb-2">Total de submisiones: {submissions.length}</div>
-                <div className="overflow-x-auto">
+                {/* <div className="overflow-x-auto">
                   <pre className="text-xs p-2 bg-transparent">{JSON.stringify(submissions, null, 2)}</pre>
-                </div>
+                </div> */}
               </div>
             )}  
           </div>
