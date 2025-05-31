@@ -105,3 +105,20 @@ export async function evaluateStudentSolution(solutionData) {
     };
   }
 }
+
+/**
+ * Obtiene la lista de ejercicios de tipo réplica
+ * @returns {Promise<Array>} Lista de ejercicios con sus detalles
+ */
+export async function getReplicaExercises() {
+  const response = await fetch(`${TASK_API_BASE_URL}/exercises/`, {
+    method: 'GET',
+    headers: defaultTaskHeaders,
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Error al obtener los ejercicios: ${response.statusText}`);
+  }
+  
+  return response.json();
+}
