@@ -36,7 +36,9 @@ export default function TasksReplicaPage({ onCreateNew }) {
         />
       </div>
 
-      <ExerciseDetailPanel selectedExercise={selectedExercise} />
+      <div className="w-[70%] overflow-auto">
+        <ExerciseDetailPanel selectedExercise={selectedExercise} />
+      </div>
     </div>
   );
 }

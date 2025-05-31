@@ -1,8 +1,46 @@
 'use client';
 
-import { Code2, FileText, Hash } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Code2, FileText } from 'lucide-react';
+import { getReplicationSubmissions } from '@/lib/tasks-teacher/task-service';
 
 export default function ExerciseDetailPanel({ selectedExercise }) {
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    async function fetchSubmissions() {
+      if (!selectedExercise || !selectedExercise.exercise_id) {
+        setSubmissions([]);
+        return;
+      }
+      
+      setLoading(true);
+      setError(null);
+      
+      try {
+        const exerciseId = selectedExercise.exercise_id;
+        console.log('Buscando todas las submisiones...');
+        const allSubmissions = await getReplicationSubmissions({});
+        const filteredSubmissions = allSubmissions.filter(
+          submission => submission.exercise_id == exerciseId
+        );
+        
+        console.log('Submisiones encontradas para el ejercicio', exerciseId, ':', filteredSubmissions);
+        console.log('Total de submisiones encontradas:', filteredSubmissions.length);
+        
+        setSubmissions(filteredSubmissions);
+      } catch (err) {
+        console.error('Error al obtener submisiones:', err);
+        setError('No se pudieron cargar las submisiones del ejercicio');
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchSubmissions();
+  }, [selectedExercise]);
   if (!selectedExercise) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
@@ -49,18 +87,23 @@ export default function ExerciseDetailPanel({ selectedExercise }) {
               </div>
             </div>
           )}
-
-          {selectedExercise.visible_lines && selectedExercise.visible_lines.length > 0 && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Hash className="h-4 w-4" />
-                <span>Líneas visibles</span>
+          
+          <div className="space-y-2 mt-8">
+            {loading ? (
+              <div className="text-sm text-gray-500">Cargando submisiones...</div>
+            ) : error ? (
+              <div className="text-sm text-red-500">{error}</div>
+            ) : submissions.length === 0 ? (
+              <div className="text-sm text-gray-500">No hay submisiones registradas para este ejercicio</div>
+            ) : (
+              <div className="mt-4">
+                <div className="text-sm font-medium mb-2">Total de submisiones: {submissions.length}</div>
+                <div className="overflow-x-auto">
+                  <pre className="text-xs p-2 bg-transparent">{JSON.stringify(submissions, null, 2)}</pre>
+                </div>
               </div>
-              <div className="text-sm text-gray-700">
-                {selectedExercise.visible_lines.map(line => line.numero).join(', ')}
-              </div>
-            </div>
-          )}
+            )}  
+          </div>
         </div>
       </div>
     </div>

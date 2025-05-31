@@ -178,3 +178,36 @@ async function registerReplicationSubmission(submissionData) {
     throw error;
   }
 }
+
+/**
+ * Obtiene el listado de sumisiones de ejercicios de replicación
+ * @param {Object} [options] - Opciones de filtrado
+ * @param {string|number} [options.userId] - Filtrar por ID de usuario/estudiante
+ * @param {string|number} [options.exerciseId] - Filtrar por ID de ejercicio
+ * @param {number} [options.limit=100] - Límite de resultados a obtener
+ * @param {number} [options.skip=0] - Número de resultados a omitir (para paginación)
+ * @returns {Promise<Array>} - Lista de sumisiones
+ */
+export async function getReplicationSubmissions(options = {}) {
+  const { userId, exerciseId, limit = 100, skip = 0 } = options;
+  let url = `${TASK_API_BASE_URL}/replication-submissions/?skip=${skip}&limit=${limit}`;
+  if (userId) {
+    url += `&user_id=${userId}`;
+  }
+  if (exerciseId) {
+    url += `&exercise_id=${exerciseId}`;
+  }
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: defaultTaskHeaders
+    });
+    if (!response.ok) {
+      throw new Error(`Error al obtener sumisiones: ${response.status} ${response.statusText}`);
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Error al obtener sumisiones:', error);
+    throw error;
+  }
+}
