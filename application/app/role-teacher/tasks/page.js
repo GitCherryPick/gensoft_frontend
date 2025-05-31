@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import TasksReplicaPage from './TasksReplicaPage';
-import ExerciseCreate from './ExerciseCreate';
+import TasksReplicaPage from './PageTasksReplica';
+import ExerciseCreate from './PageExerciseCreate';
 
 export const dynamic = 'force-dynamic';
 

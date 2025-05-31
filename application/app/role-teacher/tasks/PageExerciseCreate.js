@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import dynamic from 'next/dynamic';
-import TaskForm from './TaskForm';
+import TaskForm from './exercises/ComponentTaskForm';
 
 const CodeEditorCopy = dynamic(
   () => import("@/components/core/CodeEditorCopy"),
