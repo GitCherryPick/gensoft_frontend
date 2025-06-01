@@ -8,16 +8,21 @@ export default function CardCollapse({ element }) {
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <a className="text-lg font-semibold text-indigo-100 mb-2" href={`${ROUTES.TEACHER.REVIEW_LABS_TASK}/${element.id}`}>{element.title}</a>
-      <div className="flex justify-between">
-        <div className="text-sm text-indigo-500 mb-2">
+      <a
+        className="text-lg font-bold text-white hover:underline block mb-2"
+        href={`${ROUTES.TEACHER.REVIEW_LABS_TASK}/${element.id}`}
+      >
+        {element.title}
+      </a>
+      <div className="flex justify-between text-sm mb-2">
+        <div className="text-indigo-500">
           Creado: {element.created_at ? new Date(element.created_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
         </div>
-        <div className="text-sm text-rose-400 mb-2">
+        <div className="text-rose-400">
           Termina: {element.ended_at ? new Date(element.ended_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
         </div>
       </div>
-      <CollapsibleTrigger>
+      {/* <CollapsibleTrigger>
         <div className="flex items-center justify-center">
           {!isOpen ? (
             <>
@@ -34,6 +39,26 @@ export default function CardCollapse({ element }) {
       </CollapsibleTrigger>
       <CollapsibleContent className="mt-2 p-4 bg-slate-700 rounded-lg">
         <p className="text-white">{element.enunciado}</p>
+      </CollapsibleContent>
+    </Collapsible> */}
+    <CollapsibleTrigger asChild>
+        <button className="w-full flex items-center justify-center text-sm font-semibold text-slate-300 hover:text-white transition-colors">
+          {isOpen ? (
+            <>
+              <CircleChevronUp className="w-4 h-4 mr-2" />
+              Ocultar enunciado
+            </>
+          ) : (
+            <>
+              <CircleChevronDown className="w-4 h-4 mr-2" />
+              Ver enunciado
+            </>
+          )}
+        </button>
+      </CollapsibleTrigger>
+
+      <CollapsibleContent className="mt-2 bg-indigo-950 text-white text-sm p-4 rounded-lg">
+        <p>{element.enunciado}</p>
       </CollapsibleContent>
     </Collapsible>
   )

@@ -16,9 +16,12 @@ export default function CardTask() {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 w-full gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 w-full gap-4">
       {tasks.map((task) => (
-        <div key={task.id} className="border border-gray-600 bg-slate-800 rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow" >
+        <div 
+          key={task.id} 
+          className="bg-gradient-to-br from-slate-800 to-indigo-900 border border-slate-600 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300" 
+        >
           <CardCollapse element={task} />
         </div>
       ))}
