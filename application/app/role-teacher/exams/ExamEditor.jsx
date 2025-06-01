@@ -244,7 +244,7 @@ const ExamEditor = ({ exam, setExam }) => {
       <div className="mb-12">
         <div className="text-center mb-8">
           <h3 className="text-2xl font-bold text-white mb-2">
-            Construye tu examen
+            Personaliza tu examen
           </h3>
           <p className="text-gray-400">
             Elige el tipo de pregunta que quieres agregar

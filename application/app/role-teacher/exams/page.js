@@ -30,6 +30,10 @@ const ExamCreator = () => {
     return <ExamSettings exam={exam} setExam={setExam} />;
   };
 
+  const handleSave = () => {
+    console.log("Examen guardado:", exam);
+  };
+
   return (
     <div className="h-screen w-full rounded-md bg-dark-1 relative overflow-hidden">
       {/* Header */}
@@ -96,7 +100,10 @@ const ExamCreator = () => {
                 </button>
               </div>
 
-              <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-600 hover:to-emerald-700 flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+              <button
+                onClick={handleSave}
+                className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-3 rounded-xl hover:from-green-600 hover:to-emerald-700 flex items-center space-x-2 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+              >
                 <Save size={18} />
                 <span className="font-medium">Guardar Examen</span>
               </button>
