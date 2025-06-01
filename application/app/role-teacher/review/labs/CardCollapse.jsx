@@ -1,19 +1,24 @@
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { CircleChevronDown, CircleChevronUp } from 'lucide-react';
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/navigation";
 
 export default function CardCollapse({ element }) {
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
+  const redirectToTask = () => {
+    router.push(ROUTES.TEACHER.REVIEW_LABS_TASK(element.id))
+  }
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <a
+      <button
         className="text-lg font-bold text-white hover:underline block mb-2"
-        href={`${ROUTES.TEACHER.REVIEW_LABS_TASK}/${element.id}`}
+        onClick={redirectToTask}
       >
         {element.title}
-      </a>
+      </button>
       <div className="flex justify-between text-sm mb-2">
         <div className="text-indigo-500">
           Creado: {element.created_at ? new Date(element.created_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
@@ -22,26 +27,7 @@ export default function CardCollapse({ element }) {
           Termina: {element.ended_at ? new Date(element.ended_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
         </div>
       </div>
-      {/* <CollapsibleTrigger>
-        <div className="flex items-center justify-center">
-          {!isOpen ? (
-            <>
-              <CircleChevronDown className="w-4 h-4 text-gray-500 mr-2" />
-              <p className="text-sm font-semibold text-gray-500">Ver enunciado</p>
-            </>
-          ) : (
-            <>
-              <CircleChevronUp className="w-4 h-4 text-gray-500 mr-2" />
-              <p className="text-sm font-semibold text-gray-500">Ocultar enunciado</p>
-            </>
-          )}
-        </div>
-      </CollapsibleTrigger>
-      <CollapsibleContent className="mt-2 p-4 bg-slate-700 rounded-lg">
-        <p className="text-white">{element.enunciado}</p>
-      </CollapsibleContent>
-    </Collapsible> */}
-    <CollapsibleTrigger asChild>
+      <CollapsibleTrigger asChild>
         <button className="w-full flex items-center justify-center text-sm font-semibold text-slate-300 hover:text-white transition-colors">
           {isOpen ? (
             <>

@@ -26,7 +26,7 @@ export async function getAllTasksLabs() {
 }
 
 export async function getSubmissionsByTaskId(taskId) {
-  const response = await fetch(`${SANDBOX_API_BASE_URL}/submissions/task/${taskId}`, {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/sandbox/submissions/task/${taskId}`, {
     method: 'GET',
     headers: defaultContentHeaders,
   });
@@ -42,7 +42,7 @@ export async function getTaskById(taskId) {
 }
 
 export async function getSubmissionsByTaskAndUser(taskId, userId) {
-  const response = await fetch(`${SANDBOX_API_BASE_URL}/submissions/task/${taskId}/${userId}`, {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/sandbox/submissions/task/${taskId}/${userId}`, {
     method: 'GET',
     headers: defaultContentHeaders,
   });
