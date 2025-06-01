@@ -8,3 +8,23 @@ export async function getWarningsFromAI(codeData) {
   });
   return response.json();
 }
+
+export async function getAllSubmissions() {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/sandbox/submissions`, {
+    method: 'GET',
+    headers: defaultContentHeaders,
+  });
+  return response.json();
+}
+
+export async function getAllTasksLabs() {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks`, {
+    method: 'GET',
+    headers: defaultContentHeaders,
+  });
+  return response.json();
+}
+
+
+
+

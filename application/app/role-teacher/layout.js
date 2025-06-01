@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconUsers, IconArrowLeft, IconBook, IconUser, IconListCheck, FlaskConical  } from "@tabler/icons-react"
+import { IconUsers, IconArrowLeft, IconBook, IconUser, IconListCheck, IconBrandBandlab } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -33,7 +33,7 @@ export default function TeacherLayout({ children }) {
     {
       label: "Revisión de Laboratorios",
       href: ROUTES.TEACHER.REVIEW_LABS,
-      icon: <FlaskConical className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: <IconBrandBandlab className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Perfil",
