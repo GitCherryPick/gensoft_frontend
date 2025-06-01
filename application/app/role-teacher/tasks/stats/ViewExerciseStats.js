@@ -1,9 +1,31 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Code2, FileText } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Code2, FileText, Loader2 } from 'lucide-react';
 import { getReplicationSubmissions } from '@/lib/tasks-teacher/task-service';
 import ProgressChart from './ProgressChart';
+
+const FadeIn = ({ show, children, className = '' }) => {
+  const [shouldRender, setRender] = useState(show);
+  const timeoutRef = useRef(null);
+
+  useEffect(() => {
+    if (show) {
+      setRender(true);
+    } else {
+      timeoutRef.current = setTimeout(() => setRender(false), 200);
+    }
+    return () => clearTimeout(timeoutRef.current);
+  }, [show]);
+
+  return shouldRender ? (
+    <div
+      className={`transition-opacity duration-200 ${show ? 'opacity-100' : 'opacity-0'} ${className}`}
+    >
+      {children}
+    </div>
+  ) : null;
+};
 
 export default function ExerciseDetailPanel({ selectedExercise }) {
   const [submissions, setSubmissions] = useState([]);
@@ -44,8 +66,8 @@ export default function ExerciseDetailPanel({ selectedExercise }) {
   }, [selectedExercise]);
   if (!selectedExercise) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-4 text-center">
-        <div className="max-w-md space-y-4">
+      <div className="h-full flex items-center justify-center text-center">
+        <div className="max-w-md space-y-4 px-4">
           <h3 className="text-lg font-medium">Ningún ejercicio seleccionado</h3>
           <p className="text-sm text-gray-500">
             Selecciona un ejercicio de la lista para ver sus detalles o crea uno nuevo.
@@ -63,53 +85,94 @@ export default function ExerciseDetailPanel({ selectedExercise }) {
           {selectedExercise.prompt || 'Sin descripción disponible'}
         </p>
       </div>
-      <div className="flex-1 p-4 overflow-y-auto">
-        <div className="space-y-6">
-          {/* Gráfico de progreso */}
-          <div className="w-full">
-            <ProgressChart submissions={submissions} />
-          </div>
-          
-          {selectedExercise.code && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Code2 className="h-4 w-4" />
-                <span>Código</span>
-              </div>
-              <div className="bg-gray-100 p-4 rounded-md font-mono text-sm overflow-x-auto">
-                <pre>{selectedExercise.code}</pre>
+      <div className="flex-1 flex flex-col">
+        <div className="flex-1 p-4 overflow-y-auto">
+          {loading || submissions.length === 0 ? (
+            <div className="h-full flex items-center justify-center">
+              <div className="flex flex-col items-center space-y-2">
+                <p className="text-sm text-gray-500">
+                  {loading ? 'Cargando datos del ejercicio...' : 'Ningún estudiante ha resuelto este ejercicio aún'}
+                </p>
+                {loading && <Loader2 className="h-8 w-8 animate-spin text-gray-500" />}
               </div>
             </div>
-          )}
+          ) : (
+            <FadeIn show={true} className="space-y-6">
+              <div className="w-full transition-opacity duration-200">
+                <ProgressChart submissions={submissions} />
+              </div>
+              
+              {selectedExercise.code && (
+                <div className="space-y-2 transition-opacity duration-200">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <Code2 className="h-4 w-4" />
+                    <span>Código</span>
+                  </div>
+                  <div className="bg-gray-100 p-4 rounded-md font-mono text-sm overflow-x-auto">
+                    <pre>{selectedExercise.code}</pre>
+                  </div>
+                </div>
+              )}
 
-          {selectedExercise.instructions && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <FileText className="h-4 w-4" />
-                <span>Instrucciones</span>
+              {selectedExercise.instructions && (
+                <div className="space-y-2 transition-opacity duration-200">
+                  <div className="flex items-center gap-2 text-sm font-medium">
+                    <FileText className="h-4 w-4" />
+                    <span>Instrucciones</span>
+                  </div>
+                  <div className="prose max-w-none">
+                    <p>{selectedExercise.instructions}</p>
+                  </div>
+                </div>
+              )}
+              
+              <div className="space-y-2 mt-8">
+                {error ? (
+                  <div className="text-sm text-red-500">{error}</div>
+                ) : (
+                  <div className="mt-4">
+                    <div className="text-sm font-medium mb-2">Total de respuestas: {submissions.length}</div>
+                    
+                    <div className="mt-6">
+                      <h3 className="text-sm font-medium text-gray-200 mb-3">Detalles de las submisiones</h3>
+                      <div className="divide-y divide-gray-800">
+                        {submissions.map((submission, index) => (
+                          <div key={submission.id || index} className="py-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-gray-400">{new Date(submission.submission_date).toLocaleDateString()}</span>
+                              <span className="text-xs text-gray-400">{submission.typing_duration_seconds}s</span>
+                            </div>
+                            
+                            {submission.diferencias_detectadas && submission.diferencias_detectadas.length > 0 && (
+                              <div className="mt-2">
+                                <div className="text-xs font-medium text-gray-300 mb-1">Diferencias:</div>
+                                <ul className="list-disc ml-4 text-xs text-gray-300 space-y-1">
+                                  {submission.diferencias_detectadas.map((diff, diffIndex) => (
+                                    <li key={diffIndex}>{diff}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            
+                            {submission.errores_sintacticos && submission.errores_sintacticos.length > 0 && (
+                              <div className="mt-2">
+                                <div className="text-xs font-medium text-gray-300 mb-1">Errores sintácticos:</div>
+                                <ul className="list-disc ml-4 text-xs text-gray-300 space-y-1">
+                                  {submission.errores_sintacticos.map((error, errorIndex) => (
+                                    <li key={errorIndex}>{error}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}  
               </div>
-              <div className="prose max-w-none">
-                <p>{selectedExercise.instructions}</p>
-              </div>
-            </div>
+            </FadeIn>
           )}
-          
-          <div className="space-y-2 mt-8">
-            {loading ? (
-              <div className="text-sm text-gray-500">Cargando submisiones...</div>
-            ) : error ? (
-              <div className="text-sm text-red-500">{error}</div>
-            ) : submissions.length === 0 ? (
-              <div className="text-sm text-gray-500">No hay submisiones registradas para este ejercicio</div>
-            ) : (
-              <div className="mt-4">
-                <div className="text-sm font-medium mb-2">Total de submisiones: {submissions.length}</div>
-                {/* <div className="overflow-x-auto">
-                  <pre className="text-xs p-2 bg-transparent">{JSON.stringify(submissions, null, 2)}</pre>
-                </div> */}
-              </div>
-            )}  
-          </div>
         </div>
       </div>
     </div>

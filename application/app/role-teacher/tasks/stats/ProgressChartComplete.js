@@ -94,7 +94,6 @@ export default function ProgressChart({ submissions = [] }) {
           </div>
         </div>
         
-        {/* Gráficos vacíos */}
         <div className="w-full grid grid-cols-3 gap-4">
           <SuccessRateChart submissions={[]} />
           <SyntaxErrorsChart submissions={[]} />
@@ -106,7 +105,6 @@ export default function ProgressChart({ submissions = [] }) {
 
   return (
     <div className="w-full flex flex-col space-y-6">
-      {/* Gráfico principal de evolución de puntajes */}
       <div className="w-full h-64 rounded-lg p-6 bg-gray-50/5">
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-sm font-medium text-gray-200">progreso de los estudiantes</h3>
@@ -133,7 +131,6 @@ export default function ProgressChart({ submissions = [] }) {
               horizontal={false}
             />
             
-            {/* Líneas de referencia horizontales */}
             {[2, 4, 6, 8].map((y) => (
               <ReferenceLine 
                 key={`ref-line-${y}`} 
@@ -190,7 +187,6 @@ export default function ProgressChart({ submissions = [] }) {
         </ResponsiveContainer>
       </div>
       
-      {/* Gráficos estadísticos complementarios */}
       <div className="w-full grid grid-cols-3 gap-4">
         <SuccessRateChart submissions={submissions} />
         <SyntaxErrorsChart submissions={submissions} />

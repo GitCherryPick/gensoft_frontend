@@ -1,9 +1,14 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { PieChart, Pie, BarChart, Bar, Cell, RadialBarChart, RadialBar, Legend, Tooltip, ResponsiveContainer } from 'recharts';
+import { 
+  PieChart, Pie, BarChart, Bar, Cell, 
+  XAxis, YAxis, CartesianGrid, Tooltip, 
+  ResponsiveContainer, Legend, ReferenceLine, 
+  LabelList, ScatterChart, Scatter, ZAxis,
+  ComposedChart, Area, Line, Bar as RechartsBar
+} from 'recharts';
 
-// Componente para el tooltip personalizado
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
@@ -19,7 +24,6 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-// Colores consistentes con el esquema principal
 const chartColors = {
   success: '#34C759',
   fail: '#FF2D55',
@@ -29,7 +33,6 @@ const chartColors = {
 };
 
 export function SuccessRateChart({ submissions = [] }) {
-  // Procesar datos para obtener tasa de éxito
   const data = useMemo(() => {
     if (!submissions.length) return [];
     
@@ -50,50 +53,55 @@ export function SuccessRateChart({ submissions = [] }) {
     return <EmptyChart title="Tasa de éxito" />;
   }
 
+  const successRate = (data[0].value / (data[0].value + data[1].value)) * 100;
+
   return (
-    <div className="w-full h-48 rounded-lg bg-gray-50/5 p-4">
-      <h3 className="text-xs font-medium text-gray-200 mb-2">Tasa de éxito</h3>
-      <ResponsiveContainer width="100%" height="85%">
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            innerRadius={35}
-            outerRadius={60}
-            paddingAngle={5}
-            dataKey="value"
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-          <text
-            x="50%"
-            y="50%"
-            textAnchor="middle"
-            dominantBaseline="middle"
-            className="fill-gray-200 text-sm font-medium"
-          >
-            {data[0].value} / {data[0].value + data[1].value}
-          </text>
-          <Tooltip content={<CustomTooltip />} />
-        </PieChart>
-      </ResponsiveContainer>
+    <div className="w-full h-48 rounded-lg bg-gray-50/5 p-3 flex flex-col">
+      <h3 className="text-xs font-medium text-gray-200 mb-1">Tasa de éxito</h3>
+      <div className="flex-1">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius="60%"
+              outerRadius="90%"
+              paddingAngle={2}
+              dataKey="value"
+              children={
+                data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
+                ))
+              }
+            />
+            <text
+              x="50%"
+              y="50%"
+              textAnchor="middle"
+              dominantBaseline="middle"
+              className="fill-gray-200 text-sm font-medium"
+            >
+              {successRate.toFixed(0)}%
+            </text>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
 
 export function SyntaxErrorsChart({ submissions = [] }) {
-  // Procesar datos para obtener errores sintácticos
   const data = useMemo(() => {
     if (!submissions.length) return [];
     
-    const submissionsWithErrors = submissions.filter(s => 
-      s.errores_sintacticos && s.errores_sintacticos.length > 0
+    const submissionsWithErrors = submissions.filter(sub => 
+      sub.errores_sintacticos && sub.errores_sintacticos.length > 0
     ).length;
     
     const submissionsWithoutErrors = submissions.length - submissionsWithErrors;
+    const errorPercentage = (submissionsWithErrors / submissions.length) * 100;
     
     return [
       { name: 'Con errores', value: submissionsWithErrors, color: chartColors.error },
@@ -105,47 +113,57 @@ export function SyntaxErrorsChart({ submissions = [] }) {
     return <EmptyChart title="Errores sintácticos" />;
   }
 
+  const errorPercentage = (data[0].value / (data[0].value + data[1].value)) * 100;
+
   return (
-    <div className="w-full h-48 rounded-lg bg-gray-50/5 p-4">
-      <h3 className="text-xs font-medium text-gray-200 mb-2">Errores sintácticos</h3>
-      <ResponsiveContainer width="100%" height="85%">
-        <BarChart data={data} layout="vertical">
-          <Tooltip content={<CustomTooltip />} />
-          <Bar dataKey="value" radius={[4, 4, 4, 4]}>
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+    <div className="w-full h-48 rounded-lg bg-gray-50/5 p-3 flex flex-col">
+      <h3 className="text-xs font-medium text-gray-200 mb-1">Envíos con errores</h3>
+      <div className="flex-1">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              cx="50%"
+              cy="50%"
+              innerRadius="60%"
+              outerRadius="90%"
+              paddingAngle={2}
+              dataKey="value"
+              children={
+                data.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
+                ))
+              }
+            />
+            <text
+              x="50%"
+              y="50%"
+              textAnchor="middle"
+              dominantBaseline="middle"
+              className="fill-gray-200 text-sm font-medium"
+            >
+              {errorPercentage.toFixed(0)}%
+            </text>
+            <Tooltip content={<CustomTooltip />} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }
 
 export function TypingTimeChart({ submissions = [] }) {
-  // Procesar datos para obtener tiempo de escritura
-  const data = useMemo(() => {
-    if (!submissions.length) return [];
+  const averageTime = useMemo(() => {
+    if (!submissions.length) return 0;
     
-    // Agrupar por estudiante
-    const timesByStudent = {};
-    submissions.forEach(s => {
-      const userId = s.user_id;
-      if (!timesByStudent[userId]) {
-        timesByStudent[userId] = [];
-      }
-      timesByStudent[userId].push(s.typing_duration_seconds || 0);
-    });
+    const validTimes = submissions
+      .map(s => s.typing_duration_seconds || 0)
+      .filter(time => time > 0);
+      
+    if (validTimes.length === 0) return 0;
     
-    // Calcular promedio por estudiante
-    return Object.entries(timesByStudent).map(([userId, times]) => {
-      const average = times.reduce((sum, time) => sum + time, 0) / times.length;
-      return {
-        name: `Estudiante ${userId}`,
-        value: average,
-        fill: chartColors.time
-      };
-    });
+    const sum = validTimes.reduce((a, b) => a + b, 0);
+    return sum / validTimes.length;
   }, [submissions]);
 
   if (!submissions.length) {
@@ -153,25 +171,14 @@ export function TypingTimeChart({ submissions = [] }) {
   }
 
   return (
-    <div className="w-full h-48 rounded-lg bg-gray-50/5 p-4">
-      <h3 className="text-xs font-medium text-gray-200 mb-2">Tiempo promedio</h3>
-      <ResponsiveContainer width="100%" height="85%">
-        <RadialBarChart 
-          innerRadius="30%" 
-          outerRadius="80%" 
-          data={data} 
-          startAngle={180} 
-          endAngle={0}
-        >
-          <RadialBar 
-            minAngle={15} 
-            background
-            clockWise={true} 
-            dataKey="value" 
-          />
-          <Tooltip content={<CustomTooltip />} />
-        </RadialBarChart>
-      </ResponsiveContainer>
+    <div className="w-full h-48 rounded-lg bg-gray-50/5 p-3 flex flex-col items-center justify-center">
+      <h3 className="text-xs font-medium text-gray-200 mb-1">Tiempo promedio por envío</h3>
+      <div className="flex-1 flex flex-col items-center justify-center">
+        <div className="text-3xl font-bold text-gray-200">
+          {averageTime.toFixed(1)}
+        </div>
+        <div className="text-xs text-gray-400 mt-1">segundos</div>
+      </div>
     </div>
   );
 }
