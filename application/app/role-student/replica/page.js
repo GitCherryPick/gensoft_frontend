@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { getCurrentUser } from '@/lib/auth/auth-service';
 import dynamic from 'next/dynamic';
 import { evaluateStudentSolution } from '@/lib/tasks-teacher/task-service';
 import { getExerciseById } from '@/lib/content/content-service';
@@ -17,6 +18,27 @@ export default function ReplicaPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [evaluationResult, setEvaluationResult] = useState(null);
+  const [typingStartTime, setTypingStartTime] = useState(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  const handleCodeChange = (newCode) => {
+    if (!isTyping && newCode.trim() !== '') {
+      setIsTyping(true);
+      setTypingStartTime(new Date());
+    } else if (isTyping && newCode.trim() === '') {
+      setIsTyping(false);
+      setTypingStartTime(null);
+    }
+    setCode(newCode);
+  };
+
+  const calculateTypingTime = () => {
+    if (!typingStartTime) return 0;
+    const endTime = new Date();
+    const timeDiff = (endTime - typingStartTime) / 1000;
+    return Math.round(timeDiff);
+  };
 
   const handleHelpRequest = async () => {
     console.log('Solicitando ayuda...');
@@ -25,11 +47,18 @@ export default function ReplicaPage() {
         throw new Error('No hay datos del ejercicio disponibles');
       }
       
+      const tiempoRedaccion = calculateTypingTime();
+      
+      setIsTyping(false);
+      setTypingStartTime(null);
+      
+      const userId = currentUser?.id || '1';
+      
       const resultado = await evaluateStudentSolution({
-        id_estudiante: '2003',
+        id_estudiante: userId,
         id_ejercicio: exercise.id_ejercicio,
         codigo_fuente: code,
-        tiempo_redaccion: 10,
+        tiempo_redaccion: tiempoRedaccion,
         consignas_docente: exercise.enunciado || '',
         codigo_objetivo: exercise.codigo_objetivo || '',
         contexto_ejercicio: exercise.comentario_docente || ''
@@ -45,10 +74,24 @@ export default function ReplicaPage() {
   };
 
   useEffect(() => {
+    const loadCurrentUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Error al cargar el usuario actual:', error);
+      }
+    };
+
+    loadCurrentUser();
+  }, []);
+
+  useEffect(() => {
     const fetchExercise = async () => {
       try {
         setLoading(true);
-        const exerciseData = await getExerciseById('2003');
+        const userId = currentUser?.id || '2003';
+        const exerciseData = await getExerciseById(userId);
         setExercise(exerciseData);
         setCode(exerciseData.codigo_base);
       } catch (err) {
@@ -59,8 +102,10 @@ export default function ReplicaPage() {
       }
     };
 
-    fetchExercise();
-  }, []);
+    if (currentUser) {
+      fetchExercise();
+    }
+  }, [currentUser]);
 
   return (
     <div className="flex h-full w-full p-4 gap-4">
@@ -86,7 +131,7 @@ export default function ReplicaPage() {
         <div className="flex-1 overflow-hidden">
           <CodeEditorCopy
             codeInput={code}
-            setCodeInput={setCode}
+            setCodeInput={handleCodeChange}
           />
         </div>
       </div>
