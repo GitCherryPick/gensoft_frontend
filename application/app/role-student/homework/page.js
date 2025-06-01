@@ -4,76 +4,110 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeIn from "@/components/animations/FadeIn";
+import { getAllTaskCodes } from "@/lib/tasks-teacher/task-service";
+import { getExerciseById, getDefaultCourse } from "@/lib/content/content-service";
 
-// Datos de ejemplo por ahora
-const assignedExercises = [
-  { 
-    id: 1, 
-    title: "Ejercicio 1: Crea una lista en Python", 
-    dueDate: "2025-06-05", 
-    dueTime: "14:00", 
-    status: "Pendiente", 
-    description: "Crea una lista en Python y realiza operaciones básicas.", 
-    type: "Réplica", 
-    course: "Listas y Tuplas" 
-  },
-  { 
-    id: 2, 
-    title: "Ejercicio 2: Ejercicios de Python inicial", 
-    dueDate: "2025-05-28", 
-    dueTime: "09:30", 
-    status: "Atrasado", 
-    description: "Resolver 10 ejercicios básicos de Python.", 
-    type: "Laboratorio", 
-    course: "Introducción a Python" 
-  },
-  { 
-    id: 3, 
-    title: "Ejercicio 3: Ejercicios con listas en Python", 
-    dueDate: "2025-05-30", 
-    dueTime: "16:00", 
-    status: "Pendiente", 
-    description: "Ejercicios avanzados con listas en Python.", 
-    type: "Réplica", 
-    course: "Listas y Tuplas" 
-  },
-  { 
-    id: 4, 
-    title: "Ejercicio 4: Resuelve las siguientes funciones", 
-    dueDate: "2025-05-25", 
-    dueTime: "11:00", 
-    status: "Completado", 
-    description: "Crea y resuelve funciones en Python.", 
-    type: "Laboratorio", 
-    course: "Funciones en Python" 
-  },
-];
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = String(date.getFullYear()).slice(-2);
+  return `${day}/${month}/${year}`;
+};
 
 export default function Homework() {
   const searchParams = useSearchParams();
   const [isMounted, setIsMounted] = useState(false);
-  const [exercises, setExercises] = useState(assignedExercises);
-  const [filteredExercises, setFilteredExercises] = useState(assignedExercises);
+  const [exercises, setExercises] = useState([]);
+  const [filteredExercises, setFilteredExercises] = useState([]);
   const [statusFilter, setStatusFilter] = useState("Todos");
   const [timeFilter, setTimeFilter] = useState("Todos");
   const [typeFilter, setTypeFilter] = useState("Todas");
   const [courseFilter, setCourseFilter] = useState("Todos");
   const [sortBy, setSortBy] = useState("dueDateAsc");
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     setIsMounted(true);
+
+    async function fetchTasks() {
+      try {
+        // labo
+        let taskList = [];
+        try {
+          const taskData = await getAllTaskCodes();
+          taskList = Array.isArray(taskData) ? taskData : taskData.data || taskData.tasks || taskData.results || [];
+        } catch (taskError) {
+          console.warn("Failed to fetch task codes, continuing with exercises:", taskError);
+        }
+
+        // labo
+        const laboratorioTasks = taskList.map((task, index) => ({
+          id: task.id_ejercicio || `lab-${index + 1}`,
+          title: task.consignas_docente || `Laboratorio Task ${index + 1}`,
+          dueDate: task.due_date || "2025-06-01",
+          dueTime: task.due_time || "12:00",
+          status: task.status || "Pendiente",
+          description: task.contexto_ejercicio || "No description available",
+          type: "Laboratorio",
+          course: task.course_name || "Introducción a Python",
+        }));
+
+        // Replica
+        let replicaExercises = [];
+        try {
+          const exerciseData = await getExerciseById('last'); 
+          replicaExercises = Array.isArray(exerciseData) ? exerciseData : [exerciseData];
+        } catch (exerciseError) {
+          console.warn("Failed to fetch exercises, continuing with tasks:", exerciseError);
+        }
+
+        // relicas
+        const replicaTasks = replicaExercises.map((exercise, index) => ({
+          id: exercise.id_ejercicio || `rep-${index + 1}`,
+          title: exercise.titulo || `Réplica Exercise ${index + 1}`,
+          dueDate: exercise.due_date || "2025-06-01",
+          dueTime: exercise.due_time || "12:00",
+          status: exercise.status || "Pendiente",
+          description: exercise.enunciado || exercise.comentario_docente || "No description available",
+          type: "Réplica",
+          course: exercise.course_name || "Introducción a Python",
+        }));
+
+      
+        const combinedTasks = [...laboratorioTasks, ...replicaTasks];
+
+      
+        let courseOptions = ["Introducción a Python", "Listas y Tuplas", "Funciones en Python"];
+        try {
+          const course = await getDefaultCourse();
+          courseOptions = [...new Set([...courseOptions, course.title])];
+        } catch (courseError) {
+          console.warn("Failed to fetch course data:", courseError);
+        }
+
+        setExercises(combinedTasks);
+        setFilteredExercises(combinedTasks);
+        setLoading(false);
+      } catch (err) {
+        setError("No se pudieron obtener las tareas. Por favor, verifica la configuración de la API e inténtalo nuevamente.");
+        setLoading(false);
+        console.error("Error al obtener las tareas:", err);
+      }
+    }
+
+    fetchTasks();
   }, []);
 
   useEffect(() => {
     let filtered = [...exercises];
 
-    // Filtrar por estado
     if (statusFilter !== "Todos") {
       filtered = filtered.filter((exercise) => exercise.status === statusFilter);
     }
 
-    // Filtrar por período de tiempo
     const today = new Date();
     const startOfWeek = new Date(today);
     startOfWeek.setDate(today.getDate() - today.getDay());
@@ -98,17 +132,14 @@ export default function Homework() {
       });
     }
 
-    // Filtrar por tipo
     if (typeFilter !== "Todas") {
       filtered = filtered.filter((exercise) => exercise.type === typeFilter);
     }
 
-    // Filtrar por curso
     if (courseFilter !== "Todos") {
       filtered = filtered.filter((exercise) => exercise.course === courseFilter);
     }
 
-    // Filtrar por búsqueda
     if (searchQuery) {
       filtered = filtered.filter(
         (exercise) =>
@@ -117,7 +148,6 @@ export default function Homework() {
       );
     }
 
-    // Ordenar los resultados
     if (sortBy === "dueDateAsc") {
       filtered.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
     } else if (sortBy === "dueDateDesc") {
@@ -132,6 +162,22 @@ export default function Homework() {
   }, [statusFilter, timeFilter, typeFilter, courseFilter, sortBy, searchQuery, exercises]);
 
   if (!isMounted) return null;
+
+  if (loading) {
+    return (
+      <div className="flex-1 overflow-y-auto bg-dark-1">
+        <div className="text-center p-6 text-light-2">Cargando tareas...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 overflow-y-auto bg-dark-1">
+        <div className="text-center p-6 text-red-300">{error}</div>
+      </div>
+    );
+  }
 
   const getStatusStyles = (status, dueDate) => {
     const today = new Date();
@@ -166,18 +212,8 @@ export default function Homework() {
     setSearchQuery("");
   };
 
-  // Función para formatear la fecha al formato DD/MM/YY
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses son 0-11, por eso +1
-    const year = String(date.getFullYear()).slice(-2); // Últimos dos dígitos del año
-    return `${day}/${month}/${year}`;
-  };
-
   return (
     <div className="flex-1 overflow-y-auto bg-dark-1">
-      {/* head */}
       <div className="relative bg-gradient-to-r from-neutral-900 to-neutral-800 h-56 md:h-64 flex items-center justify-center px-4">
         <div className="text-center space-y-2">
           <h3 className="text-3xl md:text-5xl font-bold text-white">
@@ -189,9 +225,7 @@ export default function Homework() {
         </div>
       </div>
 
-      {/* Contenido */}
       <div className="max-w-6xl mx-auto p-6">
-        {/* Advertencia en caso de que la tarea ya está próxima */}
         {urgentTasks.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -219,7 +253,6 @@ export default function Homework() {
           </motion.div>
         )}
 
-        {/* Filtros y Buscador */}
         <FadeIn>
           <div className="mb-8">
             <div className="flex justify-between items-center mb-4">
@@ -232,7 +265,6 @@ export default function Homework() {
               </button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-              {/* Filtro por Estado */}
               <div className="relative">
                 <select
                   value={statusFilter}
@@ -243,14 +275,13 @@ export default function Homework() {
                       : "border-neutral-700"
                   } focus:ring-2 focus:ring-cta-1 focus:border-cta-1`}
                 >
-                  <option value="Todos" className="bg-dark-2 text-light-2">Estado: Todos</option>
-                  <option value="Pendiente" className="bg-dark-2 text-light-2">Pendiente</option>
-                  <option value="Atrasado" className="bg-dark-2 text-light-2">Atrasado</option>
-                  <option value="Completado" className="bg-dark-2 text-light-2">Completado</option>
+                  <option value="Todos">Estado: Todos</option>
+                  <option value="Pendiente">Pendiente</option>
+                  <option value="Atrasado">Atrasado</option>
+                  <option value="Completado">Completado</option>
                 </select>
               </div>
 
-              {/* Filtro por Tiempo */}
               <div className="relative">
                 <select
                   value={timeFilter}
@@ -261,14 +292,13 @@ export default function Homework() {
                       : "border-neutral-700"
                   } focus:ring-2 focus:ring-cta-1 focus:border-cta-1`}
                 >
-                  <option value="Todos" className="bg-dark-2 text-light-2">Período: Todos</option>
-                  <option value="Hoy" className="bg-dark-2 text-light-2">Hoy</option>
-                  <option value="Esta semana" className="bg-dark-2 text-light-2">Esta semana</option>
-                  <option value="Este mes" className="bg-dark-2 text-light-2">Este mes</option>
+                  <option value="Todos">Período: Todos</option>
+                  <option value="Hoy">Hoy</option>
+                  <option value="Esta semana">Esta semana</option>
+                  <option value="Este mes">Este mes</option>
                 </select>
               </div>
 
-              {/* Filtro por tipo */}
               <div className="relative">
                 <select
                   value={typeFilter}
@@ -279,13 +309,12 @@ export default function Homework() {
                       : "border-neutral-700"
                   } focus:ring-2 focus:ring-cta-1 focus:border-cta-1`}
                 >
-                  <option value="Todas" className="bg-dark-2 text-light-2">Tipo: Todas</option>
-                  <option value="Laboratorio" className="bg-dark-2 text-light-2">Laboratorio</option>
-                  <option value="Réplica" className="bg-dark-2 text-light-2">Réplica</option>
+                  <option value="Todas">Tipo: Todas</option>
+                  <option value="Laboratorio">Laboratorio</option>
+                  <option value="Réplica">Réplica</option>
                 </select>
               </div>
 
-              {/* Filtro por Curso */}
               <div className="relative">
                 <select
                   value={courseFilter}
@@ -296,14 +325,13 @@ export default function Homework() {
                       : "border-neutral-700"
                   } focus:ring-2 focus:ring-cta-1 focus:border-cta-1`}
                 >
-                  <option value="Todos" className="bg-dark-2 text-light-2">Curso: Todos</option>
-                  <option value="Introducción a Python" className="bg-dark-2 text-light-2">Introducción a Python</option>
-                  <option value="Listas y Tuplas" className="bg-dark-2 text-light-2">Listas y Tuplas</option>
-                  <option value="Funciones en Python" className="bg-dark-2 text-light-2">Funciones en Python</option>
+                  <option value="Todos">Curso: Todos</option>
+                  <option value="Introducción a Python">Introducción a Python</option>
+                  <option value="Listas y Tuplas">Listas y Tuplas</option>
+                  <option value="Funciones en Python">Funciones en Python</option>
                 </select>
               </div>
 
-              {/* Ordenar */}
               <div className="relative">
                 <select
                   value={sortBy}
@@ -314,15 +342,14 @@ export default function Homework() {
                       : "border-neutral-700"
                   } focus:ring-2 focus:ring-cta-1 focus:border-cta-1`}
                 >
-                  <option value="dueDateAsc" className="bg-dark-2 text-light-2">Ordenar: Fecha (Asc)</option>
-                  <option value="dueDateDesc" className="bg-dark-2 text-light-2">Fecha (Desc)</option>
-                  <option value="titleAsc" className="bg-dark-2 text-light-2">Título (A-Z)</option>
-                  <option value="titleDesc" className="bg-dark-2 text-light-2">Título (Z-A)</option>
+                  <option value="dueDateAsc">Ordenar: Fecha (Asc)</option>
+                  <option value="dueDateDesc">Fecha (Desc)</option>
+                  <option value="titleAsc">Título (A-Z)</option>
+                  <option value="titleDesc">Título (Z-A)</option>
                 </select>
               </div>
             </div>
 
-            {/* Buscador */}
             <div className="relative mb-6">
               <input
                 type="text"
@@ -351,7 +378,6 @@ export default function Homework() {
               </svg>
             </div>
 
-            {/* Lista de Ejercicios */}
             {filteredExercises.length === 0 ? (
               <p className="text-light-3 text-center py-10">
                 No se encontraron ejercicios con los filtros seleccionados.
@@ -383,7 +409,6 @@ export default function Homework() {
                         </span>
                       </div>
                       <p className="text-light-3 text-sm mb-2">{exercise.description}</p>
-                      {/* Fecha */}
                       <div className="flex items-center text-sm text-light-3 mb-2">
                         <svg
                           className="w-5 h-5 mr-2"
@@ -401,7 +426,6 @@ export default function Homework() {
                         </svg>
                         Fecha de entrega: {formatDate(exercise.dueDate)}
                       </div>
-                      {/* Hora */}
                       <div className="flex items-center text-sm text-light-3 mb-2">
                         <svg
                           className="w-5 h-5 mr-2"
@@ -429,14 +453,14 @@ export default function Homework() {
                         </span>
                       </div>
                       <button
-                    className={`w-full py-2 rounded-lg transition-colors duration-200 ${
-                      exercise.status === "Pendiente"
-                        ? "bg-purple-500 text-white hover:bg-purple-800"
-                        : "bg-neutral-700 text-light-2 hover:bg-neutral-600"
-                    }`}
-                  >
-                    {exercise.status === "Pendiente" ? "Enviar Solución" : "Ver Detalles"}
-                  </button>
+                        className={`w-full py-2 rounded-lg transition-colors duration-200 ${
+                          exercise.status === "Pendiente"
+                            ? "bg-purple-500 text-white hover:bg-purple-800"
+                            : "bg-neutral-700 text-light-2 hover:bg-neutral-600"
+                        }`}
+                      >
+                        {exercise.status === "Pendiente" ? "Enviar Solución" : "Ver Detalles"}
+                      </button>
                     </motion.div>
                   ))}
                 </AnimatePresence>
