@@ -7,6 +7,7 @@ import {
   IconArrowLeft,
   IconBook,
   IconUser,
+  IconListCheck,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -32,6 +33,20 @@ export default function TeacherLayout({ children }) {
       href: ROUTES.TEACHER.CONTENT,
       icon: (
         <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Gestión de Tareas",
+      href: ROUTES.TEACHER.TASKS,
+      icon: (
+        <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Gestión de Tareas",
+      href: ROUTES.TEACHER.TASKS,
+      icon: (
+        <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {

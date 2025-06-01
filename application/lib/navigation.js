@@ -6,6 +6,7 @@ import { useEffect } from "react";
 export const ROUTES = {
   HOME: "/home",
   LOGIN: "/login",
+  SIGNUP: "/signup",
 
   RECOVER_PASSWORD: {
     ROOT: "/recover-password",
@@ -17,6 +18,8 @@ export const ROUTES = {
   STUDENT: {
     ROOT: "/role-student",
     COURSES: "/role-student/courses",
+    CODE_REPLICATOR: "/role-student/courses/replicator",
+    REPLICA: "/role-student/replica",
     PROFILE: "/role-student/profile",
     RESOURCES: "/role-student/resources",
   },
@@ -34,6 +37,7 @@ export const ROUTES = {
     CONTENT: "/role-teacher/content",
     PROFILE: "/role-teacher/profile",
     EXAMS: "/role-teacher/exams",
+    TASKS: "/role-teacher/tasks",
   },
 };
 
@@ -51,6 +55,11 @@ export function getNavLinks(role) {
           label: "Cursos",
           href: ROUTES.STUDENT.COURSES,
           icon: "IconBrain",
+        },
+        {
+          label: "Réplica",
+          href: ROUTES.STUDENT.REPLICA,
+          icon: "IconCopy",
         },
         {
           label: "Recursos",

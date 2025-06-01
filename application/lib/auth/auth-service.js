@@ -21,6 +21,17 @@ export async function loginUser({ username, password }) {
 
     const data = await response.json();
     const { access_token, token_type } = data;
+    
+    const userDataHeader = response.headers.get('X-User-Data');
+    let userData = { username };
+    
+    if (userDataHeader) {
+      try {
+        userData = JSON.parse(userDataHeader);
+      } catch (e) {
+        console.error('Error al parsear datos del usuario:', e);
+      }
+    }
 
     // Determinar rol según el correo
     let role = "student";
@@ -31,15 +42,18 @@ export async function loginUser({ username, password }) {
     }
 
     const user = {
-      id: 1,
-      name: "Usuario Demo",
-      username,
+      id: userData.user_id || '1',
+      name: userData.full_name || 'Usuario',
+      username: userData.username || username,
+      email: userData.email || '',
       role,
       token: access_token,
       token_type,
     };
 
+    // Guardar datos en localStorage
     localStorage.setItem("token", access_token);
+    localStorage.setItem("user", JSON.stringify(user));
 
     return user;
   } catch (error) {
@@ -50,6 +64,7 @@ export async function loginUser({ username, password }) {
 
 export async function logoutUser() {
   localStorage.removeItem("token");
+  localStorage.removeItem("user");
   return true;
 }
 
@@ -57,11 +72,15 @@ export async function getCurrentUser() {
   const token = localStorage.getItem("token");
   if (!token) return null;
 
+  const userStr = localStorage.getItem("user");
+  if (!userStr) return null;
 
-  return {
-    id: 1,
-    name: "Usuario Demo",
-    username: "usuariodemo",
-    role: "student",
-  };
+  try {
+    const user = JSON.parse(userStr);
+    return user;
+  } catch (e) {
+    console.error('Error al parsear datos del usuario desde localStorage:', e);
+    return null;
+  }
 }
+
