@@ -37,6 +37,7 @@ export const ROUTES = {
     STUDENTS: "/role-teacher/students",
     CONTENT: "/role-teacher/content",
     PROFILE: "/role-teacher/profile",
+    EXAMS: "/role-teacher/exams",
     TASKS: "/role-teacher/tasks",
   },
 };
@@ -45,7 +46,7 @@ export const DEFAULT_ROUTES = {
   STUDENT: ROUTES.STUDENT.COURSES,
   ADMIN: ROUTES.ADMIN.USERS,
   TEACHER: ROUTES.TEACHER.STUDENTS,
-}
+};
 
 export function getNavLinks(role) {
   switch (role) {
@@ -149,9 +150,9 @@ export function usePrefetchRoutes(role = "all") {
     }
 
     if (role === "teacher" || role === "all") {
-      router.prefetch(ROUTES.TEACHER.ROOT)
-      router.prefetch(ROUTES.TEACHER.STUDENTS)
-      router.prefetch(ROUTES.TEACHER.CONTENT)
+      router.prefetch(ROUTES.TEACHER.ROOT);
+      router.prefetch(ROUTES.TEACHER.STUDENTS);
+      router.prefetch(ROUTES.TEACHER.CONTENT);
     }
   }, [router, role]);
 }

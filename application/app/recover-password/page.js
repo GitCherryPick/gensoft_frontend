@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import PasswordRecovery from "../recover-password/recovery-password-card/PasswordRecovery";
 import { Spotlight } from "@/components/ui/spotlight-new";

@@ -8,7 +8,7 @@ import ProjectsPage from "./projects/page";
 import Courses from "./your_courses/page";
 
 export default function ProfilePage() {
-  // Datos del estudiante
+  // Datos del estudiante ojo
   const student = {
     profile: "/images/perfilChica.jpg",
     name: "Andrea Rodríguez",
