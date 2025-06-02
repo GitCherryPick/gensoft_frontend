@@ -9,8 +9,8 @@ import { ROUTES } from "@/lib/navigation";
 import { useAuth } from "@/lib/auth/auth-context";
 
 export default function ComponentFormLoginCard({ onBack }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("Roberto");
+  const [password, setPassword] = useState("rob132");
   const router = useRouter();
   const { login, isLoading } = useAuth();
 

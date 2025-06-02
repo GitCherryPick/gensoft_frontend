@@ -14,6 +14,8 @@ export async function loginUser({ username, password }) {
       }),
     });
 
+    
+
     if (!response.ok) {
       const data = await response.json();
       throw new Error(data.detail || "Credenciales incorrectas.");
@@ -21,7 +23,7 @@ export async function loginUser({ username, password }) {
 
     const data = await response.json();
     const { access_token, token_type } = data;
-    
+
     const userDataHeader = response.headers.get('X-User-Data');
     let userData = { username };
     
@@ -42,10 +44,12 @@ export async function loginUser({ username, password }) {
     }
 
     const user = {
-      id: userData.user_id || '1',
-      name: userData.full_name || 'Usuario',
-      username: userData.username || username,
-      email: userData.email || '',
+      id: data.user_id || '1',
+      name: data.full_name || 'Usuario',
+      username: data.username,
+      full_name: data.full_name,
+      bio: data.bio || '',
+      email: data.email || '',
       role,
       token: access_token,
       token_type,
