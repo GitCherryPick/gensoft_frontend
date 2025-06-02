@@ -1,7 +1,22 @@
+'use client';
+
+import { useState } from 'react';
+import TasksReplicaPage from './PageTasksReplica';
+import ExerciseCreate from './PageExerciseCreate';
+
+export const dynamic = 'force-dynamic';
+
 export default function TasksPage() {
-  return (
-    <div className="flex items-center justify-center h-full w-full">
-      <div className="text-4xl font-bold">Crear Tareas</div>
-    </div>
-  )
+  const [showCreateView, setShowCreateView] = useState(false);
+
+  const toggleView = () => {
+    setShowCreateView(prev => !prev);
+  };
+
+  return showCreateView ? (
+    <ExerciseCreate onBack={toggleView} />
+  ) : (
+    <TasksReplicaPage onCreateNew={toggleView} />
+  );
 }
+

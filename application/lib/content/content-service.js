@@ -1,204 +1,330 @@
-const courses = [
-  {
-    id: 1,
-    title: "Introducción a la Programacion",
-    description: "Aprende lo básico",
-    difficulty: "Principiante",
-    created_at: new Date("2023-01-10T10:00:00Z"),
-    updated_at: new Date("2023-01-11T11:00:00Z"),
-  },
-]
+import { CONTENT_API_BASE_URL, defaultContentHeaders } from './content-api-config';
 
-let modules = [
-  {
-    id: 1,
-    course_id: 1,
-    title: "Variables",
-    description: "Tipos de datos",
-    level: "1",
-    module_order: 1,
-  },
-  {
-    id: 2,
-    course_id: 1,
-    title: "Funciones",
-    description: "Bloques de código",
-    level: "1",
-    module_order: 2,
-  },
-  {
-    id: 3,
-    course_id: 1,
-    title: "Condicionales",
-    description: "Control de flujo",
-    level: "1",
-    module_order: 3,
-  },
-]
+// ------- 
+// CURSOS
+// -------
 
-let contents = [
-  {
-    id: 1,
-    module_id: 1,
-    content_type: "Video",
-    title: "Video Variables",
-    content: null,
-    video_url: "/videos/variables.mp4",
-    file_path: null,
-    created_at: new Date("2023-01-10T12:00:00Z"),
-  },
-  {
-    id: 2,
-    module_id: 2,
-    content_type: "Video",
-    title: "Video Funciones",
-    content: null,
-    video_url: "/videos/functions.mp4",
-    file_path: null,
-    created_at: new Date("2023-01-11T14:00:00Z"),
-  },
-  {
-    id: 3,
-    module_id: 3,
-    content_type: "Video",
-    title: "Video Condicionales",
-    content: null,
-    video_url: "/videos/conditionals.mp4",
-    file_path: null,
-    created_at: new Date("2023-02-16T10:00:00Z"),
-  },
-]
+export async function getDefaultCourseId() {
+  const response = await fetch(`${CONTENT_API_BASE_URL}/courses/default/id`, {
+    headers: defaultContentHeaders,
+  });
 
-async function simulateBackend(data) {
-  await new Promise((resolve) => setTimeout(resolve, 500))
-  return data
-}
-
-export async function getAllCourses() {
-  return simulateBackend([...courses])
-}
-
-export async function getCourseById(courseId) {
-  const course = courses.find((course) => course.id === courseId) || null
-  return simulateBackend(course)
-}
-
-export async function getModulesByCourseId(courseId) {
-  const courseModules = [...modules]
-    .filter((module) => module.course_id === courseId)
-    .sort((a, b) => a.module_order - b.module_order)
-
-  return simulateBackend(courseModules)
-}
-
-export async function getModuleById(moduleId) {
-  const module = modules.find((module) => module.id === moduleId) || null
-  return simulateBackend(module)
-}
-
-export async function getContentByModuleId(moduleId) {
-  const moduleContents = [...contents].filter((content) => content.module_id === moduleId)
-  return simulateBackend(moduleContents)
-}
-
-export async function addContent(newContent) {
-  const newId = Math.max(...contents.map((content) => content.id), 0) + 1
-
-  const contentToAdd = {
-    ...newContent,
-    id: newId,
-    created_at: new Date(),
+  if (!response.ok) {
+    throw new Error(`Error al obtener el curso por defecto: ${response.statusText}`);
   }
 
-  const newContents = [...contents, contentToAdd]
-  contents = newContents
+  const data = await response.json();
+  console.log('Default Course ID:', data.default_course_id);
+  return data.default_course_id;
+// 
+//   "default_course_id": 1
+//
+}
 
-  return simulateBackend(contentToAdd)
+export async function getDefaultCourse() {
+  const courseId = await getDefaultCourseId();
+
+  const response = await fetch(`${CONTENT_API_BASE_URL}/courses/${courseId}`, {
+    headers: defaultContentHeaders,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error al obtener el curso con ID ${courseId}: ${response.statusText}`);
+  }
+
+  const courseData = await response.json();
+  console.log('Default Course Data:', courseData);
+  return courseData;
+
+// 
+//   "title": "string",
+//   "description": "string",
+//   "difficulty": "string",
+//   "id": 0,
+//   "created_at": "2025-05-09T02:26:54.729Z",
+//   "updated_at": "2025-05-09T02:26:54.730Z"
+//
+}
+
+// ------- 
+// MODULOS
+// -------
+
+export async function getModulesByCourseId(courseId) {
+  const response = await fetch(`${CONTENT_API_BASE_URL}/modules?course_id=${courseId}`, {
+    headers: defaultContentHeaders,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error al obtener los módulos del curso con ID ${courseId}: ${response.statusText}`);
+  }
+
+  const modules = await response.json();
+  console.log('Modules for Course ID', courseId, ':', modules);
+  return modules;
+//   [
+//   {
+//     "course_id": 0,
+//     "title": "string",
+//     "description": "string",
+//     "level": "string",
+//     "module_order": 0,
+//     "id": 0
+//   }
+// ]
 }
 
 export async function createModule(moduleData) {
-  const { course_id, title, description, level } = moduleData
-
-  const courseModules = modules.filter((m) => m.course_id === course_id)
-  const nextOrder = courseModules.length > 0 ? Math.max(...courseModules.map((m) => m.module_order)) + 1 : 1
-
-  const newId = Math.max(...modules.map((m) => m.id), 0) + 1
+  const { course_id, title, description, level } = moduleData;
+  const existingModules = await getModulesByCourseId(course_id);
+  const nextOrder = existingModules.length > 0
+    ? Math.max(...existingModules.map(m => m.module_order)) + 1
+    : 1;
 
   const newModule = {
-    id: newId,
     course_id,
     title,
     description,
     level,
     module_order: nextOrder,
+  };
+
+  const response = await fetch(`${CONTENT_API_BASE_URL}/modules/`, {
+    method: 'POST',
+    headers: defaultContentHeaders,
+    body: JSON.stringify(newModule),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error al crear el módulo: ${response.statusText}`);
   }
 
-  modules = [...modules, newModule]
-
-  const newContent = {
-    id: Math.max(...contents.map((content) => content.id), 0) + 1,
-    module_id: newId,
-    content_type: "Video",
-    title: `Video ${title}`,
-    content: null,
-    video_url: `/videos/${title.toLowerCase().replace(/\s+/g, "-")}.mp4`,
-    file_path: null,
-    created_at: new Date(),
-  }
-
-  contents = [...contents, newContent]
-
-  return simulateBackend(newModule)
+  const createdModule = await response.json();
+  console.log('Nuevo módulo creado:', createdModule);
+  return createdModule;
 }
 
-export async function reorderModule(moduleId, newOrder) {
-  const moduleToMove = modules.find((module) => module.id === moduleId)
-  if (!moduleToMove) return simulateBackend(false)
+export async function createTextContent(contentData) {
+  const { module_id, content, title } = contentData;
 
-  const courseModules = modules.filter((module) => module.course_id === moduleToMove.course_id)
-  const oldOrder = moduleToMove.module_order
+  if (!module_id) {
+    throw new Error("El ID del módulo es obligatorio");
+  }
 
-  if (newOrder < 1 || newOrder > courseModules.length) return simulateBackend(false)
+  if (!content) {
+    throw new Error("El contenido de texto es obligatorio");
+  }
 
-  if (oldOrder === newOrder) return simulateBackend(true)
+  const response = await fetch(`${CONTENT_API_BASE_URL}/contents/text`, {
+    method: 'POST',
+    headers: defaultContentHeaders,
+    body: JSON.stringify({
+      module_id,
+      content,
+      title: title || "Contenido de texto",
+    }),
+  });
 
-  modules = modules.map((module) => {
-    if (module.id === moduleId) {
-      return { ...module, module_order: newOrder }
-    } else if (module.course_id === moduleToMove.course_id) {
-      if (oldOrder < newOrder && module.module_order > oldOrder && module.module_order <= newOrder) {
-        return { ...module, module_order: module.module_order - 1 }
-      } else if (oldOrder > newOrder && module.module_order >= newOrder && module.module_order < oldOrder) {
-        return { ...module, module_order: module.module_order + 1 }
-      }
+  if (!response.ok) {
+    throw new Error(`Error al crear contenido de texto: ${response.statusText}`);
+  }
+
+  const newContent = await response.json();
+  console.log("Nuevo contenido de texto creado:", newContent);
+  return newContent;
+}
+
+export async function getContentByModuleId(moduleId) {
+  const response = await fetch(`${CONTENT_API_BASE_URL}/contents/module/${moduleId}`, {
+    headers: defaultContentHeaders,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error al obtener contenidos del módulo: ${response.statusText}`);
+  }
+
+  const contents = await response.json();
+  console.log("Contenidos del módulo:", contents);
+  return contents;
+}
+
+export async function deleteContent(contentId) {
+  const response = await fetch(`${CONTENT_API_BASE_URL}/contents/${contentId}`, {
+    method: 'DELETE',
+    headers: defaultContentHeaders,
+  });
+
+  if (!response.ok && response.status !== 204) {
+    throw new Error(`Error al eliminar el contenido: ${response.statusText}`);
+  }
+
+  console.log(`Contenido con ID ${contentId} eliminado exitosamente.`);
+  return { success: true, message: "Contenido eliminado correctamente" };
+}
+
+
+//----------------------------
+
+
+async function uploadFileContent(file, module_id, title = null, type) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('module_id', module_id);
+  if (title) formData.append('title', title);
+
+  const response = await fetch(`${CONTENT_API_BASE_URL}/contents/upload/${type}`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error uploading ${type}: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  console.log(`${type} upload response:`, data);
+  return data;
+}
+
+// Funciones específicas
+export async function uploadPdfContent(file, module_id, title = null) {
+  return uploadFileContent(file, module_id, title, 'pdf');
+}
+
+export async function uploadImageContent(file, module_id, title = null) {
+  return uploadFileContent(file, module_id, title, 'image');
+}
+
+export async function uploadVideoContent(file, module_id, title = null) {
+  return uploadFileContent(file, module_id, title, 'video');
+}
+
+export async function uploadSlideContent(file, module_id, title = null) {
+  return uploadFileContent(file, module_id, title, 'slide');
+}
+
+
+// ------------------------------
+
+
+export async function createTaskWithDetails(taskData) {
+  console.log('Datos de la tarea recibidos:', taskData);
+  
+  const requestBody = {
+    instructor_id: parseInt(taskData.id_docente, 10) || 0,
+    title: taskData.titulo || '',
+    prompt: taskData.enunciado || '',
+    target_code: taskData.codigo_objetivo || '',
+    visible_lines: Array.isArray(taskData.lineas_visibles) ? taskData.lineas_visibles : [],
+    instructor_comment: taskData.comentario_docente || ''
+  };
+
+  try {
+    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/`, {
+      method: 'POST',
+      headers: defaultContentHeaders,
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      console.error('Error en la respuesta del servidor:', errorData);
+      throw new Error(`Error al crear la tarea: ${response.status} - ${response.statusText}`);
     }
-    return module
-  })
 
-  return simulateBackend(true)
+    const responseData = await response.json();
+    console.log('Tarea creada exitosamente:', responseData);
+    return responseData;
+  } catch (error) {
+    console.error('Error al crear la tarea:', error);
+    throw error;
+  }
 }
 
-export async function moveModuleUp(moduleId) {
-  const module = modules.find((m) => m.id === moduleId)
-  if (!module || module.module_order === 1) return simulateBackend(false)
-
-  return reorderModule(moduleId, module.module_order - 1)
+/**
+ * Genera el código base a partir de las líneas visibles
+ * @param {Array} lineasVisibles - Array de objetos con número y contenido de líneas visibles
+ * @returns {string} Código formateado con saltos de línea
+ */
+function generarCodigoBase(lineasVisibles) {
+  if (!lineasVisibles || lineasVisibles.length === 0) return '';
+  const lineasOrdenadas = [...lineasVisibles].sort((a, b) => a.numero - b.numero);
+  const maxLinea = lineasOrdenadas[lineasOrdenadas.length - 1].numero;
+  const lineas = [];
+  let indiceLinea = 0;
+  for (let i = 1; i <= maxLinea; i++) {
+    if (indiceLinea < lineasOrdenadas.length && lineasOrdenadas[indiceLinea].numero === i) {
+      lineas.push(lineasOrdenadas[indiceLinea].contenido);
+      indiceLinea++;
+    } else {
+      lineas.push('');
+    }
+  }
+  return lineas.join('\n');
 }
 
-export async function moveModuleDown(moduleId) {
-  const module = modules.find((m) => m.id === moduleId)
-  if (!module) return simulateBackend(false)
+/**
+ * Convierte el formato de líneas visibles del backend al formato esperado por el frontend
+ * @param {number[]} visibleLines - Array de números de línea que son visibles
+ * @param {string} targetCode - Código completo del ejercicio
+ * @returns {Array} Array de objetos con numero y contenido
+ */
+function convertirFormatoLineasVisibles(visibleLines, targetCode) {
+  if (!visibleLines || !targetCode) return [];
 
-  const courseModules = modules.filter((m) => m.course_id === module.course_id)
-  if (module.module_order === courseModules.length) return simulateBackend(false)
+  const lineasCodigo = targetCode.split('\n');
 
-  return reorderModule(moduleId, module.module_order + 1)
+  return visibleLines.map(lineaHumana => {
+    const index = lineaHumana - 1;
+    return {
+      numero: lineaHumana,
+      contenido: lineasCodigo[index] || ''
+    };
+  });
 }
 
-export async function getDefaultCourse() {
-  return getCourseById(1)
-}
 
-export async function getDefaultCourseId() {
-  return 1
+/**
+ * Obtiene los datos de un ejercicio por su ID
+ * @param {string} exerciseId - ID del ejercicio a obtener
+ * @returns {Promise<Object>} Promesa que se resuelve con los datos del ejercicio
+ */
+export async function getExerciseById(exerciseId) {
+  try {
+    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/last`, {
+      headers: defaultContentHeaders,
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener el ejercicio: ${response.statusText}`);
+    }
+    const datosRecibidos = await response.json();
+    console.log('Datos recibidos del API:', datosRecibidos);
+    const ejercicioBackend = Array.isArray(datosRecibidos) ? datosRecibidos[0] : datosRecibidos;
+    console.log('Ejercicio seleccionado:', ejercicioBackend);
+    if (!ejercicioBackend || !ejercicioBackend.target_code) {
+      throw new Error('Datos de ejercicio inválidos o incompletos');
+    }
+    const lineasVisiblesTransformadas = convertirFormatoLineasVisibles(
+      ejercicioBackend.visible_lines || [],
+      ejercicioBackend.target_code
+    );
+    console.log('Líneas visibles transformadas:', lineasVisiblesTransformadas);
+    const ejercicio = {
+      id_ejercicio: ejercicioBackend.exercise_id?.toString() || '0',
+      titulo: ejercicioBackend.title || 'Sin título',
+      enunciado: ejercicioBackend.prompt || 'Sin enunciado',
+      lineas_visibles: lineasVisiblesTransformadas,
+      codigo_objetivo: ejercicioBackend.target_code,
+      comentario_docente: ejercicioBackend.instructor_comment || ''
+    };
+    const codigoBase = generarCodigoBase(ejercicio.lineas_visibles);
+    return {
+      ...ejercicio,
+      codigo_base: codigoBase
+    };
+  } catch (error) {
+    console.error('Error al obtener datos del ejercicio:', error);
+    throw error;
+  }
 }

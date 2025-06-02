@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconBrain, IconUser, IconArrowLeft } from "@tabler/icons-react"
+import { IconBrain, IconUser, IconArrowLeft, IconBook, IconCopy, IconListCheck  } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -28,9 +28,24 @@ export default function StudentLayout({ children }) {
       icon: <IconBrain className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
+      label: "Réplica",
+      href: ROUTES.STUDENT.REPLICA,
+      icon: <IconCopy className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Recursos",
+      href: ROUTES.STUDENT.RESOURCES,
+      icon: <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
       label: "Perfil",
       href: ROUTES.STUDENT.PROFILE,
       icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Tareas",
+      href: ROUTES.STUDENT.HOMEWORK,
+      icon: <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Cerrar Sesión",
@@ -86,7 +101,7 @@ export default function StudentLayout({ children }) {
         </SidebarBody>
       </Sidebar>
       <div className="flex flex-1">
-        <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-10 dark:border-neutral-700 dark:bg-dark-1">
+        <div className="flex h-full w-full flex-1 flex-col gap-2 rounded-tl-2xl border border-neutral-200 bg-white p-2 md:p-2 dark:border-neutral-700 dark:bg-dark-1">
           {children}
         </div>
       </div>
@@ -106,7 +121,7 @@ const Logo = () => {
         animate={{ opacity: 1 }}
         className="font-medium whitespace-pre text-black dark:text-white"
       >
-        Placeholder
+        Portal Estudiante
       </motion.span>
     </Link>
   )

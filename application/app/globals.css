@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { max-height: 0; opacity: 0; }
+  to { max-height: 200px; opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.3s ease-out forwards;
+  overflow: hidden;
+}
+
 @layer base {
   :root {
     --color-dark-1: #0d0c11;
@@ -170,4 +189,29 @@
 
 .custom-spinner {
   animation: spinner-rotation 0.8s linear infinite;
+}
+
+.code-editor pre[class*="language-"],
+.code-editor code[class*="language-"]{
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 2 !important;
+  background: transparent !important;
+  overflow: visible !important;
+  line-height: 1.5 !important;
+  user-select: none;
+}
+
+.code-editor-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.code-editor-main textarea,
+.code-editor-main div {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  tab-size: 4 !important;
 }

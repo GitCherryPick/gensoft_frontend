@@ -1,7 +1,8 @@
 "use client"
+
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconUsers, IconArrowLeft, IconBook } from "@tabler/icons-react"
+import { IconUsers, IconArrowLeft, IconBook, IconUser, IconListCheck } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -23,6 +24,16 @@ export default function TeacherLayout({ children }) {
       label: "Gestión de Contenido",
       href: ROUTES.TEACHER.CONTENT,
       icon: <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Gestión de Tareas",
+      href: ROUTES.TEACHER.TASKS,
+      icon: <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Perfil",
+      href: ROUTES.TEACHER.PROFILE,
+      icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Cerrar Sesión",
@@ -53,7 +64,6 @@ export default function TeacherLayout({ children }) {
         "h-screen",
       )}
     >
-   
       <Sidebar open={open} setOpen={setOpen} animate={true}>
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">
@@ -75,8 +85,8 @@ export default function TeacherLayout({ children }) {
           <div>
             <SidebarLink
               link={{
-                label: "Docente",
-                href: ROUTES.TEACHER.STUDENTS,
+                label: "Perfil Docente",
+                href: ROUTES.TEACHER.PROFILE,
                 icon: (
                   <div className="h-7 w-7 shrink-0 rounded-full bg-gray-300 flex items-center justify-center">
                     <span className="text-xs">D</span>
