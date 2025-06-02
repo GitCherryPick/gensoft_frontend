@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { Save, Eye, Settings } from "lucide-react";
-import ExamPreview from "./ExamPreview";
 import ExamSettings from "./ExamSettings";
 import ExamEditor from "./ExamEditor";
 import { questionTypes } from "./questionTypes";
@@ -21,10 +20,6 @@ const ExamCreator = () => {
   });
 
   const [currentView, setCurrentView] = useState("editor");
-
-  const renderPreview = () => {
-    return <ExamPreview exam={exam} questionTypes={questionTypes} />;
-  };
 
   const renderSettings = () => {
     return <ExamSettings exam={exam} setExam={setExam} />;
@@ -76,17 +71,7 @@ const ExamCreator = () => {
                 >
                   Editor
                 </button>
-                <button
-                  onClick={() => setCurrentView("preview")}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-all duration-200 ${
-                    currentView === "preview"
-                      ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                      : "text-gray-400 hover:text-white hover:bg-gray-700/50"
-                  }`}
-                >
-                  <Eye size={16} />
-                  <span>Vista previa</span>
-                </button>
+
                 <button
                   onClick={() => setCurrentView("settings")}
                   className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center space-x-2 transition-all duration-200 ${
@@ -117,7 +102,7 @@ const ExamCreator = () => {
         {currentView === "editor" && (
           <ExamEditor exam={exam} setExam={setExam} />
         )}
-        {currentView === "preview" && renderPreview()}
+
         {currentView === "settings" && renderSettings()}
       </div>
     </div>
