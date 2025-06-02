@@ -11,7 +11,6 @@ const CodeEditorCopy = dynamic(
 );
 
 const ExamEditor = ({ exam, setExam }) => {
-  // Refs para editores de código por pregunta
   const editorRefs = useRef({});
 
   const addQuestion = (type) => {
@@ -32,10 +31,7 @@ const ExamEditor = ({ exam, setExam }) => {
         type === "code" || type === "CodeWithTest"
           ? "# Escribe tu código aquí\n# Ejemplo: definir una función que sume dos números\n\ndef sumar(a, b):\n    # Tu código aquí\n    pass\n\n# Prueba tu función\nprint(sumar(5, 3))"
           : null,
-      testCases:
-        type === "code" || type === "CodeWithTest"
-          ? [] // Iniciar sin casos de prueba predeterminados
-          : null,
+      testCases: type === "code" || type === "CodeWithTest" ? [] : null,
       codigoObjetivo:
         type === "Replication"
           ? `# Ejemplo de script Python\ndef suma(a, b):\n    \"\"\"Devuelve la suma de dos números\"\"\"\n    return a + b\n\nresultado = suma(3, 4)\nprint(f\"La suma es: {resultado}\")\n`
