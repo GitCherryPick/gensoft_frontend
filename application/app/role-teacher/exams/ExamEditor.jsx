@@ -55,7 +55,6 @@ const ExamEditor = ({ exam, setExam }) => {
   };
 
   const deleteQuestion = (questionId) => {
-    // Limpiar ref del editor cuando se elimina la pregunta
     delete editorRefs.current[questionId];
 
     setExam((prev) => ({

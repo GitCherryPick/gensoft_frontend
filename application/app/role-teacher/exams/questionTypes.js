@@ -20,13 +20,13 @@ export const questionTypes = [
     label: "Replicación de codigo",
     icon: <FileCode size={20} />,
     gradient: "from-emerald-300 to-teal-600",
-    description: "Replicar el codigo",
+    description: "Replica el código de ejemplo",
   },
   {
     type: "CodeWithTest",
-    label: "Código Python",
+    label: "Implementacion de codigo",
     icon: <Code size={20} />,
     gradient: "from-sky-300 to-blue-600",
-    description: "Ejercicio de programación",
+    description: "Implementa el codigo y pasa los tests",
   },
 ];
