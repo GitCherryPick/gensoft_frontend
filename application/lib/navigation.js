@@ -21,6 +21,7 @@ export const ROUTES = {
     CODE_REPLICATOR: "/role-student/courses/replicator",
     REPLICA: "/role-student/replica",
     PROFILE: "/role-student/profile",
+    HOMEWORK: "/role-student/homework",
     RESOURCES: "/role-student/resources",
   },
 
@@ -70,6 +71,11 @@ export function getNavLinks(role) {
           label: "Perfil",
           href: ROUTES.STUDENT.PROFILE,
           icon: "IconUser",
+        },
+        {
+          label: "Tareas",
+          href: ROUTES.STUDENT.HOMEWORK,
+          icon: "IconBook",
         },
         {
           label: "Cerrar Sesión",
@@ -133,6 +139,7 @@ export function usePrefetchRoutes(role = "all") {
       router.prefetch(ROUTES.STUDENT.ROOT);
       router.prefetch(ROUTES.STUDENT.COURSES);
       router.prefetch(ROUTES.STUDENT.PROFILE);
+      router.prefetch(ROUTES.STUDENT.HOMEWORK);
     }
 
     if (role === "admin" || role === "all") {
