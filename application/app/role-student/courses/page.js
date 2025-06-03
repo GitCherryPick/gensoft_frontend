@@ -4,6 +4,7 @@ import confetti from "canvas-confetti";
 import TestCaseResult from '@/components/TestCaseResult'
 import { SANDBOX_API_BASE_URL, defaultContentHeaders } from '@/lib/sandbox/sandbox-api-config';
 import Sandbox from "./labs/Sandbox";
+import Link from "next/link"
 import { postFeedbackAI } from "@/lib/users/users-service";
 
 export default function EditorPython() {
@@ -143,6 +144,13 @@ export default function EditorPython() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full p-4 space-y-4 overflow-auto">
+      {/* Agregar enlace a la vista de entregas */}
+      <div className="self-start mb-2">
+        <Link href="/role-student/submissions">
+          <span className="text-blue-500 hover:text-blue-700 flex items-center">Ver Mis Entregas</span>
+        </Link>
+      </div>
+      
       <div className="relative w-full flex items-center justify-center px-4 m-4">
         {/* Botones centrados al medio */}
         <div className="absolute left-1/2 transform -translate-x-1/2 flex space-x-4">
