@@ -4,6 +4,7 @@ import confetti from "canvas-confetti";
 import TestCaseResult from '../../../components/TestCaseResult'
 import { SANDBOX_API_BASE_URL, defaultContentHeaders } from '../../../lib/sandbox/sandbox-api-config';
 import Sandbox from "./labs/Sandbox";
+import { LabDashboardModal } from "../../../components/DashBoardMetrics.jsx";
 
 export default function EditorPython() {
   const [isCliente, setIsCliente] = useState(false);
@@ -14,6 +15,8 @@ export default function EditorPython() {
   const [pestanaActiva, setPestanaActiva] = useState('enunciado');
   const [nuumberCases, setNumberCases] = useState("--");
   
+ const [labStats, setLabStats] = useState(null);
+
   const [codigo, setCodigo] = useState("# Escribe tu código en Python aquí...");
 
   const sandboxRef = useRef();
@@ -130,6 +133,10 @@ export default function EditorPython() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full w-full p-4 space-y-4 overflow-auto">
+
+      <div className="w-full max-w-8xl flex justify-star px-4 mt-10">
+        <LabDashboardModal labStats={labStats} />
+      </div>
       <div className="relative w-full flex items-center justify-center px-4 m-4">
         {/* Botones centrados al medio */}
         <div className="absolute left-1/2 transform -translate-x-1/2 flex space-x-4">
