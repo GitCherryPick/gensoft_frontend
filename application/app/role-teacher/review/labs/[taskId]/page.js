@@ -66,69 +66,8 @@ export default function ReviewLabsConcrete() {
         {submissions.length === 0 ? (
           <p className="text-gray-600">No hay entregas aún.</p>
         ) : (
-          <StudentPanel students={submissions}/>
-        // <div className="space-y-6">
-        //   {submissions.map((submission) => (
-        //     <div
-        //       key={submission.submission_id}
-        //       className="bg-white border rounded-lg p-4 shadow-sm"
-        //     >
-        //       <div className="flex items-center justify-between">
-        //         <div>
-        //           <p className="font-semibold text-lg">{submission.username}</p>
-        //           <p className="text-sm text-gray-500">
-        //             Entregado: {new Date(submission.submission_date).toLocaleString()}
-        //           </p>
-        //         </div>
-        //         <div className={`px-3 py-1 rounded-full text-sm font-medium ${submission.result === "Accepted"
-        //             ? "bg-green-100 text-green-800"
-        //             : "bg-red-100 text-red-800"
-        //           }`}>
-        //           {submission.result}
-        //         </div>
-        //       </div>
-
-        //       <div className="mt-4">
-        //         <p className="text-sm text-gray-600 mb-1">Código enviado:</p>
-        //         <pre className="bg-gray-100 p-3 rounded text-sm overflow-auto whitespace-pre-wrap">
-        //           {submission.code}
-        //         </pre>
-        //       </div>
-
-        //       {submission.test_feedback && (
-        //         <details className="mt-4">
-        //           <summary className="cursor-pointer font-medium text-blue-600">
-        //             Ver detalles de pruebas
-        //           </summary>
-        //           <ul className="mt-2 text-sm list-disc pl-5 space-y-1">
-        //             {submission.test_feedback.map((feedback, idx) => (
-        //               <li key={idx}>
-        //                 <strong>Input:</strong> {feedback.input} <br />
-        //                 <strong>Esperado:</strong> {feedback.expectedOutput} <br />
-        //                 <strong>Salida:</strong> {feedback.output || <em>(vacío)</em>} <br />
-        //                 {feedback.error && (
-        //                   <span className="text-red-600"><strong>Error:</strong> {feedback.error}</span>
-        //                 )}
-        //               </li>
-        //             ))}
-        //           </ul>
-        //         </details>
-        //       )}
-
-        //       <div className="mt-4">
-        //         <label className="block text-sm font-medium mb-1">Calificación</label>
-        //         <input
-        //           type="number"
-        //           defaultValue={submission.score ?? ""}
-        //           className="w-20 px-2 py-1 border rounded"
-        //           min={0}
-        //           max={10}
-        //           step={0.5}
-        //         />
-        //       </div>
-        //     </div>
-        //   ))}
-        // </div>
+          <StudentPanel students={submissions} taskInfo={task.grade}/>
+       
       )}
     </div>
     </div>

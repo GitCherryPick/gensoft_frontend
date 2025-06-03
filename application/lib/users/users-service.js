@@ -16,3 +16,11 @@ export async function postFeedbackAI(dataTask) {
   });
   return res.json();
 }
+
+export async function getFeedbackAI(feedbackId) {
+  const res = await fetch(`${API_BASE_URL}/feedback/exercise/${feedbackId}`, {
+    method: 'GET',
+    headers: defaultHeaders,
+  });
+  return res.json();
+}

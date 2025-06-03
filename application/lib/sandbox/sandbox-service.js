@@ -57,6 +57,14 @@ export async function endTask(taskId) {
   return response.json();
 }
 
+export async function reviewSubmission(subId, submissionUpdate) {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/sandbox/submissions/${subId}`, {
+    method: 'PUT',
+    headers: defaultContentHeaders,
+    body: JSON.stringify(submissionUpdate)
+  });
+  return response.json()
+}
 
 
 
