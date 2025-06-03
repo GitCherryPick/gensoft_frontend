@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { Save, Eye, Settings } from "lucide-react";
+import { Save, Settings } from "lucide-react";
 import ExamSettings from "./ExamSettings";
 import ExamEditor from "./ExamEditor";
 import { questionTypes } from "./questionTypes";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ExamCreator = () => {
   const [exam, setExam] = useState({
@@ -30,9 +31,9 @@ const ExamCreator = () => {
   };
 
   return (
-    <div className="h-screen w-full rounded-md bg-dark-1 relative overflow-hidden">
+    <div className="min-h-screen w-full bg-dark-1 relative flex flex-col">
       {/* Header */}
-      <div className="relative bg-gray-900/80 backdrop-blur-sm border-b border-gray-700/50 shadow-2xl">
+      <div className="sticky top-0 z-10 bg-gray-900/80 backdrop-blur-sm border-b border-gray-700/50 shadow-2xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex-1 space-y-2">
@@ -98,13 +99,14 @@ const ExamCreator = () => {
       </div>
 
       {/* Content */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {currentView === "editor" && (
-          <ExamEditor exam={exam} setExam={setExam} />
-        )}
-
-        {currentView === "settings" && renderSettings()}
-      </div>
+      <ScrollArea className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="py-8">
+          {currentView === "editor" && (
+            <ExamEditor exam={exam} setExam={setExam} />
+          )}
+          {currentView === "settings" && renderSettings()}
+        </div>
+      </ScrollArea>
     </div>
   );
 };
