@@ -24,7 +24,7 @@ export default function CardCollapse({ element }) {
           Creado: {element.created_at ? new Date(element.created_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
         </div>
         <div className="text-rose-400">
-          Termina: {element.ended_at ? new Date(element.ended_at).toLocaleDateString('es-ES') : 'Fecha no disponible'}
+          Termina: {element.date_limit ? new Date(element.date_limit).toLocaleDateString('es-ES') : 'Fecha no disponible'}
         </div>
       </div>
       <CollapsibleTrigger asChild>
