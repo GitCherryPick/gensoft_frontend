@@ -11,6 +11,8 @@ const Sandbox = forwardRef(({
   setEntrada,
   salida,
   setSalida,
+  feedbackForDocente,
+  setFeedbackForDocente,
   taskEnunciado,
   children
 }, ref) => {
@@ -71,7 +73,7 @@ const Sandbox = forwardRef(({
       }
       const response = await getWarningsFromAI(codeData);
       setWarnings(response.warnings || []);
-
+      setFeedbackForDocente(response.feedback_docente)
       const primerError = response.errores;
       if (primerError?.line !== 0) {
         setLinesAux({
@@ -104,7 +106,6 @@ const Sandbox = forwardRef(({
 
       const data = await response.json();
       setSalida(data.output || data.error);
-
       await getWarnings(data);
       updateLinesIssues(data);
     } catch (error) {

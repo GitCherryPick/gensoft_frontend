@@ -49,6 +49,13 @@ export async function getSubmissionsByTaskAndUser(taskId, userId) {
   return response.json();
 }
 
+export async function endTask(taskId) {
+  const response  = await fetch(`${SANDBOX_API_BASE_URL}/sandbox/task/${taskId}/close`, {
+    method: 'PUT',
+    headers: defaultContentHeaders,
+  });
+  return response.json();
+}
 
 
 
