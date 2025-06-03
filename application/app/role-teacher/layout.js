@@ -7,7 +7,7 @@ import {
   IconArrowLeft,
   IconBook,
   IconUser,
-  IconListCheck,
+  IconListCheck, IconBrandBandlab,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -41,6 +41,11 @@ export default function TeacherLayout({ children }) {
       icon: (
         <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
+    },
+    {
+      label: "Revisión de Laboratorios",
+      href: ROUTES.TEACHER.REVIEW_LABS,
+      icon: <IconBrandBandlab className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Perfil",
