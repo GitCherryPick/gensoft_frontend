@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeIn from "@/components/animations/FadeIn";
-import { getAllTaskCodes } from "@/lib/tasks-teacher/task-service";
-import { getExerciseById, getDefaultCourse } from "@/lib/content/content-service";
+import { getAllTaskCodes, getReplicaExercises } from "@/lib/tasks-teacher/task-service";
+import { getDefaultCourse } from "@/lib/content/content-service";
 import ViewExerciseReplica from "./ViewExerciseReplica";
 import ViewExerciseLaboratory from "./ViewExerciseLaboratory";
 
@@ -62,20 +62,23 @@ export default function Homework() {
         // Replica
         let replicaExercises = [];
         try {
-          const exerciseData = await getExerciseById('last'); 
-          replicaExercises = Array.isArray(exerciseData) ? exerciseData : [exerciseData];
+          replicaExercises = await getReplicaExercises();
+          if (!Array.isArray(replicaExercises)) {
+            replicaExercises = [];
+            console.warn("Expected array of replica exercises but got:", replicaExercises);
+          }
         } catch (exerciseError) {
-          console.warn("Failed to fetch exercises, continuing with tasks:", exerciseError);
+          console.warn("Failed to fetch replica exercises:", exerciseError);
         }
 
         // relicas
         const replicaTasks = replicaExercises.map((exercise, index) => ({
-          id: exercise.id_ejercicio || `rep-${index + 1}`,
-          title: exercise.titulo || `Réplica Exercise ${index + 1}`,
+          id: exercise.exercise_id || `rep-${index + 1}`,
+          title: exercise.title || `Réplica Exercise ${index + 1}`,
           dueDate: exercise.due_date || "2025-06-01",
           dueTime: exercise.due_time || "12:00",
           status: exercise.status || "Pendiente",
-          description: exercise.enunciado || "No description available",
+          description: exercise.prompt || "No description available",
           type: "Réplica",
           course: exercise.course_name || "Introducción a Python",
         }));
