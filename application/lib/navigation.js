@@ -21,6 +21,7 @@ export const ROUTES = {
     CODE_REPLICATOR: "/role-student/courses/replicator",
     REPLICA: "/role-student/replica",
     PROFILE: "/role-student/profile",
+    HOMEWORK: "/role-student/homework",
     RESOURCES: "/role-student/resources",
   },
 
@@ -36,8 +37,11 @@ export const ROUTES = {
     STUDENTS: "/role-teacher/students",
     CONTENT: "/role-teacher/content",
     PROFILE: "/role-teacher/profile",
+    EXAMS: "/role-teacher/exams",
     TASKS: "/role-teacher/tasks",
-    EXERCISES: "/role-teacher/exercises"
+    EXERCISES: "/role-teacher/exercises",
+    REVIEW_LABS: "/role-teacher/review/labs",
+    REVIEW_LABS_TASK: (taskId) => `/role-teacher/review/labs/${taskId}`,
   },
 };
 
@@ -45,7 +49,7 @@ export const DEFAULT_ROUTES = {
   STUDENT: ROUTES.STUDENT.COURSES,
   ADMIN: ROUTES.ADMIN.USERS,
   TEACHER: ROUTES.TEACHER.STUDENTS,
-}
+};
 
 export function getNavLinks(role) {
   switch (role) {
@@ -70,6 +74,11 @@ export function getNavLinks(role) {
           label: "Perfil",
           href: ROUTES.STUDENT.PROFILE,
           icon: "IconUser",
+        },
+        {
+          label: "Tareas",
+          href: ROUTES.STUDENT.HOMEWORK,
+          icon: "IconBook",
         },
         {
           label: "Cerrar Sesión",
@@ -133,6 +142,7 @@ export function usePrefetchRoutes(role = "all") {
       router.prefetch(ROUTES.STUDENT.ROOT);
       router.prefetch(ROUTES.STUDENT.COURSES);
       router.prefetch(ROUTES.STUDENT.PROFILE);
+      router.prefetch(ROUTES.STUDENT.HOMEWORK);
     }
 
     if (role === "admin" || role === "all") {
@@ -143,9 +153,9 @@ export function usePrefetchRoutes(role = "all") {
     }
 
     if (role === "teacher" || role === "all") {
-      router.prefetch(ROUTES.TEACHER.ROOT)
-      router.prefetch(ROUTES.TEACHER.STUDENTS)
-      router.prefetch(ROUTES.TEACHER.CONTENT)
+      router.prefetch(ROUTES.TEACHER.ROOT);
+      router.prefetch(ROUTES.TEACHER.STUDENTS);
+      router.prefetch(ROUTES.TEACHER.CONTENT);
     }
   }, [router, role]);
 }

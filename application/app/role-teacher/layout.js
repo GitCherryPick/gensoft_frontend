@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconUsers, IconArrowLeft, IconBook, IconUser, IconListCheck, IconEdit } from "@tabler/icons-react"
+import { IconUsers, IconArrowLeft, IconBook, IconUser, IconListCheck, IconEdit, IconBrandBandlab } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -10,20 +10,24 @@ import { usePathname, useRouter } from "next/navigation"
 import { ROUTES } from "@/lib/navigation"
 
 export default function TeacherLayout({ children }) {
-  const pathname = usePathname()
-  const router = useRouter()
-  const [open, setOpen] = useState(true)
+  const pathname = usePathname();
+  const router = useRouter();
+  const [open, setOpen] = useState(true);
 
   const links = [
     {
       label: "Alumnos",
       href: ROUTES.TEACHER.STUDENTS,
-      icon: <IconUsers className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconUsers className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
     },
     {
       label: "Gestión de Contenido",
       href: ROUTES.TEACHER.CONTENT,
-      icon: <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
     },
     {
       label: "Crear Ejercicios",
@@ -33,40 +37,58 @@ export default function TeacherLayout({ children }) {
     {
       label: "Gestión de Tareas",
       href: ROUTES.TEACHER.TASKS,
-      icon: <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Revisión de Laboratorios",
+      href: ROUTES.TEACHER.REVIEW_LABS,
+      icon: <IconBrandBandlab className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Perfil",
       href: ROUTES.TEACHER.PROFILE,
-      icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Examen",
+      href: ROUTES.TEACHER.EXAMS,
+      icon: (
+        <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
     },
     {
       label: "Cerrar Sesión",
       href: ROUTES.HOME,
-      icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: (
+        <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
     },
-  ]
+  ];
 
   useEffect(() => {
     if (pathname === ROUTES.TEACHER.ROOT) {
-      router.push(ROUTES.TEACHER.STUDENTS)
+      router.push(ROUTES.TEACHER.STUDENTS);
     }
-  }, [pathname, router])
+  }, [pathname, router]);
 
   // Efecto para cerrar el sidebar después de 2 segundos
   useEffect(() => {
     const timer = setTimeout(() => {
-      setOpen(false)
-    }, 2000)
+      setOpen(false);
+    }, 2000);
 
-    return () => clearTimeout(timer)
-  }, [])
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div
       className={cn(
         "mx-auto flex w-full flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-50 md:flex-row dark:border-neutral-700 dark:bg-dark-1",
-        "h-screen",
+        "h-screen"
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={true}>
@@ -108,7 +130,7 @@ export default function TeacherLayout({ children }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 const Logo = () => {
@@ -126,5 +148,5 @@ const Logo = () => {
         Portal Docente
       </motion.span>
     </Link>
-  )
-}
+  );
+};

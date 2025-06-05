@@ -286,15 +286,14 @@ function convertirFormatoLineasVisibles(visibleLines, targetCode) {
 
 /**
  * Obtiene los datos de un ejercicio por su ID
- * @param {string} exerciseId - ID del ejercicio a obtener
+ * @param {number|string} exerciseId - ID del ejercicio a obtener
  * @returns {Promise<Object>} Promesa que se resuelve con los datos del ejercicio
  */
 export async function getExerciseById(exerciseId) {
   try {
-    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/last`, {
+    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/${exerciseId}`, {
       headers: defaultContentHeaders,
     });
-
     if (!response.ok) {
       throw new Error(`Error al obtener el ejercicio: ${response.statusText}`);
     }
