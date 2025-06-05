@@ -1,17 +1,16 @@
-// app/role-student/exams/page.js
 import { notFound } from "next/navigation";
 
-import  StudentExamView from "./StudentExamView"; // Adjust if the path is different, e.g., "../../components/StudentExamView"
+import  StudentExamView from "./StudentExamView"; 
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-// Mock function to fetch exam data (replace with your actual data fetching logic)
+
 async function fetchExamData(examId) {
   try {
-    // Placeholder: Replace with your actual API call or database query
+    //ejemplo de examen
     const examData = {
       id: examId,
-      title: "Sample Programming Exam",
-      description: "Test your coding skills with this comprehensive exam.",
+      title: "Examen de funcion de suma",
+      description: "Has la funcion de la suma",
       timeLimit: 60,
       questions: [
         {
@@ -76,10 +75,10 @@ async function fetchExamData(examId) {
 export default async function ExamPage({ params }) {
   const { examId } = params;
 
-  // Fetch exam data based on examId
+  
   const exam = await fetchExamData(examId);
 
-  // If exam data is not found, return a 404 page
+
   if (!exam) {
     notFound();
   }

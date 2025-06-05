@@ -15,7 +15,7 @@ const StudentExamView = ({ exam }) => {
   const [testResults, setTestResults] = useState({});
   const editorRefs = useRef({});
 
-  // Handle answer changes for multiple-choice and multiple-select
+  //multi respuestas
   const handleAnswerChange = (questionId, value) => {
     setAnswers((prev) => ({
       ...prev,
@@ -23,7 +23,7 @@ const StudentExamView = ({ exam }) => {
     }));
   };
 
-  // Handle code changes for code-based questions
+  //code
   const handleCodeChange = (questionId, code) => {
     setAnswers((prev) => ({
       ...prev,
@@ -31,15 +31,14 @@ const StudentExamView = ({ exam }) => {
     }));
   };
 
-  // Simulate running test cases (mock implementation)
+  // simulador de test
   const runTestCases = (questionId, code) => {
     const question = exam.questions.find((q) => q.id === questionId);
     if (!question || !question.testCases) return;
 
     const results = question.testCases.map((testCase, index) => {
-      // Mock test execution: Compare code output with expected output
-      // In a real app, this would involve running the code in a sandbox
-      const mockOutput = "8"; // Placeholder: Replace with actual code execution
+     
+      const mockOutput = "8"; 
       const passed = mockOutput === testCase.expectedOutput;
       return {
         id: testCase.id,
