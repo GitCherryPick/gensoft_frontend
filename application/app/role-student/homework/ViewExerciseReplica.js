@@ -1,14 +1,12 @@
 'use client';
 
 import ComponentBackButton from './ComponentBackButton';
+import ReplicaPage from '../replica/page';
 
-export default function ViewExerciseReplica({ exercise, onBack }) {
+export default function ViewExerciseReplica({ exercise, onBack = () => {} }) {
   return (
-    <div className="w-full h-full bg-dark-1 p-6 overflow-auto">
-      <ComponentBackButton onBack={onBack} />
-      <pre className="text-light-2">
-        {JSON.stringify(exercise, null, 2)}
-      </pre>
+    <div className="w-full h-full bg-dark-1 overflow-auto">
+      <ReplicaPage params={{ id: exercise?.id }} onBack={onBack} />
     </div>
   );
 }
