@@ -7,24 +7,27 @@ import Certificates from "./certificates/page";
 import ProjectsPage from "./projects/page";
 import Courses from "./your_courses/page";
 import { useEffect, useState } from "react";
-import { Description } from "@radix-ui/react-toast";
 
 export default function ProfilePage() {
-  // Datos del estudiante
   const [student, setStudent] = useState({
     profile: "",
-    username: "",
+    username: "", 
     role: "",
     bio: "",
-    email: "",
-    status: "inactive",
+    email: "", 
+    status: "inactive", 
   });
 
   useEffect(() => {
     const storedStudent = localStorage.getItem("user");
     if (storedStudent) {
       try {
-        setStudent(JSON.parse(storedStudent));
+        const parsedStudent = JSON.parse(storedStudent);
+        setStudent(prevStudent => ({
+          ...prevStudent, 
+          ...parsedStudent, 
+          username: parsedStudent.username || parsedStudent.name || prevStudent.username,
+        }));
       } catch (error) {
         console.error("Error al parsear los datos del estudiante:", error);
       }
@@ -59,15 +62,15 @@ export default function ProfilePage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-gray-100">
-                  {student.username}
+                  {student.username || "Nombre de Usuario"}
                 </h1>
-                <p className="text-gray-400">{student.role}</p>
+                <p className="text-gray-400">{student.role || "Rol del estudiante"}</p>
               </div>
             </div>
 
             <div className="mt-6">
               <h2 className="text-lg font-semibold text-gray-300">Sobre mí</h2>
-              <p className="mt-2 text-gray-400">{student.bio}</p>
+              <p className="mt-2 text-gray-400">{student.bio || "Biografía no disponible."}</p>
             </div>
           </div>
         </div>
