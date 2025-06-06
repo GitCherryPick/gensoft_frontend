@@ -240,11 +240,11 @@ const CodeEditorCopy = forwardRef(({
   };
 
   return (
-    <div className="relative flex flex-col h-full w-full bg-zinc-800 font-mono text-base rounded-xl overflow-hidden border border-gray-700" style={{ lineHeight: '1.6rem' }}>
-      <div className="flex flex-1 overflow-hidden">
+    <div className="relative flex flex-col h-full max-h-full w-full max-w-full bg-zinc-800 font-mono text-base rounded-xl overflow-hidden border border-gray-700" style={{ lineHeight: '1.6rem', maxHeight: 'calc(100vh - 180px)' }}>
+      <div className="flex flex-1 h-full max-h-full overflow-hidden">
         <div
           ref={linesRef}
-          className={`flex flex-col items-start text-indigo-400/80 py-3 select-none overflow-hidden border-r border-gray-700 bg-zinc-900/30 ${
+          className={`flex flex-col items-start text-indigo-400/80 py-3 select-none overflow-hidden border-r border-gray-700 bg-zinc-900/30 h-full max-h-full ${
             (showLineVisibilityToggle && showPin) ? 'min-w-[7rem]' : 
             (showLineVisibilityToggle || showPin) ? 'min-w-[4.5rem]' : 'min-w-[3rem]'
           }`}
@@ -253,7 +253,6 @@ const CodeEditorCopy = forwardRef(({
             height: '100%',
             paddingLeft: (showLineVisibilityToggle || showPin) ? '0.75rem' : '0.75rem',
             paddingRight: '0.5rem',
-            boxSizing: 'border-box',
             transition: 'min-width 0.2s ease, padding 0.2s ease'
           }}
         >
@@ -317,10 +316,10 @@ const CodeEditorCopy = forwardRef(({
           </div>
         </div>
 
-        <div className="flex-1 relative code-editor-main bg-zinc-900/50">
+        <div className="flex-1 h-full max-h-full relative code-editor-main bg-zinc-900/50 overflow-y-auto overflow-x-hidden" style={{maxHeight: 'calc(100vh - 180px)'}} >
           <div 
             ref={highlightRef}
-            className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-auto px-4 pt-3 pb-0 whitespace-pre text-gray-200 text-sm"
+            className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-y-auto px-4 pt-3 pb-0 whitespace-pre text-gray-200 text-sm"
             style={{ 
               fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
               lineHeight: '1.6rem',
@@ -328,7 +327,10 @@ const CodeEditorCopy = forwardRef(({
               wordBreak: 'break-all',
               letterSpacing: 'normal',
               tabSize: 2,
-              position: 'relative'
+              position: 'relative',
+              maxHeight: '100%',
+              height: '100%',
+              overflowY: 'auto'
             }}
             aria-hidden="true"
           >
@@ -355,10 +357,13 @@ const CodeEditorCopy = forwardRef(({
           </div>
           <textarea
             ref={textareaRef}
-            className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent caret-white px-4 pt-3 pb-0 resize-none outline-none font-mono text-sm whitespace-pre overflow-auto"
+            className="absolute top-0 left-0 w-full h-full max-h-full bg-transparent text-transparent caret-white px-4 pt-3 pb-0 resize-none outline-none font-mono text-sm whitespace-pre overflow-y-auto"
             style={{ 
               lineHeight: '1.6rem',
               fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              maxHeight: '100%',
+              height: '100%',
+              overflowY: 'auto',
               letterSpacing: 'normal',
               tabSize: 2
             }}

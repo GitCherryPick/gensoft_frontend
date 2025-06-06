@@ -108,8 +108,8 @@ export default function ReplicaPage() {
   }, [currentUser]);
 
   return (
-    <div className="flex h-full w-full p-4 gap-4">
-      <div className="w-3/5 flex flex-col h-full p-4">
+    <div className="flex h-full w-full max-w-full h-screen p-4 gap-4 overflow-hidden">
+      <div className="w-3/5 flex flex-col h-full max-w-full p-4 overflow-hidden">
         <div 
           className="space-y-2 mb-4"
         >
@@ -128,11 +128,12 @@ export default function ReplicaPage() {
             </>
           )}
         </div>
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden max-w-full">
           <CodeEditorCopy
-            codeInput={code}
-            setCodeInput={handleCodeChange}
-          />
+              codeInput={code}
+              setCodeInput={handleCodeChange}
+              style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%' }}
+            />
         </div>
       </div>
       
