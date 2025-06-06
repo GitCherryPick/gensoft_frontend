@@ -1,19 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar";
-import {
-  IconUsers,
-  IconArrowLeft,
-  IconBook,
-  IconUser,
-  IconListCheck, IconBrandBandlab,
-} from "@tabler/icons-react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import { usePathname, useRouter } from "next/navigation";
-import { ROUTES } from "@/lib/navigation";
+import { useState, useEffect } from "react"
+import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
+import { IconUsers, IconArrowLeft, IconBook, IconUser, IconListCheck, IconEdit, IconBrandBandlab } from "@tabler/icons-react"
+import Link from "next/link"
+import { motion } from "framer-motion"
+import { cn } from "@/lib/utils"
+import { usePathname, useRouter } from "next/navigation"
+import { ROUTES } from "@/lib/navigation"
 
 export default function TeacherLayout({ children }) {
   const pathname = usePathname();
@@ -34,6 +28,11 @@ export default function TeacherLayout({ children }) {
       icon: (
         <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
+    },
+    {
+      label: "Crear Ejercicios",
+      href: ROUTES.TEACHER.EXERCISES,
+      icon: <IconEdit className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Gestión de Tareas",
