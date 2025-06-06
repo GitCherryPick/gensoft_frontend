@@ -7,6 +7,7 @@ export const ROUTES = {
   HOME: "/home",
   LOGIN: "/login",
   SIGNUP: "/signup",
+  DASHBOARD: "/dashboard", 
 
   RECOVER_PASSWORD: {
     ROOT: "/recover-password",
