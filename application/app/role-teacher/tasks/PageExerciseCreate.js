@@ -61,6 +61,7 @@ export default function ExerciseCreate({ onBack }) {
                 codeInput={code}
                 setCodeInput={setCode}
                 showLineVisibilityToggle={true}
+                showPin={true}
               />
             </div>
           </div>
