@@ -92,5 +92,14 @@ export async function feedbackForEachTest(codeData) {
   return response.json()
 }
 
+export async function executeCode(code) {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/sandbox/execute`, {
+    method: "POST",
+    headers: defaultContentHeaders,
+    body: JSON.stringify(code),
+  });
+  return response.json()
+}
+
 
 

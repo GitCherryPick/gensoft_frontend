@@ -24,3 +24,12 @@ export async function getFeedbackAI(feedbackId) {
   });
   return res.json();
 }
+
+export async function updateFeedbackAI(feedbackId, data) {
+  const res = await fetch(`${API_BASE_URL}/feedback/exercise/${feedbackId}`, {
+    method: 'PUT',
+    headers: defaultHeaders,
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}

@@ -2,12 +2,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import confetti from "canvas-confetti";
 import TestCaseResult from '@/components/TestCaseResult'
-import { SANDBOX_API_BASE_URL } from '@/lib/sandbox/sandbox-api-config';
 import Sandbox from "./labs/Sandbox"
-import { postFeedbackAI } from "@/lib/users/users-service";
+import { postFeedbackAI, updateFeedbackAI } from "@/lib/users/users-service";
 import { Download, Play, SendHorizonal } from "lucide-react";
 import { feedbackForEachTest, getScore, getTaskById, sendCodeSolution } from "@/lib/sandbox/sandbox-service";
 import {TextRevealCard} from "@/components/ui/text-reveal-card";
+import toast from "react-hot-toast";
+
 
 export default function LabPython({taskId=1, userId=1}) {
   const taskIdNum = !isNaN(taskId) ? parseInt(taskId) : 1
@@ -25,6 +26,10 @@ export default function LabPython({taskId=1, userId=1}) {
   const [codigo, setCodigo] = useState("# Escribe tu código en Python aquí...");
 
   const sandboxRef = useRef();
+  const [errorsInSubmit, setErrorsInSubmit] = useState({
+    error: "",
+    line: "0"
+  });
   const [taskTitle, setTaskTitle] = useState("Cargando...");
   const [taskEnunciado, setTaskEnunciado] = useState("Cargando...");
 
@@ -62,11 +67,11 @@ export default function LabPython({taskId=1, userId=1}) {
 
   const enviarCodigo = async () => {
     try {
-      console.log("holatriste", taskIdNum)
+      console.log("holatriste", typeof feedbackForDocente)
       const feedback = await postFeedbackAI({
         student_id: 4,//id del user 
         task_id_lab: taskIdNum,
-        feedback_ai: [feedbackForDocente] ?? ["No fue posible generar feedback automatico"],
+        feedback_ai: feedbackForDocente.length > 0? feedbackForDocente: ["No fue posible generar feedback automatico"],
         n_intentos: nIntentos
       });
       const data = await sendCodeSolution({
@@ -93,9 +98,17 @@ export default function LabPython({taskId=1, userId=1}) {
         codigo_estudiante: codigo,
         enunciado: taskEnunciado,
         test_set: testSet || []
-      })
-      console.log("te salio esto ", selfFeedback)
+      });
+      
       setFeedbackAIUser(selfFeedback);
+      if(feedback.feedback_ai[0] === "No fue posible generar feedback automatico"){
+        console.log("te salio esto ", selfFeedback)
+        await updateFeedbackAI( feedback.id,{
+          feedback_ai: [selfFeedback.feedback_docente],
+        });
+      }
+      
+      setErrorsInSubmit(selfFeedback.errores);
       setPestanaActiva("testcases")
       console.log("Respuesta del servidor:", data);
       setSalida(data.output || "Código enviado correctamente.");
@@ -132,18 +145,25 @@ export default function LabPython({taskId=1, userId=1}) {
             colors: ['#00ffcc', '#33cc33', '#99ff66', '#ffffff'],
           }));
         }, 200);
-
+        toast.success("Código enviado correctamente.✅")
       }
     } catch (error) {
       console.error("Error al enviar:", error);
       setSalida("Error al enviar: " + error.message);
+      toast.error("Ocurrió un error al enviar la solución.❎")
     }
   };
 
   const guardarArchivo = () => {
-    if(sandboxRef.current) {
-      sandboxRef.current.saveFile();
+    try{
+      if(sandboxRef.current) {
+        sandboxRef.current.saveFile();
+        toast.success("Se ha guardado el archivo con éxito.✅")
+      }
+    }catch (error){
+      toast.error("Ocurrió un error al guardar el archivo.❎")
     }
+    
   }
 
   const ejecutarCodigo = () => {
@@ -217,7 +237,7 @@ export default function LabPython({taskId=1, userId=1}) {
           {pestanaActiva === 'testcases' && (
             <div>
               <h2 className="text-lg font-semibold mb-2 text-white">Casos de prueba</h2>
-              {testCases.length === 0 && <p>Realiza un envio.</p>}
+              {testCases.length === 0 && <p className="text-white">Realiza un envio.</p>}
               {testCases.map((tc, i) => (
                 <TestCaseResult
                   key={i}
@@ -244,6 +264,7 @@ export default function LabPython({taskId=1, userId=1}) {
           entrada={entrada}
           setEntrada={setEntrada}
           taskEnunciado={taskEnunciado}
+          errorsInSubmit={errorsInSubmit}
         />
       </div>
     </div>
