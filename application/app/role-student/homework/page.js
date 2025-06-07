@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeIn from "@/components/animations/FadeIn";
-import { getAllTaskCodes, getReplicaExercises } from "@/lib/tasks-teacher/task-service";
+import { getAllTasks, getReplicaExercises } from "@/lib/tasks-teacher/task-service";
 import { getDefaultCourse } from "@/lib/content/content-service";
 import ViewExerciseReplica from "./ViewExerciseReplica";
 import ViewExerciseLaboratory from "./ViewExerciseLaboratory";
@@ -41,7 +41,8 @@ export default function Homework() {
         // labo
         let taskList = [];
         try {
-          const taskData = await getAllTaskCodes();
+          const taskData = await getAllTasks();
+          console.log("hola",taskData)
           taskList = Array.isArray(taskData) ? taskData : taskData.data || taskData.tasks || taskData.results || [];
         } catch (taskError) {
           console.warn("Failed to fetch task codes, continuing with exercises:", taskError);
@@ -49,12 +50,12 @@ export default function Homework() {
 
         // labo
         const laboratorioTasks = taskList.map((task, index) => ({
-          id: task.id_ejercicio || `lab-${index + 1}`,
-          title: task.consignas_docente || `Laboratorio Task ${index + 1}`,
-          dueDate: task.due_date || "2025-06-01",
-          dueTime: task.due_time || "12:00",
+          id: `lab-${task.id}` || `lab-${index + 1}`,
+          title: task.title || `Laboratorio Task ${index + 1}`,
+          dueDate: task.date_limit.split("T")[0] || "2025-06-01",
+          dueTime: task.date_limit.split("T")[1].slice(0,5) || "12:00",
           status: task.status || "Pendiente",
-          description: task.contexto_ejercicio || "No description available",
+          description: task.enunciado || "No description available",
           type: "Laboratorio",
           course: task.course_name || "Introducción a Python",
         }));
