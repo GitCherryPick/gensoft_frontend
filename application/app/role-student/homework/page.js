@@ -52,8 +52,8 @@ export default function Homework() {
         const laboratorioTasks = taskList.map((task, index) => ({
           id: `lab-${task.id}` || `lab-${index + 1}`,
           title: task.title || `Laboratorio Task ${index + 1}`,
-          dueDate: task.date_limit.split("T")[0] || "2025-06-01",
-          dueTime: task.date_limit.split("T")[1].slice(0,5) || "12:00",
+          dueDate: task.date_limit ? task.date_limit.split("T")[0] : "2025-06-01",
+          dueTime: task.date_limit ? (task.date_limit.split("T")[1]?.slice(0,5) || "12:00") : "12:00",
           status: task.status || "Pendiente",
           description: task.enunciado || "No description available",
           type: "Laboratorio",
