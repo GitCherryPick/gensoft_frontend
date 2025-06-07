@@ -6,13 +6,17 @@ import { SANDBOX_API_BASE_URL } from '@/lib/sandbox/sandbox-api-config';
 import Sandbox from "./labs/Sandbox"
 import { postFeedbackAI } from "@/lib/users/users-service";
 import { Download, Play, SendHorizonal } from "lucide-react";
+import { feedbackForEachTest, getScore, getTaskById, sendCodeSolution } from "@/lib/sandbox/sandbox-service";
+import {TextRevealCard} from "@/components/ui/text-reveal-card";
 
 export default function LabPython({taskId=1, userId=1}) {
+  const taskIdNum = !isNaN(taskId) ? parseInt(taskId) : 1
   const [isCliente, setIsCliente] = useState(false);
   const [testCases, setTestCases] = useState([]);
   const [salida, setSalida] = useState("");
   const [entrada, setEntrada] = useState("");
   const [feedbackForDocente, setFeedbackForDocente] = useState([]);
+  const [feedbackAIUser, setFeedbackAIUser] = useState([]);
   const [nIntentos, setNIntentos] = useState(0);
   const [score, setScore] = useState(0);
   const [pestanaActiva, setPestanaActiva] = useState('enunciado');
@@ -27,10 +31,7 @@ export default function LabPython({taskId=1, userId=1}) {
 
   const fetchScore = async () => {
     try {
-      const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks/getScore?task_id=${taskId}&user_id=${4}`, {
-        method: "GET"
-      });
-      const data = await response.json();
+      const data = await getScore(taskIdNum,4);
       console.log("response ", data);
       if(data.score > score){
         setScore(data.score);
@@ -45,8 +46,7 @@ export default function LabPython({taskId=1, userId=1}) {
     setIsCliente(true);
     const fetchTask = async () => {
       try {
-        const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks/${taskId}`);
-        const data = await response.json();
+        const data = await getTaskById(taskIdNum);
         setTaskTitle(data.title);
         setTaskEnunciado(data.enunciado);
       } catch (error) {
@@ -62,30 +62,41 @@ export default function LabPython({taskId=1, userId=1}) {
 
   const enviarCodigo = async () => {
     try {
-      console.log("holatriste", feedbackForDocente)
+      console.log("holatriste", taskIdNum)
       const feedback = await postFeedbackAI({
         student_id: 4,//id del user 
-        task_id_lab: taskId,
-        feedback_ai: [feedbackForDocente],
+        task_id_lab: taskIdNum,
+        feedback_ai: [feedbackForDocente] ?? ["No fue posible generar feedback automatico"],
         n_intentos: nIntentos
       });
-      const res = await fetch("http://localhost:8010/enviar", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: 4,
-          code: codigo,
-          taskId: taskId,
-          result: salida.includes(":")? salida : "",
-          autofeedback_id: feedback.id?? 0
-        }),
+      const data = await sendCodeSolution({
+        userId: 4,
+        code: codigo,
+        taskId: taskIdNum,
+        result: salida.includes(":")? salida : "",
+        autofeedback_id: feedback.id?? 0
       });
-
+      console.log("problemas?", data.testCases)
+      let testSet = []
+      if (Array.isArray(data.testCases)) {
+        testSet = data.testCases.map(val => {
+          return {
+            input: val.input,
+            expected_output: val.expectedOutput,
+            real_output: val.output
+          }
+        })
+        console.log("el testSEt ", testSet)
+      }
+      
+      const selfFeedback = await feedbackForEachTest({
+        codigo_estudiante: codigo,
+        enunciado: taskEnunciado,
+        test_set: testSet || []
+      })
+      console.log("te salio esto ", selfFeedback)
+      setFeedbackAIUser(selfFeedback);
       setPestanaActiva("testcases")
-
-      const data = await res.json();
       console.log("Respuesta del servidor:", data);
       setSalida(data.output || "Código enviado correctamente.");
       setTestCases(data.testCases || []);
@@ -179,7 +190,7 @@ export default function LabPython({taskId=1, userId=1}) {
           </div>
         </div>
       </div>
-      <div className="w-full max-w-8xl min-h-[520px] grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="w-full max-w-8xl min-h-[550px] grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="w-full h-auto text-black rounded-lg shadow p-2 sm:p-4 bg-[#17181c] border border-[#52585a] overflow-auto">
           <div className="flex border-b mb-4">
             <button
@@ -215,8 +226,10 @@ export default function LabPython({taskId=1, userId=1}) {
                   expectedOutput={tc.expectedOutput}
                   output={tc.output}
                   veredict={tc.veredict}
+                  feedback={feedbackAIUser.feedback_test[i]}
                 />
               ))}
+              <TextRevealCard text={feedbackAIUser.feedback_positive} revealText={feedbackAIUser.feedback_general} />
             </div>
           )}
         </div>
