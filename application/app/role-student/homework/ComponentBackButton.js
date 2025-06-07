@@ -6,7 +6,7 @@ export default function ComponentBackButton({ onBack, label = 'Volver a la lista
   return (
     <button
       onClick={onBack}
-      className="flex items-center text-light-2 hover:text-light-1 mb-6 transition-colors"
+      className="flex items-center text-light-2 hover:text-light-1 transition-colors"
     >
       <svg 
         className="w-5 h-5 mr-2" 

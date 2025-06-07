@@ -66,5 +66,31 @@ export async function reviewSubmission(subId, submissionUpdate) {
   return response.json()
 }
 
+export async function getScore(taskId, userId) {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks/getScore?task_id=${taskId}&user_id=${userId}`, {
+    method: "GET",
+    headers: defaultContentHeaders
+  });
+  return response.json()
+}
+
+export async function sendCodeSolution(codeData) {
+  const res = await fetch(`${SANDBOX_API_BASE_URL}/enviar`, {
+    method: "POST",
+    headers: defaultContentHeaders,
+    body: JSON.stringify(codeData)
+  });
+  return res.json()
+}
+
+export async function feedbackForEachTest(codeData) {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/sandbox/ai-feedback/lab-test`, {
+    method: "POST",
+    headers: defaultContentHeaders,
+    body: JSON.stringify(codeData)
+  });
+  return response.json()
+}
+
 
 
