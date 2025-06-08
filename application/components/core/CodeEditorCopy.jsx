@@ -40,6 +40,9 @@ const PYTHON_SYNTAX = {
   }
 };
 
+// Para leer las líneas visibles y fijadas, usar los métodos getVisibleLines() y getPinnedLines() a través del ref.
+// Ejemplo: editorRef.current.getVisibleLines() y editorRef.current.getPinnedLines()
+
 const CodeEditorCopy = forwardRef(({
   codeInput,
   setCodeInput,

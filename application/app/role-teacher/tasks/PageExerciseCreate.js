@@ -50,6 +50,7 @@ export default function ExerciseCreate({ onBack }) {
             <TaskForm 
               code={code}
               getVisibleLines={() => editorRef.current?.getVisibleLines?.() || []}
+              getPinnedLines={() => editorRef.current?.getPinnedLines?.() || []}
               onTaskCreated={handleTaskCreated} 
             />
           </div>
