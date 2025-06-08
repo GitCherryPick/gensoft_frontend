@@ -327,3 +327,44 @@ export async function getExerciseById(exerciseId) {
     throw error;
   }
 }
+
+export async function createExerciseWithDetails(exerciseData) {
+  console.log("Datos del ejercicio recibidos:", exerciseData)
+
+  // Transformar los datos al formato requerido
+  const requestBody = {
+    instructor_id: Number.parseInt(exerciseData.id_docente, 10) || 0,
+    title: exerciseData.titulo || "",
+    enunciado: exerciseData.enunciado || "",
+    pistas: exerciseData.pistas || [],
+    tests: exerciseData.tests || [],
+    // Mantener compatibilidad con el backend existente
+    target_code: exerciseData.codigo_objetivo || "",
+    visible_lines: Array.isArray(exerciseData.lineas_visibles) ? exerciseData.lineas_visibles : [],
+    instructor_comment: exerciseData.comentario_docente || "",
+  }
+
+  try {
+    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...defaultContentHeaders,
+      },
+      body: JSON.stringify(requestBody),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      console.error("Error en la respuesta del servidor:", errorData)
+      throw new Error(`Error al crear el ejercicio: ${response.status} - ${response.statusText}`)
+    }
+
+    const responseData = await response.json()
+    console.log("Ejercicio creado exitosamente:", responseData)
+    return responseData
+  } catch (error) {
+    console.error("Error al crear el ejercicio:", error)
+    throw error
+  }
+}
