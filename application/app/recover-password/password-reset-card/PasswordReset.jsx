@@ -39,7 +39,8 @@ export default function PasswordReset() {
       return;
     }
     setError("");
-    await fetch("http://localhost:8006/auth/password-reset/confirm", {
+    const { API_BASE_URL } = require('@/lib/users/api-config');
+    await fetch(`${API_BASE_URL}/auth/password-reset/confirm`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
