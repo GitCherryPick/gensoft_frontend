@@ -39,6 +39,7 @@ export const ROUTES = {
     PROFILE: "/role-teacher/profile",
     EXAMS: "/role-teacher/exams",
     TASKS: "/role-teacher/tasks",
+    EXERCISES: "/role-teacher/exercises",
     REVIEW_LABS: "/role-teacher/review/labs",
     REVIEW_LABS_TASK: (taskId) => `/role-teacher/review/labs/${taskId}`,
   },
