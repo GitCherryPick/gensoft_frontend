@@ -1,4 +1,8 @@
 "use client"
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { registerLocale } from "react-datepicker";
+import es from "date-fns/locale/es"; // para español
 
 import { useState, useRef } from "react"
 import { Input } from "@/components/ui/input"
@@ -7,8 +11,9 @@ import { Button } from "@/components/ui/button"
 import PromiseButton from "@/components/core/PromiseButton"
 import { createExerciseWithDetailsLab } from "@/lib/sandbox/sandbox-service"
 import toast from "react-hot-toast"
-import { title } from "process"
+//import { title } from "process"
 
+registerLocale("es", es);
 const inputStyles = "border-border/50 hover:border-border/70 focus:border-border/90"
 const buttonStyles = "border-border/50 hover:border-border/70"
 
@@ -19,6 +24,8 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
   const [tests, setTests] = useState([{ input: "", output: "" }]) // Estado para tests
   const [isSubmitting, setIsSubmitting] = useState(false)
   const titleRef = useRef(null)
+  const [calificacion, setCalificacion] = useState(10)
+  const [fechaLimite, setFechaLimite] = useState(null)
 
   const isFormValid =
     titleRef.current?.value?.trim() && enunciado.trim() && tests.some((test) => test.input.trim() && test.output.trim())
@@ -86,6 +93,8 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
         lineas_visibles: lineasVisibles,
         tests: testsLimpios,
         pistas: pistasLimpias,
+        grade: calificacion,
+        date_limit: fechaLimite,
       }
 
       const result = await createExerciseWithDetailsLab(exerciseData)
@@ -239,6 +248,37 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
               </Button>
             </div>
           </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <label htmlFor="fecha-limite" className="block text-sm font-medium text-gray-300">
+            Fecha límite
+          </label>
+          <DatePicker
+            id="fecha-limite"
+            selected={fechaLimite}
+            onChange={(date) => setFechaLimite(date)}
+            dateFormat="dd/MM/yyyy"
+            locale="es"
+            placeholderText="dd/mm/aaaa"
+            className={`w-full bg-transparent min-h-[42px] text-sm text-white px-2 py-1 rounded border border-gray-600`}
+          />
+        </div>
+
+        
+        <div className="space-y-1.5">
+          <label htmlFor="calificacion" className="block text-sm font-medium text-gray-300">
+            Calificación máxima
+          </label>
+          <Input
+            id="calificacion"
+            type="number"
+            min="0"
+            max="100"
+            value={calificacion}
+            onChange={(e) => setCalificacion(Number(e.target.value))}
+            className={`w-full bg-transparent min-h-[42px] flex items-center text-sm ${inputStyles}`}
+          />
         </div>
 
         <div className="pt-2 pb-6 mt-auto">
