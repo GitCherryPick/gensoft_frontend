@@ -49,6 +49,7 @@ const CodeEditorCopy = forwardRef(({
   children,
   showLineVisibilityToggle = false,
   showPin = false,
+  blockedLines = [],
 }, ref) => {
   const textareaRef = useRef(null);
   const linesRef = useRef(null);
@@ -57,6 +58,7 @@ const CodeEditorCopy = forwardRef(({
   const [highlightedCode, setHighlightedCode] = useState('');
   const [visibleLines, setVisibleLines] = useState(new Set());
   const [pinnedLines, setPinnedLines] = useState(new Set());
+  const blockedLinesSet = useMemo(() => new Set(blockedLines), [blockedLines]);
 
   const toggleLineVisibility = (lineNumber) => {
     setVisibleLines(prev => {
@@ -221,13 +223,43 @@ const CodeEditorCopy = forwardRef(({
     }
   }, [codeInput, visibleLines, pinnedLines]);
 
+  const getLineNumberAtPosition = (text, position) => {
+    const textUpToPosition = text.substring(0, position);
+    return (textUpToPosition.match(/\n/g) || []).length + 1;
+  };
+
+  const isLineBlocked = (lineNumber) => {
+    return blockedLinesSet.has(lineNumber);
+  };
+
   const handleKeyDown = (e) => {
+    const textarea = e.target;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    
+    const currentLineStart = getLineNumberAtPosition(codeInput, start);
+    const currentLineEnd = getLineNumberAtPosition(codeInput, end);
+    
+    let hasBlockedLine = false;
+    for (let i = currentLineStart; i <= currentLineEnd; i++) {
+      if (isLineBlocked(i)) {
+        hasBlockedLine = true;
+        break;
+      }
+    }
+    
+    if (hasBlockedLine && !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'PageUp', 'PageDown'].includes(e.key)) {
+      if (!(e.ctrlKey && e.key === 'c')) {
+        e.preventDefault();
+        return;
+      }
+    }
+    
     if (e.key === 'Tab') {
       e.preventDefault();
-      const textarea = e.target;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-
+      
+      if (hasBlockedLine) return;
+      
       const newValue =
         codeInput.substring(0, start) + '    ' + codeInput.substring(end);
       setCodeInput(newValue);
@@ -239,7 +271,47 @@ const CodeEditorCopy = forwardRef(({
   };
 
   const handleChange = (e) => {
-    setCodeInput(e.target.value);
+    const newValue = e.target.value;
+    
+    if (codeInput && newValue) {
+      const oldLines = codeInput.split('\n');
+      const newLines = newValue.split('\n');
+      
+      if (oldLines.length !== newLines.length || blockedLinesSet.size > 0) {
+        let hasChangesInBlockedLines = false;
+        
+        const commonLength = Math.min(oldLines.length, newLines.length);
+        
+        for (let i = 0; i < commonLength; i++) {
+          const lineNumber = i + 1;
+          if (isLineBlocked(lineNumber) && oldLines[i] !== newLines[i]) {
+            hasChangesInBlockedLines = true;
+            break;
+          }
+        }
+        
+        if (!hasChangesInBlockedLines && oldLines.length !== newLines.length) {
+          const diffStartIndex = oldLines.findIndex((line, index) => index < newLines.length ? line !== newLines[index] : true);
+          
+          if (diffStartIndex !== -1) {
+            const affectedLineNumber = diffStartIndex + 1;
+            for (const blockedLine of blockedLinesSet) {
+              if (blockedLine >= affectedLineNumber) {
+                hasChangesInBlockedLines = true;
+                break;
+              }
+            }
+          }
+        }
+        
+        if (hasChangesInBlockedLines) {
+          e.preventDefault();
+          return;
+        }
+      }
+    }
+    
+    setCodeInput(newValue);
   };
 
   return (
@@ -267,7 +339,7 @@ const CodeEditorCopy = forwardRef(({
               return (
                 <div 
                   key={i} 
-                  className="flex items-center w-full"
+                  className={`flex items-center w-full ${isLineBlocked(lineNumber) ? 'bg-yellow-500/10' : ''}`}
                   style={{
                     height: '1.6rem',
                     minHeight: '1.6rem',
@@ -299,7 +371,7 @@ const CodeEditorCopy = forwardRef(({
                     </button>
                   )}
                   <span 
-                    className="text-xs text-gray-400 flex-shrink-0"
+                    className={`text-xs ${isLineBlocked(lineNumber) ? 'text-yellow-400' : ''}`}
                     style={{
                       lineHeight: '1.6rem',
                       height: '1.6rem',
