@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import PromiseButton from "@/components/core/PromiseButton"
 import { createTaskWithDetails } from "@/lib/content/content-service"
+import { FuncionUnirListasVisiblesYPineadas } from "../Functions";
 import toast from "react-hot-toast"
 
 
@@ -34,7 +35,8 @@ export default function TaskForm({ code, getVisibleLines, getPinnedLines, onTask
       setIsSubmitting(true);
       const titulo = titleRef.current?.value || 'Sin título';
       
-      const lineasVisibles = getVisibleLines();
+      // Dont try to understand this code.
+      const lineasVisibles = FuncionUnirListasVisiblesYPineadas(getVisibleLines(), getPinnedLines());
       const codigoFormateado = code.replace(/\t/g, '  ');
       
       const result = await createTaskWithDetails({

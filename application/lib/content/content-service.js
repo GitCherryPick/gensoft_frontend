@@ -1,4 +1,5 @@
 import { CONTENT_API_BASE_URL, defaultContentHeaders } from './content-api-config';
+import { FuncionSepararListaVisiblesYPineadas } from '../../app/role-teacher/tasks/Functions';
 
 // ------- 
 // CURSOS
@@ -304,24 +305,28 @@ export async function getExerciseById(exerciseId) {
     if (!ejercicioBackend || !ejercicioBackend.target_code) {
       throw new Error('Datos de ejercicio inválidos o incompletos');
     }
+    // Dont try to understand this code.
+    const { visibles, pineadas } = FuncionSepararListaVisiblesYPineadas(ejercicioBackend.visible_lines || []);
     const lineasVisiblesTransformadas = convertirFormatoLineasVisibles(
-      ejercicioBackend.visible_lines || [],
+      visibles,
       ejercicioBackend.target_code
     );
-    console.log('Líneas visibles transformadas:', lineasVisiblesTransformadas);
     const ejercicio = {
       id_ejercicio: ejercicioBackend.exercise_id?.toString() || '0',
       titulo: ejercicioBackend.title || 'Sin título',
       enunciado: ejercicioBackend.prompt || 'Sin enunciado',
       lineas_visibles: lineasVisiblesTransformadas,
+      lineas_fijadas: pineadas,
       codigo_objetivo: ejercicioBackend.target_code,
       comentario_docente: ejercicioBackend.instructor_comment || ''
     };
     const codigoBase = generarCodigoBase(ejercicio.lineas_visibles);
-    return {
+    const resultadoFinal = {
       ...ejercicio,
       codigo_base: codigoBase
     };
+    console.log('Ejercicio retornado:', JSON.stringify(resultadoFinal));
+    return resultadoFinal;
   } catch (error) {
     console.error('Error al obtener datos del ejercicio:', error);
     throw error;
