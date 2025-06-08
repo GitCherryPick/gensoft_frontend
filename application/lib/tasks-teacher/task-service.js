@@ -1,5 +1,16 @@
 import { TASK_API_BASE_URL, defaultTaskHeaders } from "./task-api-config";
 
+//*-Para tasks de laboratorio
+
+export async function getAllTasks() {
+  const response = await fetch(`${TASK_API_BASE_URL}/tasks`, {
+    method: 'GET',
+    headers: defaultTaskHeaders,
+  });
+  return response.json();
+}
+
+//*
 export async function getAllTaskCodes() {
   const response = await fetch(`${TASK_API_BASE_URL}/sandbox/taskcode/?skip=0&limit=100`, {
     headers: defaultTaskHeaders,

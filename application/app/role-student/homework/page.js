@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeIn from "@/components/animations/FadeIn";
-import { getAllTaskCodes } from "@/lib/tasks-teacher/task-service";
-import { getExerciseById, getDefaultCourse } from "@/lib/content/content-service";
+import { getAllTasks, getReplicaExercises } from "@/lib/tasks-teacher/task-service";
+import { getDefaultCourse } from "@/lib/content/content-service";
+import ViewExerciseReplica from "./ViewExerciseReplica";
+import ViewExerciseLaboratory from "./ViewExerciseLaboratory";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -28,6 +30,8 @@ export default function Homework() {
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedExercise, setSelectedExercise] = useState(null);
+  const [activeView, setActiveView] = useState("list"); // "list", "replica", "laboratory"
 
   useEffect(() => {
     setIsMounted(true);
@@ -37,7 +41,8 @@ export default function Homework() {
         // labo
         let taskList = [];
         try {
-          const taskData = await getAllTaskCodes();
+          const taskData = await getAllTasks();
+          console.log("hola",taskData)
           taskList = Array.isArray(taskData) ? taskData : taskData.data || taskData.tasks || taskData.results || [];
         } catch (taskError) {
           console.warn("Failed to fetch task codes, continuing with exercises:", taskError);
@@ -45,12 +50,12 @@ export default function Homework() {
 
         // labo
         const laboratorioTasks = taskList.map((task, index) => ({
-          id: task.id_ejercicio || `lab-${index + 1}`,
-          title: task.consignas_docente || `Laboratorio Task ${index + 1}`,
-          dueDate: task.due_date || "2025-06-01",
-          dueTime: task.due_time || "12:00",
+          id: `lab-${task.id}` || `lab-${index + 1}`,
+          title: task.title || `Laboratorio Task ${index + 1}`,
+          dueDate: task.date_limit ? task.date_limit.split("T")[0] : "2025-06-01",
+          dueTime: task.date_limit ? (task.date_limit.split("T")[1]?.slice(0,5) || "12:00") : "12:00",
           status: task.status || "Pendiente",
-          description: task.contexto_ejercicio || "No description available",
+          description: task.enunciado || "No description available",
           type: "Laboratorio",
           course: task.course_name || "Introducción a Python",
         }));
@@ -58,20 +63,23 @@ export default function Homework() {
         // Replica
         let replicaExercises = [];
         try {
-          const exerciseData = await getExerciseById('last'); 
-          replicaExercises = Array.isArray(exerciseData) ? exerciseData : [exerciseData];
+          replicaExercises = await getReplicaExercises();
+          if (!Array.isArray(replicaExercises)) {
+            replicaExercises = [];
+            console.warn("Expected array of replica exercises but got:", replicaExercises);
+          }
         } catch (exerciseError) {
-          console.warn("Failed to fetch exercises, continuing with tasks:", exerciseError);
+          console.warn("Failed to fetch replica exercises:", exerciseError);
         }
 
         // relicas
         const replicaTasks = replicaExercises.map((exercise, index) => ({
-          id: exercise.id_ejercicio || `rep-${index + 1}`,
-          title: exercise.titulo || `Réplica Exercise ${index + 1}`,
+          id: exercise.exercise_id || `rep-${index + 1}`,
+          title: exercise.title || `Réplica Exercise ${index + 1}`,
           dueDate: exercise.due_date || "2025-06-01",
           dueTime: exercise.due_time || "12:00",
           status: exercise.status || "Pendiente",
-          description: exercise.enunciado || exercise.comentario_docente || "No description available",
+          description: exercise.prompt || "No description available",
           type: "Réplica",
           course: exercise.course_name || "Introducción a Python",
         }));
@@ -211,6 +219,38 @@ export default function Homework() {
     setSortBy("dueDateAsc");
     setSearchQuery("");
   };
+  
+  const handleExerciseClick = (exercise) => {
+    setSelectedExercise(exercise);
+    if (exercise.type === "Réplica") {
+      setActiveView("replica");
+    } else if (exercise.type === "Laboratorio") {
+      setActiveView("laboratory");
+    }
+  };
+
+  const handleBackToList = () => {
+    setActiveView("list");
+    setSelectedExercise(null);
+  };
+
+  if (activeView === "replica" && selectedExercise) {
+    return (
+      <ViewExerciseReplica 
+        exercise={selectedExercise} 
+        onBack={handleBackToList} 
+      />
+    );
+  }
+  
+  if (activeView === "laboratory" && selectedExercise) {
+    return (
+      <ViewExerciseLaboratory 
+        exercise={selectedExercise} 
+        onBack={handleBackToList} 
+      />
+    );
+  }
 
   return (
     <div className="flex-1 overflow-y-auto bg-dark-1">
@@ -453,6 +493,7 @@ export default function Homework() {
                         </span>
                       </div>
                       <button
+                        onClick={() => handleExerciseClick(exercise)}
                         className={`w-full py-2 rounded-lg transition-colors duration-200 ${
                           exercise.status === "Pendiente"
                             ? "bg-purple-500 text-white hover:bg-purple-800"
