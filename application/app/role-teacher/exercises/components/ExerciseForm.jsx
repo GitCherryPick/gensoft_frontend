@@ -5,8 +5,9 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import PromiseButton from "@/components/core/PromiseButton"
-import { createExerciseWithDetails } from "@/lib/content/content-service"
+import { createExerciseWithDetailsLab } from "@/lib/sandbox/sandbox-service"
 import toast from "react-hot-toast"
+import { title } from "process"
 
 const inputStyles = "border-border/50 hover:border-border/70 focus:border-border/90"
 const buttonStyles = "border-border/50 hover:border-border/70"
@@ -79,16 +80,15 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
       // Estructura requerida para el ejercicio
       const exerciseData = {
         id_docente: "2003",
-        titulo: titulo,
+        title: titulo,
         enunciado: enunciado,
-        codigo_objetivo: codigoFormateado,
+        codigo_plantilla: codigoFormateado,
         lineas_visibles: lineasVisibles,
-        comentario_docente: comentarios,
-        pistas: pistasLimpias,
         tests: testsLimpios,
+        pistas: pistasLimpias,
       }
 
-      const result = await createExerciseWithDetails(exerciseData)
+      const result = await createExerciseWithDetailsLab(exerciseData)
 
       console.log("Ejercicio creado:", result)
       toast.success("¡Ejercicio creado exitosamente!", {
@@ -238,22 +238,6 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
                 + Agregar test
               </Button>
             </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label htmlFor="exercise-comentarios" className="block text-sm font-medium text-gray-300">
-              Comentarios para el docente
-            </label>
-            <p className="text-sm text-gray-500/80 mb-2">
-              Notas internas sobre conceptos clave, dificultad esperada o metodología de enseñanza.
-            </p>
-            <Textarea
-              id="exercise-comentarios"
-              placeholder="Ej: Este ejercicio refuerza conceptos de funciones y parámetros. Nivel principiante."
-              value={comentarios}
-              onChange={(e) => setComentarios(e.target.value)}
-              className={`bg-transparent min-h-[80px] text-sm ${inputStyles} placeholder:text-muted-foreground/60`}
-            />
           </div>
         </div>
 

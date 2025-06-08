@@ -38,7 +38,7 @@ print(f"La suma es: {resultado}")`)
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-2">Creación de ejercicios</h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Como docente, crea ejercicios interactivos donde los estudiantes deben replicar código específico. Los
+          Como docente, crea ejercicios interactivos donde los estudiantes deban resolver ejercicios aplicando conocimientos aprendidos. Los
           ejercicios incluyen pistas, tests automáticos y retroalimentación con IA para guiar el aprendizaje.
         </p>
       </div>
