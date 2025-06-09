@@ -8,7 +8,7 @@ import { Download, Play, SendHorizonal } from "lucide-react";
 import { feedbackForEachTest, getScore, getTaskById, sendCodeSolution } from "@/lib/sandbox/sandbox-service";
 import {TextRevealCard} from "@/components/ui/text-reveal-card";
 import toast from "react-hot-toast";
-
+import { getCurrentUser } from '@/lib/auth/auth-service';
 
 export default function LabPython({taskId=1, userId=1}) {
   const taskIdNum = !isNaN(taskId) ? parseInt(taskId) : 1
@@ -22,6 +22,7 @@ export default function LabPython({taskId=1, userId=1}) {
   const [score, setScore] = useState(0);
   const [pestanaActiva, setPestanaActiva] = useState('enunciado');
   const [nuumberCases, setNumberCases] = useState("--");
+  const [currentUser, setCurrentUser] = useState(null);
   
   const [codigo, setCodigo] = useState("# Escribe tu código en Python aquí...");
 
@@ -36,7 +37,8 @@ export default function LabPython({taskId=1, userId=1}) {
 
   const fetchScore = async () => {
     try {
-      const data = await getScore(taskIdNum,4);
+      const idUser = currentUser?.id || 1;
+      const data = await getScore(taskIdNum, idUser);
       console.log("response ", data);
       if(data.score > score){
         setScore(data.score);
@@ -46,6 +48,17 @@ export default function LabPython({taskId=1, userId=1}) {
 
     }
   }
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Error al cargar el usuario actual:', error);
+      }
+    };
+    loadCurrentUser();
+  }, []);
 
   useEffect(() => {
     setIsCliente(true);
@@ -67,21 +80,19 @@ export default function LabPython({taskId=1, userId=1}) {
 
   const enviarCodigo = async () => {
     try {
-      console.log("holatriste", typeof feedbackForDocente)
       const feedback = await postFeedbackAI({
-        student_id: 4,//id del user 
+        student_id: currentUser?.id || 1,
         task_id_lab: taskIdNum,
         feedback_ai: feedbackForDocente.length > 0? feedbackForDocente: ["No fue posible generar feedback automatico"],
         n_intentos: nIntentos
       });
       const data = await sendCodeSolution({
-        userId: 4,
+        userId: currentUser?.id || 1,
         code: codigo,
         taskId: taskIdNum,
         result: salida.includes(":")? salida : "",
         autofeedback_id: feedback.id?? 0
       });
-      console.log("problemas?", data.testCases)
       let testSet = []
       if (Array.isArray(data.testCases)) {
         testSet = data.testCases.map(val => {
