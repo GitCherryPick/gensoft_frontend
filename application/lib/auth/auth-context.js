@@ -1,7 +1,7 @@
 "use client"
 import { createContext, useContext, useState } from "react"
 import { loginUser, logoutUser } from "./auth-service"
-import apiFetch from '../api';
+import apiFetch from './api';
 
 const AuthContext = createContext(undefined)
 

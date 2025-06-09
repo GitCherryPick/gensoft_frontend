@@ -154,6 +154,7 @@ export default function ReplicaPage({ params, onBack = () => {} }) {
           <CodeEditorCopy
             codeInput={code}
             setCodeInput={handleCodeChange}
+            blockedLines={exercise?.lineas_fijadas || []}
           />
         </div>
       </div>

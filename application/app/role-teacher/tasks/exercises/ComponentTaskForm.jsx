@@ -5,13 +5,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import PromiseButton from "@/components/core/PromiseButton"
 import { createTaskWithDetails } from "@/lib/content/content-service"
+import { FuncionUnirListasVisiblesYPineadas } from "../Functions";
 import toast from "react-hot-toast"
 
 
 const inputStyles = "border-border/50 hover:border-border/70 focus:border-border/90"
 const buttonStyles = "border-border/50 hover:border-border/70"
 
-export default function TaskForm({ code, getVisibleLines, onTaskCreated }) {
+export default function TaskForm({ code, getVisibleLines, getPinnedLines, onTaskCreated }) {
   const [enunciado, setEnunciado] = useState("")
   const [comentarios, setComentarios] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -26,11 +27,16 @@ export default function TaskForm({ code, getVisibleLines, onTaskCreated }) {
   };
 
   const handleSubmit = async () => {
+    if (typeof window !== 'undefined' && typeof getPinnedLines === 'function') {
+      const pinnedLines = getPinnedLines();
+      console.log('Líneas fijadas:', pinnedLines);
+    }
     try {
       setIsSubmitting(true);
       const titulo = titleRef.current?.value || 'Sin título';
       
-      const lineasVisibles = getVisibleLines();
+      // Dont try to understand this code.
+      const lineasVisibles = FuncionUnirListasVisiblesYPineadas(getVisibleLines(), getPinnedLines());
       const codigoFormateado = code.replace(/\t/g, '  ');
       
       const result = await createTaskWithDetails({
