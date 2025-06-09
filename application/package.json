@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@monaco-editor/react": "^4.7.0",
+    "@netlify/next": "^1.4.9",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",
     "@radix-ui/react-aspect-ratio": "^1.1.1",
@@ -69,6 +70,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.11.2",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
