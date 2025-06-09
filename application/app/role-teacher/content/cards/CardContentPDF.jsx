@@ -9,7 +9,8 @@ export default function CardContentPDF({ content, onDelete }) {
 
   const getPdfUrl = (filePath) => {
     if (!filePath) return null
-    return `http://localhost:8003/${filePath}`
+    const { CONTENT_API_BASE_URL } = require('@/lib/content/content-api-config');
+    return `${CONTENT_API_BASE_URL}/${filePath}`
   }
 
   const pdfUrl = getPdfUrl(content.file_path)

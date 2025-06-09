@@ -1,4 +1,4 @@
-import { API_BASE_URL, defaultHeaders } from "../api-config";
+import { API_BASE_URL, defaultHeaders } from "./api-config";
 
 export async function getUserById(userId) {
   const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
