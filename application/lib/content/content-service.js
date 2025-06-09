@@ -52,7 +52,7 @@ export async function getDefaultCourse() {
 // -------
 
 export async function getModulesByCourseId(courseId) {
-  const response = await fetch(`${CONTENT_API_BASE_URL}/modules?course_id=${courseId}`, {
+  const response = await fetch(`${CONTENT_API_BASE_URL}/modules/?course_id=${courseId}`, {
     headers: defaultContentHeaders,
   });
 
