@@ -1,36 +1,26 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import ExerciseForm from "./components/ExerciseForm"
-import CodeEditor from "@/components/core/CodeEditor"
+import dynamic from 'next/dynamic';
+
+const CodeEditorCopy = dynamic(
+  () => import("@/components/core/CodeEditorCopy"),
+  { ssr: false }
+);
 
 export default function ExercisesPage() {
-  // Código editable
   const [code, setCode] = useState(`# Ejemplo de script Python
-def suma(a, b):
-    """Devuelve la suma de dos números"""
-    return a + b
+    def suma(a, b):
+        """Devuelve la suma de dos números"""
+        return a + b
 
-resultado = suma(3, 4)
-print(f"La suma es: {resultado}")`)
-
-  // Líneas visibles por defecto
-  const [visibleLines, setVisibleLines] = useState([1, 2, 3, 4, 5, 6, 7])
-
-  const getVisibleLines = () => {
-    return visibleLines
-  }
+    resultado = suma(3, 4)
+    print(f"La suma es: {resultado}")`)
+  const editorRef = useRef(null);
 
   const handleExerciseCreated = (exercise) => {
     console.log("Nuevo ejercicio creado:", exercise)
-  }
-
-  const toggleLineVisibility = (lineNumber) => {
-    setVisibleLines((prev) =>
-      prev.includes(lineNumber)
-        ? prev.filter((line) => line !== lineNumber)
-        : [...prev, lineNumber].sort((a, b) => a - b),
-    )
   }
 
   return (
@@ -44,18 +34,20 @@ print(f"La suma es: {resultado}")`)
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-hidden">
-        {/* Formulario */}
         <div className="order-2 lg:order-1 overflow-auto">
-          <ExerciseForm code={code} getVisibleLines={getVisibleLines} onExerciseCreated={handleExerciseCreated} />
+          <ExerciseForm
+            code={code}
+            getVisibleLines={() => editorRef.current?.getVisibleLines?.() || []}
+            onExerciseCreated={handleExerciseCreated}
+          />
         </div>
 
-        {/* Editor de código */}
         <div className="order-1 lg:order-2 overflow-hidden">
-          <CodeEditor
+          <CodeEditorCopy
+            ref={editorRef}
             codeInput={code}
             setCodeInput={setCode}
-            visibleLines={visibleLines}
-            onToggleLineVisibility={toggleLineVisibility}
+            showLineVisibilityToggle={true}
           />
         </div>
       </div>

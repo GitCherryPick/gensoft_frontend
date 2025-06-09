@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button"
 import PromiseButton from "@/components/core/PromiseButton"
 import { createExerciseWithDetailsLab } from "@/lib/sandbox/sandbox-service"
 import toast from "react-hot-toast"
-//import { title } from "process"
 
 registerLocale("es", es);
 const inputStyles = "border-border/50 hover:border-border/70 focus:border-border/90"
@@ -19,7 +18,6 @@ const buttonStyles = "border-border/50 hover:border-border/70"
 
 export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated }) {
   const [enunciado, setEnunciado] = useState("")
-  const [comentarios, setComentarios] = useState("")
   const [pistas, setPistas] = useState([""]) // Estado para pistas
   const [tests, setTests] = useState([{ input: "", output: "" }]) // Estado para tests
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -33,9 +31,9 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
   const resetForm = () => {
     if (titleRef.current) titleRef.current.value = ""
     setEnunciado("")
-    setComentarios("")
     setPistas([""])
     setTests([{ input: "", output: "" }])
+    setCalificacion(0);
   }
 
   // Funciones para manejar las pistas
@@ -120,7 +118,7 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
       setIsSubmitting(false)
     }
   }
-
+  
   return (
     <div className="h-full flex flex-col rounded-lg border border-border/30 overflow-hidden">
       <div className="px-6 flex-1 flex flex-col overflow-y-auto">
