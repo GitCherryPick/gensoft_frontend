@@ -9,7 +9,8 @@ export default function ContentPDF({ content }) {
     return null
   }
 
-  const pdfUrl = `http://localhost:8003${content.file_path.startsWith("/") ? "" : "/"}${content.file_path}`
+  const { CONTENT_API_BASE_URL } = require('@/lib/content/content-api-config');
+  const pdfUrl = `${CONTENT_API_BASE_URL}${content.file_path.startsWith("/") ? "" : "/"}${content.file_path}`
 
   const handleLoad = () => {
     setIsLoading(false)
