@@ -21,8 +21,10 @@ export async function loginUser({ username, password }) {
     }
 
     const data = await response.json();
-    console.log("btw,", data)
-    const { access_token, token_type, user } = data;
+    const { access_token, token_type, user_direct } = data;
+    console.log("access", access_token)
+    console.log("token", token_type)
+    console.log("useeer", user_direct)
     
     const userDataHeader = response.headers.get('X-User-Data');
     let userData = { username };
@@ -43,11 +45,11 @@ export async function loginUser({ username, password }) {
       role = "teacher";
     }
 
-    const userFinal = {
-      id: userData.user_id || user.user_id ||'1',
-      name: userData.full_name || user.full_name || 'Usuario',
-      username: userData.username || user.username || username,
-      email: userData.email || user.email || '',
+    const user = {
+      id: userData.user_id || user_direct.user_id ||'1',
+      name: userData.full_name || user_direct.full_name || 'Usuario',
+      username: userData.username || user_direct.username || username,
+      email: userData.email || user_direct.email || '',
       role,
       token: access_token,
       token_type,
@@ -55,7 +57,7 @@ export async function loginUser({ username, password }) {
 
     // Guardar datos en localStorage
     localStorage.setItem("token", access_token);
-    localStorage.setItem("user", JSON.stringify(userFinal));
+    localStorage.setItem("user", JSON.stringify(user));
 
     return user;
   } catch (error) {

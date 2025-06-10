@@ -4,13 +4,13 @@ import confetti from "canvas-confetti";
 import TestCaseResult from '@/components/TestCaseResult'
 import Sandbox from "./labs/Sandbox"
 import { postFeedbackAI, updateFeedbackAI } from "@/lib/users/users-service";
+import { getCurrentUser } from '@/lib/auth/auth-service';
 import { Download, Play, SendHorizonal } from "lucide-react";
 import { feedbackForEachTest, getScore, getTaskById, sendCodeSolution } from "@/lib/sandbox/sandbox-service";
-import {TextRevealCard} from "@/components/ui/text-reveal-card";
+import { TextRevealCard } from "@/components/ui/text-reveal-card";
 import toast from "react-hot-toast";
-import { getCurrentUser } from '@/lib/auth/auth-service';
 
-export default function LabPython({taskId=1, userId=1}) {
+export default function LabPython({ taskId = 1 }) {
   const taskIdNum = !isNaN(taskId) ? parseInt(taskId) : 1
   const [isCliente, setIsCliente] = useState(false);
   const [testCases, setTestCases] = useState([]);
@@ -23,7 +23,7 @@ export default function LabPython({taskId=1, userId=1}) {
   const [pestanaActiva, setPestanaActiva] = useState('enunciado');
   const [nuumberCases, setNumberCases] = useState("--");
   const [currentUser, setCurrentUser] = useState(null);
-  
+
   const [codigo, setCodigo] = useState("# Escribe tu código en Python aquí...");
 
   const sandboxRef = useRef();
@@ -33,22 +33,24 @@ export default function LabPython({taskId=1, userId=1}) {
   });
   const [taskTitle, setTaskTitle] = useState("Cargando...");
   const [taskEnunciado, setTaskEnunciado] = useState("Cargando...");
-
+  const [taskStatus, setTaskStatus] = useState("Abierta");
 
   const fetchScore = async () => {
     try {
-      const idUser = currentUser?.id || 1;
-      const data = await getScore(taskIdNum, idUser);
-      console.log("response ", data);
-      if(data.score > score){
+      const userId = currentUser?.id || 1;
+      const data = await getScore(taskIdNum, userId);
+      if (data.score > score) {
         setScore(data.score);
       }
       setNumberCases(data.score);
-    } catch(error) {
-
+    } catch (error) {
+      console.log("Error en fetchScore: ", error);
     }
   }
+
+
   useEffect(() => {
+    setIsCliente(true);
     const loadCurrentUser = async () => {
       try {
         const user = await getCurrentUser();
@@ -58,15 +60,21 @@ export default function LabPython({taskId=1, userId=1}) {
       }
     };
     loadCurrentUser();
-  }, []);
-
-  useEffect(() => {
-    setIsCliente(true);
     const fetchTask = async () => {
       try {
         const data = await getTaskById(taskIdNum);
         setTaskTitle(data.title);
         setTaskEnunciado(data.enunciado);
+        setTaskStatus(data.status);
+        if(data.lineas_visibles.length > 0 && data.codigo_plantilla !== "") {
+          const codigoPrevio = data.codigo_plantilla.split("\n");
+          const codigoBase = codigoPrevio.map((v,i)=>{
+            return data.lineas_visibles.includes(i+1)?
+            codigoPrevio[i]:"";
+          })
+          const codeTemplate = codigoBase.join("\n");
+          setCodigo(codeTemplate);
+        }
       } catch (error) {
         setTaskTitle("Error al cargar");
         setTaskEnunciado("No se pudo obtener el enunciado. Verifica que el servidor esté corriendo.");
@@ -80,18 +88,19 @@ export default function LabPython({taskId=1, userId=1}) {
 
   const enviarCodigo = async () => {
     try {
+      const userId = currentUser?.id || 1;
       const feedback = await postFeedbackAI({
-        student_id: currentUser?.id || 1,
+        student_id: userId,
         task_id_lab: taskIdNum,
-        feedback_ai: feedbackForDocente.length > 0? feedbackForDocente: ["No fue posible generar feedback automatico"],
+        feedback_ai: feedbackForDocente.length > 0 ? feedbackForDocente : ["No fue posible generar feedback automatico"],
         n_intentos: nIntentos
       });
       const data = await sendCodeSolution({
-        userId: currentUser?.id || 1,
+        userId: userId,
         code: codigo,
         taskId: taskIdNum,
-        result: salida.includes(":")? salida : "",
-        autofeedback_id: feedback.id?? 0
+        result: salida.includes(":") ? salida : "",
+        autofeedback_id: feedback.id ?? 0
       });
       let testSet = []
       if (Array.isArray(data.testCases)) {
@@ -102,23 +111,21 @@ export default function LabPython({taskId=1, userId=1}) {
             real_output: val.output
           }
         })
-        console.log("el testSEt ", testSet)
       }
-      
+
       const selfFeedback = await feedbackForEachTest({
         codigo_estudiante: codigo,
         enunciado: taskEnunciado,
         test_set: testSet || []
       });
-      
+
       setFeedbackAIUser(selfFeedback);
-      if(feedback.feedback_ai[0] === "No fue posible generar feedback automatico"){
-        console.log("te salio esto ", selfFeedback)
-        await updateFeedbackAI( feedback.id,{
+      if (feedback.feedback_ai[0] === "No fue posible generar feedback automatico") {
+        await updateFeedbackAI(feedback.id, {
           feedback_ai: [selfFeedback.feedback_docente],
         });
       }
-      
+
       setErrorsInSubmit(selfFeedback.errores);
       setPestanaActiva("testcases")
       console.log("Respuesta del servidor:", data);
@@ -166,20 +173,20 @@ export default function LabPython({taskId=1, userId=1}) {
   };
 
   const guardarArchivo = () => {
-    try{
-      if(sandboxRef.current) {
+    try {
+      if (sandboxRef.current) {
         sandboxRef.current.saveFile();
         toast.success("Se ha guardado el archivo con éxito.✅")
       }
-    }catch (error){
+    } catch (error) {
       toast.error("Ocurrió un error al guardar el archivo.❎")
     }
-    
+
   }
 
   const ejecutarCodigo = () => {
-    setNIntentos(nIntentos+1);
-    if(sandboxRef.current) {
+    setNIntentos(nIntentos + 1);
+    if (sandboxRef.current) {
       sandboxRef.current.executeCode();
     }
   }
@@ -189,28 +196,43 @@ export default function LabPython({taskId=1, userId=1}) {
       <div className="w-full flex flex-col sm:flex-row items-center justify-between m-2">
         {/* Botones centrados al medio */}
         <div className="flex flex-col sm:flex-row items-center justify-center w-full sm:w-auto">
-        <div className="flex flex-row sm:hidden space-x-4">
-      <button onClick={guardarArchivo} className="bg-blue-600 p-2 rounded hover:bg-blue-700">
-        <Download className="h-6 w-6 text-white" />
-      </button>
-      <button onClick={ejecutarCodigo} className="bg-green-600 p-2 rounded hover:bg-green-700">
-        <Play className="h-6 w-6 text-white" />
-      </button>
-      <button onClick={enviarCodigo} className="bg-green-600 p-2 rounded hover:bg-green-700">
-        <SendHorizonal className="h-6 w-6 text-white" />
-      </button>
-    </div>
-    <div className="hidden sm:flex flex-row space-x-4">
-      <button onClick={guardarArchivo} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center">
-        <Download className="h-5 w-5 mr-2" /> Guardar
-      </button>
-      <button onClick={ejecutarCodigo} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center">
-        <Play className="h-5 w-5 mr-2" /> Ejecutar
-      </button>
-      <button onClick={enviarCodigo} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center">
-        <SendHorizonal className="h-5 w-5 mr-2" /> Enviar
-      </button>
-    </div>
+          <div className="flex flex-row sm:hidden space-x-4">
+            <button onClick={guardarArchivo} className="bg-blue-600 p-2 rounded hover:bg-blue-700">
+              <Download className="h-6 w-6 text-white" />
+            </button>
+            <button onClick={ejecutarCodigo} className="bg-green-600 p-2 rounded hover:bg-green-700">
+              <Play className="h-6 w-6 text-white" />
+            </button>
+            <button onClick={enviarCodigo} className="bg-green-600 p-2 rounded hover:bg-green-700">
+              <SendHorizonal className="h-6 w-6 text-white" />
+            </button>
+            {taskStatus === "Cerrada" ? (
+              <div className="sm:w-auto py-2 px-4 rounded-lg border-2 border-cyan-800 opacity-90">
+                Tarea Cerrada
+              </div>
+            ) : (
+              <button onClick={enviarCodigo} className="bg-green-600 p-2 rounded hover:bg-green-700">
+                <SendHorizonal className="h-6 w-6 text-white" />
+              </button>
+            )}
+          </div>
+          <div className="hidden sm:flex flex-row space-x-4">
+            <button onClick={guardarArchivo} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 flex items-center">
+              <Download className="h-5 w-5 mr-2" /> Guardar
+            </button>
+            <button onClick={ejecutarCodigo} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center">
+              <Play className="h-5 w-5 mr-2" /> Ejecutar
+            </button>
+            {taskStatus === "Cerrada" ? (
+              <div className="sm:w-auto py-2 px-4 rounded-lg border-2 border-cyan-800 opacity-90">
+                Tarea Cerrada
+              </div>
+            ) : (
+              <button onClick={enviarCodigo} className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 flex items-center">
+                <SendHorizonal className="h-5 w-5 mr-2" /> Enviar
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Puntaje a la derecha */}
@@ -264,10 +286,10 @@ export default function LabPython({taskId=1, userId=1}) {
             </div>
           )}
         </div>
-        <Sandbox 
-          codigo={codigo} 
-          setCodigo={setCodigo} 
-          ref={sandboxRef} 
+        <Sandbox
+          codigo={codigo}
+          setCodigo={setCodigo}
+          ref={sandboxRef}
           salida={salida}
           setSalida={setSalida}
           feedbackForDocente={feedbackForDocente}

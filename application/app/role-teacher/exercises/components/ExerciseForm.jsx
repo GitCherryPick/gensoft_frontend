@@ -4,12 +4,13 @@ import "react-datepicker/dist/react-datepicker.css";
 import { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es"; // para español
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import PromiseButton from "@/components/core/PromiseButton"
-import { createExerciseWithDetailsLab } from "@/lib/sandbox/sandbox-service"
+import { getCurrentUser } from '@/lib/auth/auth-service';
+import { createExerciseWithDetailsLab, executeCodeSandbox } from "@/lib/sandbox/sandbox-service"
 import toast from "react-hot-toast"
 
 registerLocale("es", es);
@@ -24,6 +25,19 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
   const titleRef = useRef(null)
   const [calificacion, setCalificacion] = useState(10)
   const [fechaLimite, setFechaLimite] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Error al cargar el usuario actual:', error);
+      }
+    };
+    loadCurrentUser();
+  }, []);
 
   const isFormValid =
     titleRef.current?.value?.trim() && enunciado.trim() && tests.some((test) => test.input.trim() && test.output.trim())
@@ -84,7 +98,7 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
 
       // Estructura requerida para el ejercicio
       const exerciseData = {
-        id_docente: "2003",
+        id_docente: currentUser?.id || 208,
         title: titulo,
         enunciado: enunciado,
         codigo_plantilla: codigoFormateado,
@@ -118,7 +132,15 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
       setIsSubmitting(false)
     }
   }
-  
+
+  const executeWithTemplate = async (index) => {
+    const res = await executeCodeSandbox({
+      code: code,
+      call: tests[index].input,
+    });
+    return res.output || res.error
+  }
+
   return (
     <div className="h-full flex flex-col rounded-lg border border-border/30 overflow-hidden">
       <div className="px-6 flex-1 flex flex-col overflow-y-auto">
@@ -216,12 +238,28 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
                   <div className="space-y-2">
                     <div>
                       <label className="text-xs text-gray-400 mb-1 block">Entrada (Input)</label>
-                      <Input
-                        placeholder="Ej: suma(2, 3)"
-                        value={test.input}
-                        onChange={(e) => updateTest(index, "input", e.target.value)}
-                        className={`w-full bg-transparent min-h-[36px] text-sm ${inputStyles}`}
-                      />
+                      <div className="flex justify-between gap-2">
+                        <Input
+                          placeholder="Ej: suma(2, 3)"
+                          value={test.input}
+                          onChange={(e) => updateTest(index, "input", e.target.value)}
+                          className={`w-full bg-transparent min-h-[36px] text-sm ${inputStyles}`}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            const result = await executeWithTemplate(index);
+                            if (result) {
+                              updateTest(index, "output", result);
+                            }
+                          }}
+                          className="px-3 text-cyan-400 hover:text-cyan-300 border-cyan-400/50 hover:border-cyan-300/50"
+                        >
+                          Ejecutar
+                        </Button>
+                      </div>
                     </div>
                     <div>
                       <label className="text-xs text-gray-400 mb-1 block">Salida esperada (Output)</label>
@@ -263,7 +301,7 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
           />
         </div>
 
-        
+
         <div className="space-y-1.5">
           <label htmlFor="calificacion" className="block text-sm font-medium text-gray-300">
             Calificación máxima

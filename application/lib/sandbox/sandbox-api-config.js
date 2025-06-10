@@ -1,4 +1,4 @@
-const SANDBOX_API_BASE_URL = process.env.NEXT_PUBLIC_SANDBOX_SERVICE_URL || 'http://localhost:8010';
+const SANDBOX_API_BASE_URL = process.env.NEXT_PUBLIC_API_GATEWAY_URL || 'http://localhost:8010';
 
 const defaultContentHeaders = {
   'Content-Type': 'application/json',

@@ -85,7 +85,7 @@ export default function ComponentFormRegisterCard({ onBack }) {
           </TabsContent>
           <TabsContent value="docente">
             <p className="text-sm text-muted-foreground mb-4">
-              Regístrate como docente.
+              Regístrate como docente, es importante que agregues "_teacher" en tu nombre de usuario.
             </p>
           </TabsContent>
         </Tabs>

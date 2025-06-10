@@ -10,13 +10,7 @@ const CodeEditorCopy = dynamic(
 );
 
 export default function ExercisesPage() {
-  const [code, setCode] = useState(`# Ejemplo de script Python
-    def suma(a, b):
-        """Devuelve la suma de dos números"""
-        return a + b
-
-    resultado = suma(3, 4)
-    print(f"La suma es: {resultado}")`)
+  const [code, setCode] = useState(`# Ejemplo de script Python\ndef suma(a, b):\n    """Devuelve la suma de dos números"""\n    return a + b\n\nresultado = suma(3, 4)`)
   const editorRef = useRef(null);
 
   const handleExerciseCreated = (exercise) => {

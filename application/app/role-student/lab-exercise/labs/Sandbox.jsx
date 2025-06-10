@@ -1,8 +1,7 @@
 import { useState, useImperativeHandle, forwardRef, useEffect } from "react";
 import CodeEditor from "@/components/core/CodeEditor"
 import PopOverError from "./PopOverError";
-import { SANDBOX_API_BASE_URL } from "@/lib/sandbox/sandbox-api-config";
-import { getWarningsFromAI, executeCode } from "@/lib/sandbox/sandbox-service";
+import { getWarningsFromAI, executeCodeSandbox } from "@/lib/sandbox/sandbox-service";
 
 const Sandbox = forwardRef(({
   codigo,
@@ -102,7 +101,7 @@ const Sandbox = forwardRef(({
         line: 0,
         color: ''
       });
-      const data = await executeCode({
+      const data = await executeCodeSandbox({
           code: codigo,
           call: entrada,
       });
