@@ -14,7 +14,7 @@ export default function CardCollapse({ element }) {
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <button
-        className="text-lg font-bold text-white hover:underline block mb-2"
+        className="text-lg font-bold text-white hover:underline block mb-1"
         onClick={redirectToTask}
       >
         {element.title}
@@ -27,6 +27,7 @@ export default function CardCollapse({ element }) {
           Termina: {element.date_limit ? new Date(element.date_limit).toLocaleDateString('es-ES') : 'Fecha no disponible'}
         </div>
       </div>
+      <hr className="h-px my-2 bg-gray-200 border-0 dark:bg-gray-700"></hr>
       <CollapsibleTrigger asChild>
         <button className="w-full flex items-center justify-center text-sm font-semibold text-slate-300 hover:text-white transition-colors">
           {isOpen ? (

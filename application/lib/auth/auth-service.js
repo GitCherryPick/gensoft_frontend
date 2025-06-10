@@ -21,7 +21,10 @@ export async function loginUser({ username, password }) {
     }
 
     const data = await response.json();
-    const { access_token, token_type } = data;
+    const { access_token, token_type, user_direct } = data;
+    console.log("access", access_token)
+    console.log("token", token_type)
+    console.log("useeer", user_direct)
     
     const userDataHeader = response.headers.get('X-User-Data');
     let userData = { username };
@@ -43,10 +46,10 @@ export async function loginUser({ username, password }) {
     }
 
     const user = {
-      id: userData.user_id || '1',
-      name: userData.full_name || 'Usuario',
-      username: userData.username || username,
-      email: userData.email || '',
+      id: userData.user_id || user_direct.user_id ||'1',
+      name: userData.full_name || user_direct.full_name || 'Usuario',
+      username: userData.username || user_direct.username || username,
+      email: userData.email || user_direct.email || '',
       role,
       token: access_token,
       token_type,
