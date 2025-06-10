@@ -82,3 +82,30 @@ export async function sendCodeSolution(codeData) {
   });
   return res.json()
 }
+
+export async function feedbackForEachTest(codeData) {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/sandbox/ai-feedback/lab-test`, {
+    method: "POST",
+    headers: defaultContentHeaders,
+    body: JSON.stringify(codeData)
+  });
+  return response.json()
+}
+
+export async function executeCodeSandbox(code) {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/sandbox/execute`, {
+    method: "POST",
+    headers: defaultContentHeaders,
+    body: JSON.stringify(code),
+  });
+  return response.json()
+}
+
+export async function createExerciseWithDetailsLab(data) {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks`, {
+    method: 'POST',
+    headers: defaultContentHeaders,
+    body: JSON.stringify(data),
+  });
+  return response.json();
+}

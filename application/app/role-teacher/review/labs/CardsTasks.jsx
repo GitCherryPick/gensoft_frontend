@@ -20,7 +20,7 @@ export default function CardTask() {
       {tasks.map((task) => (
         <div 
           key={task.id} 
-          className="bg-gradient-to-br from-slate-800 to-indigo-900 border border-slate-600 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300" 
+          className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-600 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300" 
         >
           <CardCollapse element={task} />
         </div>

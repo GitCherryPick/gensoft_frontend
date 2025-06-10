@@ -495,12 +495,12 @@ function HomeworkContent() {
                       <button
                         onClick={() => handleExerciseClick(exercise)}
                         className={`w-full py-2 rounded-lg transition-colors duration-200 ${
-                          exercise.status === "Pendiente"
+                          exercise.status === "Pendiente" || exercise.status === "Abierta" 
                             ? "bg-purple-500 text-white hover:bg-purple-800"
                             : "bg-neutral-700 text-light-2 hover:bg-neutral-600"
                         }`}
                       >
-                        {exercise.status === "Pendiente" ? "Enviar Solución" : "Ver Detalles"}
+                        {exercise.status === "Pendiente" || exercise.status === "Abierta" ? "Enviar Solución" : "Ver Detalles"}
                       </button>
                     </motion.div>
                   ))}

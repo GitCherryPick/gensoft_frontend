@@ -1,24 +1,43 @@
 "use client"
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { registerLocale } from "react-datepicker";
+import es from "date-fns/locale/es"; // para español
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import PromiseButton from "@/components/core/PromiseButton"
-import { createExerciseWithDetailsLab } from "@/lib/sandbox/sandbox-service"
+import { getCurrentUser } from '@/lib/auth/auth-service';
+import { createExerciseWithDetailsLab, executeCodeSandbox } from "@/lib/sandbox/sandbox-service"
 import toast from "react-hot-toast"
-import { title } from "process"
 
+registerLocale("es", es);
 const inputStyles = "border-border/50 hover:border-border/70 focus:border-border/90"
 const buttonStyles = "border-border/50 hover:border-border/70"
 
 export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated }) {
   const [enunciado, setEnunciado] = useState("")
-  const [comentarios, setComentarios] = useState("")
   const [pistas, setPistas] = useState([""]) // Estado para pistas
   const [tests, setTests] = useState([{ input: "", output: "" }]) // Estado para tests
   const [isSubmitting, setIsSubmitting] = useState(false)
   const titleRef = useRef(null)
+  const [calificacion, setCalificacion] = useState(10)
+  const [fechaLimite, setFechaLimite] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        setCurrentUser(user);
+      } catch (error) {
+        console.error('Error al cargar el usuario actual:', error);
+      }
+    };
+    loadCurrentUser();
+  }, []);
 
   const isFormValid =
     titleRef.current?.value?.trim() && enunciado.trim() && tests.some((test) => test.input.trim() && test.output.trim())
@@ -26,9 +45,9 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
   const resetForm = () => {
     if (titleRef.current) titleRef.current.value = ""
     setEnunciado("")
-    setComentarios("")
     setPistas([""])
     setTests([{ input: "", output: "" }])
+    setCalificacion(0);
   }
 
   // Funciones para manejar las pistas
@@ -79,13 +98,15 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
 
       // Estructura requerida para el ejercicio
       const exerciseData = {
-        id_docente: "2003",
+        id_docente: currentUser?.id || 208,
         title: titulo,
         enunciado: enunciado,
         codigo_plantilla: codigoFormateado,
         lineas_visibles: lineasVisibles,
         tests: testsLimpios,
         pistas: pistasLimpias,
+        grade: calificacion,
+        date_limit: fechaLimite,
       }
 
       const result = await createExerciseWithDetailsLab(exerciseData)
@@ -110,6 +131,14 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const executeWithTemplate = async (index) => {
+    const res = await executeCodeSandbox({
+      code: code,
+      call: tests[index].input,
+    });
+    return res.output || res.error
   }
 
   return (
@@ -209,12 +238,28 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
                   <div className="space-y-2">
                     <div>
                       <label className="text-xs text-gray-400 mb-1 block">Entrada (Input)</label>
-                      <Input
-                        placeholder="Ej: suma(2, 3)"
-                        value={test.input}
-                        onChange={(e) => updateTest(index, "input", e.target.value)}
-                        className={`w-full bg-transparent min-h-[36px] text-sm ${inputStyles}`}
-                      />
+                      <div className="flex justify-between gap-2">
+                        <Input
+                          placeholder="Ej: suma(2, 3)"
+                          value={test.input}
+                          onChange={(e) => updateTest(index, "input", e.target.value)}
+                          className={`w-full bg-transparent min-h-[36px] text-sm ${inputStyles}`}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={async () => {
+                            const result = await executeWithTemplate(index);
+                            if (result) {
+                              updateTest(index, "output", result);
+                            }
+                          }}
+                          className="px-3 text-cyan-400 hover:text-cyan-300 border-cyan-400/50 hover:border-cyan-300/50"
+                        >
+                          Ejecutar
+                        </Button>
+                      </div>
                     </div>
                     <div>
                       <label className="text-xs text-gray-400 mb-1 block">Salida esperada (Output)</label>
@@ -239,6 +284,37 @@ export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated 
               </Button>
             </div>
           </div>
+        </div>
+
+        <div className="space-y-1.5">
+          <label htmlFor="fecha-limite" className="block text-sm font-medium text-gray-300">
+            Fecha límite
+          </label>
+          <DatePicker
+            id="fecha-limite"
+            selected={fechaLimite}
+            onChange={(date) => setFechaLimite(date)}
+            dateFormat="dd/MM/yyyy"
+            locale="es"
+            placeholderText="dd/mm/aaaa"
+            className={`w-full bg-transparent min-h-[42px] text-sm text-white px-2 py-1 rounded border border-gray-600`}
+          />
+        </div>
+
+
+        <div className="space-y-1.5">
+          <label htmlFor="calificacion" className="block text-sm font-medium text-gray-300">
+            Calificación máxima
+          </label>
+          <Input
+            id="calificacion"
+            type="number"
+            min="0"
+            max="100"
+            value={calificacion}
+            onChange={(e) => setCalificacion(Number(e.target.value))}
+            className={`w-full bg-transparent min-h-[42px] flex items-center text-sm ${inputStyles}`}
+          />
         </div>
 
         <div className="pt-2 pb-6 mt-auto">
