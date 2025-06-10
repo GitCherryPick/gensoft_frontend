@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
       setIsLoading(true);
       try {
         
-        const res = await apiFetch.post('/users', data);
+        const res = await apiFetch.post('/users/', data);
         setUser(res.data);
         return res.data;
       } finally {

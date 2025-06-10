@@ -33,3 +33,16 @@ export async function updateFeedbackAI(feedbackId, data) {
   });
   return res.json();
 }
+
+export async function alive() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/`, {
+      method: 'GET',
+      headers: defaultHeaders,
+    });
+    if (!res.ok) throw new Error('No response');
+    return await res.json();
+  } catch (error) {
+    return null;
+  }
+}
