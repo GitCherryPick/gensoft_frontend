@@ -27,11 +27,7 @@ export default function StudentLayout({ children }) {
       href: ROUTES.STUDENT.COURSES,
       icon: <IconBrain className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
-    {
-      label: "Réplica",
-      href: ROUTES.STUDENT.REPLICA,
-      icon: <IconCopy className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
-    },
+
     {
       label: "Recursos",
       href: ROUTES.STUDENT.RESOURCES,

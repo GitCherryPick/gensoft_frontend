@@ -22,7 +22,8 @@ export default function PasswordRecovery({ onBack }) {
       return;
     }
     setError("");
-    await fetch("http://localhost:8006/auth/password-reset/request", {
+    const { API_BASE_URL } = require('@/lib/users/api-config');
+    await fetch(`${API_BASE_URL}/auth/password-reset/request`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
