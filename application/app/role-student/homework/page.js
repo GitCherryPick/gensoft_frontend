@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeIn from "@/components/animations/FadeIn";
@@ -17,7 +17,7 @@ const formatDate = (dateString) => {
   return `${day}/${month}/${year}`;
 };
 
-export default function Homework() {
+function HomeworkContent() {
   const searchParams = useSearchParams();
   const [isMounted, setIsMounted] = useState(false);
   const [exercises, setExercises] = useState([]);
@@ -511,5 +511,15 @@ export default function Homework() {
         </FadeIn>
       </div>
     </div>
+  );
+}
+
+export default function Homework() {
+  return (
+    <Suspense fallback={<div className="flex-1 overflow-y-auto bg-dark-1">
+      <div className="text-center p-6 text-light-2">Cargando tareas...</div>
+    </div>}>
+      <HomeworkContent />
+    </Suspense>
   );
 }
