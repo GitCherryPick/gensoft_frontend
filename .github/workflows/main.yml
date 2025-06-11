@@ -5,13 +5,14 @@ on:
     branches: [main, 'sprint/**']
     paths:
       - 'application/**'
-      - 'package.json'
-      - 'package-lock.json'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./application
 
     steps:
       - name: Checkout code
@@ -24,11 +25,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: |
-          cd application
-          npm ci
+        run: npm ci
 
       - name: Build application
-        run: |
-          cd application
-          npm run build
+        run: npm run build
