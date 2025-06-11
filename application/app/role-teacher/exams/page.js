@@ -64,8 +64,8 @@ const ExamCreator = () => {
                             ? q.correctAnswers.map(i => q.options[i])
                             : undefined,
           target_code:     q.codigoObjetivo,
-          visible_lines:   q.lineasVisibles,
-          test_cases:      q.testCases?.map((test) => ({
+          visible_lines:   q.lineasVisibles || [],
+          test_cases:      q.testCases ? q.testCases.map((test) => ({
             test_case_id: test.id,
             description: test.description,
             input: test.input,
@@ -73,7 +73,7 @@ const ExamCreator = () => {
             is_visible: test.isVisible,
             name: test.name,
             points: test.points
-          }))
+          })) : []
         })),
         settings: {
           randomizeQuestions: exam.settings.randomizeQuestions,
