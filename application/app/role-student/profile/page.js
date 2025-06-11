@@ -6,15 +6,33 @@ import SkillsPage from "./skills/page";
 import Certificates from "./certificates/page";
 import ProjectsPage from "./projects/page";
 import Courses from "./your_courses/page";
+import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
-  // Datos del estudiante ojo
-  const student = {
-    profile: "/images/perfilChica.jpg",
-    name: "Andrea Rodríguez",
-    role: "Estudiante de Programación",
-    bio: "Entusiasta de la tecnología aprendiendo los fundamentos de Python. Me interesa el desarrollo de software y la ciencia de datos.",
-  };
+  const [student, setStudent] = useState({
+    profile: "",
+    username: "", 
+    role: "",
+    bio: "",
+    email: "", 
+    status: "inactive", 
+  });
+
+  useEffect(() => {
+    const storedStudent = localStorage.getItem("user");
+    if (storedStudent) {
+      try {
+        const parsedStudent = JSON.parse(storedStudent);
+        setStudent(prevStudent => ({
+          ...prevStudent, 
+          ...parsedStudent, 
+          username: parsedStudent.username || parsedStudent.name || prevStudent.username,
+        }));
+      } catch (error) {
+        console.error("Error al parsear los datos del estudiante:", error);
+      }
+    }
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -24,7 +42,7 @@ export default function ProfilePage() {
             <div className="relative flex flex-col items-center">
               <div className="h-48 w-48 rounded-full overflow-hidden border-2 border-gray-400 shadow-lg">
                 <img
-                  src={student.profile}
+                  src={student.profile || "https://i.pinimg.com/736x/4f/f6/6d/4ff66d0783159436583bd3be5eaf91e2.jpg"}
                   alt="Foto de perfil"
                   className="object-cover h-full w-full"
                 />
@@ -34,8 +52,9 @@ export default function ProfilePage() {
                   Editar perfil
                 </PromiseButton>
               </div>
-
-              <div className="absolute bottom-16 right-0 w-5 h-5 bg-green-500 rounded-full border-2 border-[#0e101e]"></div>
+              {student.status === "active" &&
+                <div className="absolute bottom-16 right-0 w-5 h-5 bg-green-500 rounded-full border-2 border-[#0e101e]"></div>
+              }
             </div>
           </div>
 
@@ -43,15 +62,15 @@ export default function ProfilePage() {
             <div className="flex flex-col md:flex-row md:items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-gray-100">
-                  {student.name}
+                  {student.username || "Nombre de Usuario"}
                 </h1>
-                <p className="text-gray-400">{student.role}</p>
+                <p className="text-gray-400">{student.role || "Rol del estudiante"}</p>
               </div>
             </div>
 
             <div className="mt-6">
               <h2 className="text-lg font-semibold text-gray-300">Sobre mí</h2>
-              <p className="mt-2 text-gray-400">{student.bio}</p>
+              <p className="mt-2 text-gray-400">{student.bio || "Biografía no disponible."}</p>
             </div>
           </div>
         </div>
