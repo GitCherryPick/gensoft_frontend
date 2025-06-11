@@ -1,4 +1,5 @@
 import { CONTENT_API_BASE_URL, defaultContentHeaders } from './content-api-config';
+import { FuncionSepararListaVisiblesYPineadas } from '../../app/role-teacher/tasks/Functions';
 
 // ------- 
 // CURSOS
@@ -286,15 +287,14 @@ function convertirFormatoLineasVisibles(visibleLines, targetCode) {
 
 /**
  * Obtiene los datos de un ejercicio por su ID
- * @param {string} exerciseId - ID del ejercicio a obtener
+ * @param {number|string} exerciseId - ID del ejercicio a obtener
  * @returns {Promise<Object>} Promesa que se resuelve con los datos del ejercicio
  */
 export async function getExerciseById(exerciseId) {
   try {
-    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/last`, {
+    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/${exerciseId}`, {
       headers: defaultContentHeaders,
     });
-
     if (!response.ok) {
       throw new Error(`Error al obtener el ejercicio: ${response.statusText}`);
     }
@@ -305,26 +305,71 @@ export async function getExerciseById(exerciseId) {
     if (!ejercicioBackend || !ejercicioBackend.target_code) {
       throw new Error('Datos de ejercicio inválidos o incompletos');
     }
+    // Dont try to understand this code.
+    const { visibles, pineadas } = FuncionSepararListaVisiblesYPineadas(ejercicioBackend.visible_lines || []);
     const lineasVisiblesTransformadas = convertirFormatoLineasVisibles(
-      ejercicioBackend.visible_lines || [],
+      visibles,
       ejercicioBackend.target_code
     );
-    console.log('Líneas visibles transformadas:', lineasVisiblesTransformadas);
     const ejercicio = {
       id_ejercicio: ejercicioBackend.exercise_id?.toString() || '0',
       titulo: ejercicioBackend.title || 'Sin título',
       enunciado: ejercicioBackend.prompt || 'Sin enunciado',
       lineas_visibles: lineasVisiblesTransformadas,
+      lineas_fijadas: pineadas,
       codigo_objetivo: ejercicioBackend.target_code,
       comentario_docente: ejercicioBackend.instructor_comment || ''
     };
     const codigoBase = generarCodigoBase(ejercicio.lineas_visibles);
-    return {
+    const resultadoFinal = {
       ...ejercicio,
       codigo_base: codigoBase
     };
+    console.log('Ejercicio retornado:', JSON.stringify(resultadoFinal));
+    return resultadoFinal;
   } catch (error) {
     console.error('Error al obtener datos del ejercicio:', error);
     throw error;
+  }
+}
+
+export async function createExerciseWithDetails(exerciseData) {
+  console.log("Datos del ejercicio recibidos:", exerciseData)
+
+  // Transformar los datos al formato requerido
+  const requestBody = {
+    instructor_id: Number.parseInt(exerciseData.id_docente, 10) || 0,
+    title: exerciseData.titulo || "",
+    enunciado: exerciseData.enunciado || "",
+    pistas: exerciseData.pistas || [],
+    tests: exerciseData.tests || [],
+    // Mantener compatibilidad con el backend existente
+    target_code: exerciseData.codigo_objetivo || "",
+    visible_lines: Array.isArray(exerciseData.lineas_visibles) ? exerciseData.lineas_visibles : [],
+    instructor_comment: exerciseData.comentario_docente || "",
+  }
+
+  try {
+    const response = await fetch(`${CONTENT_API_BASE_URL}/exercises/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...defaultContentHeaders,
+      },
+      body: JSON.stringify(requestBody),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      console.error("Error en la respuesta del servidor:", errorData)
+      throw new Error(`Error al crear el ejercicio: ${response.status} - ${response.statusText}`)
+    }
+
+    const responseData = await response.json()
+    console.log("Ejercicio creado exitosamente:", responseData)
+    return responseData
+  } catch (error) {
+    console.error("Error al crear el ejercicio:", error)
+    throw error
   }
 }

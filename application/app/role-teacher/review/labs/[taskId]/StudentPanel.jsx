@@ -96,7 +96,7 @@ export default function StudentPanel({ students = [], taskInfo }) {
             key={s.id || s.user_id}
             onClick={() => setSelected(s)}
             className={`cursor-pointer p-2 mb-2 rounded-lg ${selected?.id === s.id || selected?.user_id === s.user_id
-              ? "bg-violet-300 text-white"
+              ? "bg-violet-300 text-black"
               : "hover:bg-violet-700"
               }`}
           >

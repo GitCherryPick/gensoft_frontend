@@ -12,7 +12,8 @@ const CodeEditorCopy = dynamic(
   { ssr: false }
 );
 
-export default function ReplicaPage() {
+export default function ReplicaPage({ params, onBack = () => {} }) {
+  const exerciseId = params?.id || 1;
   const [code, setCode] = useState('');
   const [exercise, setExercise] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -91,7 +92,7 @@ export default function ReplicaPage() {
       try {
         setLoading(true);
         const userId = currentUser?.id || '2003';
-        const exerciseData = await getExerciseById(userId);
+        const exerciseData = await getExerciseById(exerciseId);
         setExercise(exerciseData);
         setCode(exerciseData.codigo_base);
       } catch (err) {
@@ -110,28 +111,50 @@ export default function ReplicaPage() {
   return (
     <div className="flex h-full w-full p-4 gap-4">
       <div className="w-3/5 flex flex-col h-full p-4">
-        <div 
-          className="space-y-2 mb-4"
-        >
-          {error ? (
-            <h2 className="text-lg font-semibold text-red-600 animate-fade-in">
-              Error: {error}
-            </h2>
-          ) : (
-            <>
-              <h2 className="text-lg font-semibold animate-fade-in">
-                {exercise?.titulo}
+        <div className="flex items-start gap-4 mb-4">
+          <button 
+            onClick={onBack}
+            className="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full mt-1"
+            aria-label="Volver atrás"
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              className="h-6 w-6 text-gray-600 dark:text-gray-300" 
+              fill="none" 
+              viewBox="0 0 24 24" 
+              stroke="currentColor"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M15 19l-7-7 7-7" 
+              />
+            </svg>
+          </button>
+          
+          <div className="space-y-2">
+            {error ? (
+              <h2 className="text-lg font-semibold text-red-600 animate-fade-in">
+                Error: {error}
               </h2>
-              <p className="text-sm text-gray-800 dark:text-gray-200 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-                {exercise?.enunciado?.split('. ')[0]}
-              </p>
-            </>
-          )}
+            ) : (
+              <>
+                <h2 className="text-lg font-semibold animate-fade-in">
+                  {exercise?.titulo}
+                </h2>
+                <p className="text-sm text-gray-800 dark:text-gray-200 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+                  {exercise?.enunciado?.split('. ')[0]}
+                </p>
+              </>
+            )}
+          </div>
         </div>
         <div className="flex-1 overflow-hidden">
           <CodeEditorCopy
             codeInput={code}
             setCodeInput={handleCodeChange}
+            blockedLines={exercise?.lineas_fijadas || []}
           />
         </div>
       </div>

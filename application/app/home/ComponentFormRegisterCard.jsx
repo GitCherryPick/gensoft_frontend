@@ -8,12 +8,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/navigation";
 import { useAuth } from "@/lib/auth/auth-context";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/components/ui/tabs";
 
 export default function ComponentFormRegisterCard({ onBack }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
+  const [rolSeleccionado, setRolSeleccionado] = useState("estudiante")
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
@@ -37,6 +44,7 @@ export default function ComponentFormRegisterCard({ onBack }) {
         email,
         full_name: fullName,
         password,
+        role: rolSeleccionado
       });
       router.push(ROUTES.HOME);
     } catch (err) {
@@ -56,10 +64,32 @@ export default function ComponentFormRegisterCard({ onBack }) {
           <span className="text-sm">Volver</span>
         </button>
 
-        <h2 className="text-2xl font-semibold text-light-1 text-center mb-8">
+        <h2 className="text-2xl font-semibold text-light-1 text-center mb-4">
           Regístrate
         </h2>
 
+        <Tabs defaultValue="estudiante" onValueChange={setRolSeleccionado}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="estudiante" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-md">
+              Estudiante
+            </TabsTrigger>
+            <TabsTrigger value="docente" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-md">
+              Docente
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="estudiante">
+            <p className="text-sm text-muted-foreground mb-4">
+              Regístrate como estudiante.
+            </p>
+          </TabsContent>
+          <TabsContent value="docente">
+            <p className="text-sm text-muted-foreground mb-4">
+              Regístrate como docente, es importante que agregues "_teacher" en tu nombre de usuario.
+            </p>
+          </TabsContent>
+        </Tabs>
+        <input type="hidden" name="role" value={rolSeleccionado} />
         <div className="space-y-6">
           <Input
             type="text"

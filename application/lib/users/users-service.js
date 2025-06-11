@@ -1,4 +1,4 @@
-import { API_BASE_URL, defaultHeaders } from "../api-config";
+import { API_BASE_URL, defaultHeaders } from "./api-config";
 
 export async function getUserById(userId) {
   const response = await fetch(`${API_BASE_URL}/users/${userId}`, {
@@ -23,4 +23,26 @@ export async function getFeedbackAI(feedbackId) {
     headers: defaultHeaders,
   });
   return res.json();
+}
+
+export async function updateFeedbackAI(feedbackId, data) {
+  const res = await fetch(`${API_BASE_URL}/feedback/exercise/${feedbackId}`, {
+    method: 'PUT',
+    headers: defaultHeaders,
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+export async function alive() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/`, {
+      method: 'GET',
+      headers: defaultHeaders,
+    });
+    if (!res.ok) throw new Error('No response');
+    return await res.json();
+  } catch (error) {
+    return null;
+  }
 }

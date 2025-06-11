@@ -1,8 +1,7 @@
 import { useState, useImperativeHandle, forwardRef, useEffect } from "react";
 import CodeEditor from "@/components/core/CodeEditor"
 import PopOverError from "./PopOverError";
-import { SANDBOX_API_BASE_URL } from "@/lib/sandbox/sandbox-api-config";
-import { getWarningsFromAI } from "@/lib/sandbox/sandbox-service";
+import { getWarningsFromAI, executeCodeSandbox } from "@/lib/sandbox/sandbox-service";
 
 const Sandbox = forwardRef(({
   codigo,
@@ -14,6 +13,7 @@ const Sandbox = forwardRef(({
   feedbackForDocente,
   setFeedbackForDocente,
   taskEnunciado,
+  errorsInSubmit,
   children
 }, ref) => {
   const [linesIssues, setLinesIssues] = useState({
@@ -49,6 +49,15 @@ const Sandbox = forwardRef(({
     }
   }, [linesAux]);
 
+  useEffect(() => {
+    if(errorsInSubmit.error === ""){
+      return;
+    };
+    
+    updateLinesIssues(errorsInSubmit);
+    setWarnings([errorsInSubmit.error])
+  }, [errorsInSubmit]);
+
   const updateLinesIssues = (issueData) => {
 
     if (!issueData || issueData.line === 0) {
@@ -73,14 +82,13 @@ const Sandbox = forwardRef(({
       }
       const response = await getWarningsFromAI(codeData);
       setWarnings(response.warnings || []);
-      setFeedbackForDocente(response.feedback_docente)
+      setFeedbackForDocente([response.feedback_docente]);
       const primerError = response.errores;
       if (primerError?.line !== 0) {
         setLinesAux({
           line: response.errores?.line || 0,
           error: response.errores?.error || ""
         });
-        //updateLinesIssues(primerError);
       }
     } catch (error) {
       console.error("Error en getWarnings:", error);
@@ -93,18 +101,10 @@ const Sandbox = forwardRef(({
         line: 0,
         color: ''
       });
-      const response = await fetch(`${SANDBOX_API_BASE_URL}/sandbox/execute`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const data = await executeCodeSandbox({
           code: codigo,
           call: entrada,
-        }),
       });
-
-      const data = await response.json();
       setSalida(data.output || data.error);
       await getWarnings(data);
       updateLinesIssues(data);
@@ -131,8 +131,8 @@ const Sandbox = forwardRef(({
   }))
 
   return (
-    <div className="h-[600px] md:col-span-2 md:grid md:grid-cols-[6fr_3fr] md:gap-0">
-      <div className="h-full bg-gray-900 rounded-l-lg overflow-hidden">
+    <div className="col-span-2 w-full h-auto flex flex-col md:grid md:grid-cols-[6fr_3fr] md:gap-0">
+      <div className="h-auto min-h-[200px] bg-gray-900 rounded-t-lg md:rounded-l-lg md:rounded-tr-none overflow-hidden">
         <CodeEditor
           codeInput={codigo}
           setCodeInput={setCodigo}
@@ -142,10 +142,10 @@ const Sandbox = forwardRef(({
         </CodeEditor>
       </div>
 
-      <div className="h-full grid grid-rows-[1fr_auto] bg-black text-white rounded-r-lg overflow-hidden">
+      <div className="h-auto min-h-[200px] grid grid-rows-[1fr_auto] bg-black text-white rounded-b-lg md:rounded-r-lg md:rounded-bl-none overflow-hidden">
         <div className="p-4 overflow-auto text-sm border-b border-gray-700">
           <strong>Salida:</strong>
-          <pre>{salida}</pre>
+          <p>{salida}</p>
           {warnings && (
             <div className="mt-2">
               <strong>Warnings:</strong>

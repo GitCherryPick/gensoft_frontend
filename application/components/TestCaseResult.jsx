@@ -1,8 +1,8 @@
 // TestCaseResult.jsx
 import React, { useState } from 'react';
+import { Sparkle } from 'lucide-react';
 
-const TestCaseResult = ({ input, expectedOutput, output, veredict, testNumber }) => {
-
+const TestCaseResult = ({ input, expectedOutput, output, veredict, testNumber, feedback }) => {
     if(veredict=="Error"){
         veredict="Fallido"
     }
@@ -26,11 +26,20 @@ const TestCaseResult = ({ input, expectedOutput, output, veredict, testNumber })
         Test {testNumber} : <span style={{ color: isAccepted ? 'green' : 'red' }}>{veredict}</span>
       </div>
       {expandido && (
+        <>
         <div style={{ padding: '10px', paddingTop: 0 }}>
-          <p><strong>Input:</strong> <pre>{input}</pre></p>
-          <p><strong>Expected Output:</strong> <pre>{expectedOutput}</pre></p>
-          <p><strong>Your Output:</strong> <pre>{output}</pre></p>
+          <div><strong>Entrada:</strong> <pre>{input}</pre></div>
+          <div><strong>Salida esperada:</strong> <pre>{expectedOutput}</pre></div>
+          <div><strong>Tu Salida:</strong> <pre>{output}</pre></div>
         </div>
+        <div className='m-2 p-4 bg-indigo-900 border border-indigo-300 rounded-lg text-white'>
+          <div className='flex flex-row space-x-2 text-amber-300 items-center'>
+            <Sparkle className='text-sm h-4'/>
+            <p className='text-semibold text-base'>Comentario sobre tu progreso:</p>
+          </div>
+          <p className='text-sm/6'>{feedback}</p>
+        </div>
+        </>
       )}
     </div>
   );

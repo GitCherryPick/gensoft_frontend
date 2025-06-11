@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useEffect, useMemo, useState, forwardRef, useImperativeHandle } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Lock } from "lucide-react";
 
 const PYTHON_SYNTAX = {
   keywords: {
@@ -40,11 +40,16 @@ const PYTHON_SYNTAX = {
   }
 };
 
+// Para leer las líneas visibles y fijadas, usar los métodos getVisibleLines() y getPinnedLines() a través del ref.
+// Ejemplo: editorRef.current.getVisibleLines() y editorRef.current.getPinnedLines()
+
 const CodeEditorCopy = forwardRef(({
   codeInput,
   setCodeInput,
   children,
   showLineVisibilityToggle = false,
+  showPin = false,
+  blockedLines = [],
 }, ref) => {
   const textareaRef = useRef(null);
   const linesRef = useRef(null);
@@ -52,6 +57,8 @@ const CodeEditorCopy = forwardRef(({
   const [lines, setLines] = useState(1);
   const [highlightedCode, setHighlightedCode] = useState('');
   const [visibleLines, setVisibleLines] = useState(new Set());
+  const [pinnedLines, setPinnedLines] = useState(new Set());
+  const blockedLinesSet = useMemo(() => new Set(blockedLines), [blockedLines]);
 
   const toggleLineVisibility = (lineNumber) => {
     setVisibleLines(prev => {
@@ -65,14 +72,29 @@ const CodeEditorCopy = forwardRef(({
     });
   };
 
-  // Función para obtener las líneas visibles como array ordenado
+  const toggleLinePin = (lineNumber) => {
+    setPinnedLines(prev => {
+      const newPinned = new Set(prev);
+      if (newPinned.has(lineNumber)) {
+        newPinned.delete(lineNumber);
+      } else {
+        newPinned.add(lineNumber);
+      }
+      return newPinned;
+    });
+  };
+
   const getVisibleLines = () => {
     return Array.from(visibleLines).sort((a, b) => a - b);
   };
 
-  // Exponer la función al componente padre a través de ref
+  const getPinnedLines = () => {
+    return Array.from(pinnedLines).sort((a, b) => a - b);
+  };
+
   useImperativeHandle(ref, () => ({
-    getVisibleLines
+    getVisibleLines,
+    getPinnedLines
   }));
 
   const highlightCode = (code) => {
@@ -163,18 +185,15 @@ const CodeEditorCopy = forwardRef(({
     setHighlightedCode(highlightCode(codeInput));
   }, [codeInput]);
 
-  // Actualizar líneas y limpiar visibilidad de líneas eliminadas
   useEffect(() => {
     const newLines = codeInput.split("\n");
     setLines(newLines.length);
     
-    // Si hay líneas visibles, verificar si alguna ya no existe
     if (visibleLines.size > 0) {
       const maxLine = newLines.length;
       let hasChanges = false;
       const newVisibleLines = new Set(visibleLines);
       
-      // Eliminar referencias a líneas que ya no existen
       visibleLines.forEach(line => {
         if (line > maxLine) {
           newVisibleLines.delete(line);
@@ -182,20 +201,65 @@ const CodeEditorCopy = forwardRef(({
         }
       });
       
-      // Si hubo cambios, actualizar el estado
       if (hasChanges) {
         setVisibleLines(newVisibleLines);
       }
     }
-  }, [codeInput, visibleLines]);
+
+    if (pinnedLines.size > 0) {
+      const maxLine = newLines.length;
+      let hasChanges = false;
+      const newPinnedLines = new Set(pinnedLines);
+      
+      pinnedLines.forEach(line => {
+        if (line > maxLine) {
+          newPinnedLines.delete(line);
+          hasChanges = true;
+        }
+      });
+      if (hasChanges) {
+        setPinnedLines(newPinnedLines);
+      }
+    }
+  }, [codeInput, visibleLines, pinnedLines]);
+
+  const getLineNumberAtPosition = (text, position) => {
+    const textUpToPosition = text.substring(0, position);
+    return (textUpToPosition.match(/\n/g) || []).length + 1;
+  };
+
+  const isLineBlocked = (lineNumber) => {
+    return blockedLinesSet.has(lineNumber);
+  };
 
   const handleKeyDown = (e) => {
+    const textarea = e.target;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    
+    const currentLineStart = getLineNumberAtPosition(codeInput, start);
+    const currentLineEnd = getLineNumberAtPosition(codeInput, end);
+    
+    let hasBlockedLine = false;
+    for (let i = currentLineStart; i <= currentLineEnd; i++) {
+      if (isLineBlocked(i)) {
+        hasBlockedLine = true;
+        break;
+      }
+    }
+    
+    if (hasBlockedLine && !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'PageUp', 'PageDown'].includes(e.key)) {
+      if (!(e.ctrlKey && e.key === 'c')) {
+        e.preventDefault();
+        return;
+      }
+    }
+    
     if (e.key === 'Tab') {
       e.preventDefault();
-      const textarea = e.target;
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-
+      
+      if (hasBlockedLine) return;
+      
       const newValue =
         codeInput.substring(0, start) + '    ' + codeInput.substring(end);
       setCodeInput(newValue);
@@ -207,23 +271,63 @@ const CodeEditorCopy = forwardRef(({
   };
 
   const handleChange = (e) => {
-    setCodeInput(e.target.value);
+    const newValue = e.target.value;
+    
+    if (codeInput && newValue) {
+      const oldLines = codeInput.split('\n');
+      const newLines = newValue.split('\n');
+      
+      if (oldLines.length !== newLines.length || blockedLinesSet.size > 0) {
+        let hasChangesInBlockedLines = false;
+        
+        const commonLength = Math.min(oldLines.length, newLines.length);
+        
+        for (let i = 0; i < commonLength; i++) {
+          const lineNumber = i + 1;
+          if (isLineBlocked(lineNumber) && oldLines[i] !== newLines[i]) {
+            hasChangesInBlockedLines = true;
+            break;
+          }
+        }
+        
+        if (!hasChangesInBlockedLines && oldLines.length !== newLines.length) {
+          const diffStartIndex = oldLines.findIndex((line, index) => index < newLines.length ? line !== newLines[index] : true);
+          
+          if (diffStartIndex !== -1) {
+            const affectedLineNumber = diffStartIndex + 1;
+            for (const blockedLine of blockedLinesSet) {
+              if (blockedLine >= affectedLineNumber) {
+                hasChangesInBlockedLines = true;
+                break;
+              }
+            }
+          }
+        }
+        
+        if (hasChangesInBlockedLines) {
+          e.preventDefault();
+          return;
+        }
+      }
+    }
+    
+    setCodeInput(newValue);
   };
 
   return (
-    <div className="relative flex flex-col h-full w-full bg-zinc-800 font-mono text-base rounded-xl overflow-hidden border border-gray-700" style={{ lineHeight: '1.6rem' }}>
-      <div className="flex flex-1 overflow-hidden">
+    <div className="relative flex flex-col h-full max-h-full w-full max-w-full bg-zinc-800 font-mono text-base rounded-xl overflow-hidden border border-gray-700" style={{ lineHeight: '1.6rem', maxHeight: 'calc(100vh - 180px)' }}>
+      <div className="flex flex-1 h-full max-h-full overflow-hidden">
         <div
           ref={linesRef}
-          className={`flex flex-col items-start text-indigo-400/80 py-3 select-none overflow-hidden border-r border-gray-700 bg-zinc-900/30 ${
-            showLineVisibilityToggle ? 'min-w-[4.5rem]' : 'min-w-[3rem]'
+          className={`flex flex-col items-start text-indigo-400/80 py-3 select-none overflow-hidden border-r border-gray-700 bg-zinc-900/30 h-full max-h-full ${
+            (showLineVisibilityToggle && showPin) ? 'min-w-[7rem]' : 
+            (showLineVisibilityToggle || showPin) ? 'min-w-[4.5rem]' : 'min-w-[3rem]'
           }`}
           style={{
             lineHeight: '1.6rem',
             height: '100%',
-            paddingLeft: showLineVisibilityToggle ? '0.75rem' : '0.75rem',
+            paddingLeft: (showLineVisibilityToggle || showPin) ? '0.75rem' : '0.75rem',
             paddingRight: '0.5rem',
-            boxSizing: 'border-box',
             transition: 'min-width 0.2s ease, padding 0.2s ease'
           }}
         >
@@ -231,10 +335,11 @@ const CodeEditorCopy = forwardRef(({
             {Array.from({ length: lines || 1 }, (_, i) => {
               const lineNumber = i + 1;
               const isVisible = visibleLines.has(lineNumber);
+              const isPinned = pinnedLines.has(lineNumber);
               return (
                 <div 
                   key={i} 
-                  className="flex items-center w-full"
+                  className={`flex items-center w-full ${isLineBlocked(lineNumber) ? 'bg-yellow-500/10' : ''}`}
                   style={{
                     height: '1.6rem',
                     minHeight: '1.6rem',
@@ -246,27 +351,36 @@ const CodeEditorCopy = forwardRef(({
                   {showLineVisibilityToggle && (
                     <button
                       onClick={() => toggleLineVisibility(lineNumber)}
-                      className={`w-5 h-6 flex items-center justify-center transition-colors ${isVisible ? 'text-[#B0A1FF]' : 'text-gray-400 hover:text-gray-200'} mr-1`}
-                      title={isVisible ? 'Ocultar línea' : 'Mostrar línea'}
+                      className={`w-6 h-7 flex items-center justify-center transition-colors ${isVisible ? 'text-[#B0A1FF]' : 'text-gray-400 hover:text-gray-200'} mr-1`}
+                      title={isVisible ? 'Ocultar esta línea al usuario' : 'Mostrar esta línea al usuario'}
                     >
                       {isVisible ? (
-                        <Eye className="w-3.5 h-3.5" />
+                        <Eye className="w-5 h-5" />
                       ) : (
-                        <EyeOff className="w-3.5 h-3.5 opacity-50" />
+                        <EyeOff className="w-5 h-5 opacity-50" />
                       )}
                     </button>
                   )}
+                  {showPin && (
+                    <button
+                      onClick={() => toggleLinePin(lineNumber)}
+                      className={`w-6 h-7 flex items-center justify-center transition-colors ${pinnedLines.has(lineNumber) ? 'text-yellow-400' : 'text-gray-400 hover:text-gray-200'} mr-1`}
+                      title={pinnedLines.has(lineNumber) ? 'Desbloquear edición de esta línea' : 'Bloquear edición de esta línea'}
+                    >
+                      <Lock className={`w-5 h-5 ${pinnedLines.has(lineNumber) ? '' : 'opacity-50'}`} />
+                    </button>
+                  )}
                   <span 
-                    className="text-xs text-gray-400 flex-shrink-0"
+                    className={`text-xs ${isLineBlocked(lineNumber) ? 'text-yellow-400' : ''}`}
                     style={{
                       lineHeight: '1.6rem',
                       height: '1.6rem',
                       display: 'inline-block',
-                      width: showLineVisibilityToggle ? '1.5rem' : '1.5rem',
+                      width: (showLineVisibilityToggle || showPin) ? '1.5rem' : '1.5rem',
                       textAlign: 'right',
-                      paddingRight: showLineVisibilityToggle ? '0' : '0.25rem',
+                      paddingRight: (showLineVisibilityToggle || showPin) ? '0' : '0.25rem',
                       transition: 'all 0.2s ease',
-                      marginLeft: showLineVisibilityToggle ? '0' : '0.25rem'
+                      marginLeft: (showLineVisibilityToggle || showPin) ? '0' : '0.25rem'
                     }}
                   >
                     {lineNumber}
@@ -277,10 +391,10 @@ const CodeEditorCopy = forwardRef(({
           </div>
         </div>
 
-        <div className="flex-1 relative code-editor-main bg-zinc-900/50">
+        <div className="flex-1 h-full max-h-full relative code-editor-main bg-zinc-900/50 overflow-y-auto overflow-x-hidden" style={{maxHeight: 'calc(100vh - 180px)'}} >
           <div 
             ref={highlightRef}
-            className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-auto px-4 pt-3 pb-0 whitespace-pre text-gray-200 text-sm"
+            className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-y-auto px-4 pt-3 pb-0 whitespace-pre text-gray-200 text-sm"
             style={{ 
               fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
               lineHeight: '1.6rem',
@@ -288,18 +402,21 @@ const CodeEditorCopy = forwardRef(({
               wordBreak: 'break-all',
               letterSpacing: 'normal',
               tabSize: 2,
-              position: 'relative'
+              position: 'relative',
+              maxHeight: '100%',
+              height: '100%',
+              overflowY: 'auto'
             }}
             aria-hidden="true"
           >
             {highlightedCode}
             {Array.from({ length: lines || 1 }, (_, i) => {
               const lineNumber = i + 1;
-              if (visibleLines.has(lineNumber)) {
+              if (visibleLines.has(lineNumber) || pinnedLines.has(lineNumber)) {
                 return (
                   <div 
                     key={`highlight-${i}`}
-                    className="absolute left-0 right-0 bg-[#B0A1FF]/10 pointer-events-none"
+                    className={`absolute left-0 right-0 ${visibleLines.has(lineNumber) ? 'bg-[#B0A1FF]/10' : ''} ${pinnedLines.has(lineNumber) ? 'bg-yellow-400/10' : ''} pointer-events-none`}
                     style={{ 
                       top: `calc(0.75rem + ${i} * 1.6rem)`,
                       height: '1.6rem',
@@ -315,10 +432,13 @@ const CodeEditorCopy = forwardRef(({
           </div>
           <textarea
             ref={textareaRef}
-            className="absolute top-0 left-0 w-full h-full bg-transparent text-transparent caret-white px-4 pt-3 pb-0 resize-none outline-none font-mono text-sm whitespace-pre overflow-auto"
+            className="absolute top-0 left-0 w-full h-full max-h-full bg-transparent text-transparent caret-white px-4 pt-3 pb-0 resize-none outline-none font-mono text-sm whitespace-pre overflow-y-auto"
             style={{ 
               lineHeight: '1.6rem',
               fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              maxHeight: '100%',
+              height: '100%',
+              overflowY: 'auto',
               letterSpacing: 'normal',
               tabSize: 2
             }}

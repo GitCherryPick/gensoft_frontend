@@ -1,7 +1,7 @@
 "use client"
 import { createContext, useContext, useState } from "react"
 import { loginUser, logoutUser } from "./auth-service"
-import apiFetch from '../api';
+import apiFetch from './api';
 
 const AuthContext = createContext(undefined)
 
@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
       setIsLoading(true);
       try {
         
-        const res = await apiFetch.post('/users', data);
+        const res = await apiFetch.post('/users/', data);
         setUser(res.data);
         return res.data;
       } finally {

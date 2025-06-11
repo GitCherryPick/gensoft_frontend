@@ -3,7 +3,8 @@ import toast from "react-hot-toast";
 
 export async function loginUser({ username, password }) {
   try {
-    const response = await fetch("http://localhost:8006/auth/login", {
+    const { API_BASE_URL } = require('../users/api-config');
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -20,7 +21,10 @@ export async function loginUser({ username, password }) {
     }
 
     const data = await response.json();
-    const { access_token, token_type } = data;
+    const { access_token, token_type, user_direct } = data;
+    console.log("access", access_token)
+    console.log("token", token_type)
+    console.log("useeer", user_direct)
     
     const userDataHeader = response.headers.get('X-User-Data');
     let userData = { username };
@@ -42,10 +46,10 @@ export async function loginUser({ username, password }) {
     }
 
     const user = {
-      id: userData.user_id || '1',
-      name: userData.full_name || 'Usuario',
-      username: userData.username || username,
-      email: userData.email || '',
+      id: userData.user_id || user_direct.user_id ||'1',
+      name: userData.full_name || user_direct.full_name || 'Usuario',
+      username: userData.username || user_direct.username || username,
+      email: userData.email || user_direct.email || '',
       role,
       token: access_token,
       token_type,

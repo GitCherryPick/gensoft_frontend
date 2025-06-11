@@ -23,7 +23,6 @@ export default function ComponentFormLoginCard({ onBack }) {
   const handleLogin = async () => {
     try {
       const user = await login({ username, password });
-
       if (user.role === "student") {
         router.push(ROUTES.STUDENT.ROOT);
       } else if (user.role === "admin") {
