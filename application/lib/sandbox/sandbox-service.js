@@ -109,3 +109,12 @@ export async function createExerciseWithDetailsLab(data) {
   });
   return response.json();
 }
+
+export async function createExam(examData) {
+  const response = await fetch(`http://localhost:8010/exams`, {
+    method: 'POST',
+    headers: defaultContentHeaders,
+    body: JSON.stringify(examData),
+  });
+  return response.json();
+}
