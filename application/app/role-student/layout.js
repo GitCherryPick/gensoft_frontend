@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconBrain, IconUser, IconArrowLeft, IconBook, IconCopy, IconListCheck  } from "@tabler/icons-react"
+import { IconBrain, IconUser, IconArrowLeft, IconBook, IconCopy, IconListCheck, IconDevicesQuestion  } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -42,6 +42,11 @@ export default function StudentLayout({ children }) {
       label: "Tareas",
       href: ROUTES.STUDENT.HOMEWORK,
       icon: <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Examen",
+      href: ROUTES.STUDENT.EXAMS,
+      icon: <IconDevicesQuestion className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Cerrar Sesión",

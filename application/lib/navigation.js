@@ -22,6 +22,7 @@ export const ROUTES = {
     REPLICA: "/role-student/replica",
     PROFILE: "/role-student/profile",
     HOMEWORK: "/role-student/homework",
+    EXAMS: "/role-student/exams",
     RESOURCES: "/role-student/resources",
   },
 
