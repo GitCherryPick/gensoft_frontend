@@ -910,7 +910,7 @@ export default function MemorySimulator({ initialState }) {
 
   return (
     <FadeIn>
-      <div className="p-6 space-y-6 bg-[#0D0C11] rounded-xl border border-gray-700/30">
+      <div className="p-2 space-y-6 bg-[#0D0C11] rounded-xl">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <h2 className="text-2xl font-bold text-white">Simulador de Memoria Python</h2>
 

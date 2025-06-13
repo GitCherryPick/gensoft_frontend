@@ -1,0 +1,29 @@
+name: Build GitCherryPick Frontend
+
+on:
+  push:
+    branches: [main, 'sprint/**']
+    paths:
+      - 'application/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        working-directory: ./application
+        run: npm install
+
+      - name: Build application
+        working-directory: ./application
+        run: npm run build
