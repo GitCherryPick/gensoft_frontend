@@ -6,6 +6,7 @@ import ComponentCourseTitle from "./ComponentCourseTitle"
 import ComponentModuleList from "./ComponentModuleList"
 import ComponentModuleHeader from "./ComponentModuleHeader"
 import ComponentModuleContent from "./ComponentModuleContent"
+import ComponentMemorySimulator from "./ComponentMemorySimulator"
 
 export default function ResourcesPage() {
   const { course, modules, isLoading, error } = useCourseData()
@@ -30,8 +31,14 @@ export default function ResourcesPage() {
         <div className="flex-1">
           <ScrollArea className="h-full">
             <div className="p-4">
-              <ComponentModuleHeader selectedModule={selectedModule} />
-              <ComponentModuleContent moduleId={selectedModule?.id} />
+              {selectedModule?.id === 'sim-memory' ? (
+                <ComponentMemorySimulator />
+              ) : (
+                <>
+                  <ComponentModuleHeader selectedModule={selectedModule} />
+                  <ComponentModuleContent moduleId={selectedModule?.id} />
+                </>
+              )}
             </div>
           </ScrollArea>
         </div>
