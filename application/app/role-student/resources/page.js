@@ -31,7 +31,11 @@ export default function ResourcesPage() {
           <ScrollArea className="h-full">
             <div className="p-4">
               <ComponentModuleHeader selectedModule={selectedModule} />
-              <ComponentModuleContent moduleId={selectedModule?.id} />
+              {selectedModule?.id === 'sim-memory' ? (
+                <div style={{ textAlign: 'center', margin: '2rem', fontWeight: 'bold' }}>simulador</div>
+              ) : (
+                <ComponentModuleContent moduleId={selectedModule?.id} />
+              )}
             </div>
           </ScrollArea>
         </div>

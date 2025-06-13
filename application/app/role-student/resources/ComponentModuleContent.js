@@ -50,10 +50,26 @@ export default function ComponentModuleContent({ moduleId }) {
     }
   }
 
-    if (isLoading) return <div>Cargando contenidos...</div>
-    if (error) return <div>Error: {error}</div>
-    if (!moduleId) return <div>Seleccione un módulo para ver sus contenidos</div>
-    if (contents.length === 0) return <div>Este módulo no tiene contenidos</div>
+    if (isLoading) return (
+  <div style={{ color: '#77767D', textAlign: 'center', margin: '2rem 0' }}>
+    Cargando contenidos...
+  </div>
+);
+if (error) return (
+  <div style={{ color: '#77767D', textAlign: 'center', margin: '2rem 0' }}>
+    Error: {error}
+  </div>
+);
+if (!moduleId) return (
+  <div style={{ color: '#77767D', textAlign: 'center', margin: '2rem 0' }}>
+    Seleccione un módulo para ver sus contenidos
+  </div>
+);
+if (contents.length === 0) return (
+  <div style={{ color: '#77767D', textAlign: 'center', margin: '2rem 0' }}>
+    Este módulo no tiene contenidos
+  </div>
+);
 
     const contentTypeOrder = {
     text: 1,
