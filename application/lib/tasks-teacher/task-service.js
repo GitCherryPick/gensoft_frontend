@@ -138,21 +138,30 @@ export async function evaluateStudentSolution(solutionData) {
   }
 }
 
-/**
- * Obtiene la lista de ejercicios de tipo réplica
- * @returns {Promise<Array>} Lista de ejercicios con sus detalles
- */
+
 export async function getReplicaExercises() {
-  const response = await fetch(`${TASK_API_BASE_URL}/exercises/`, {
-    method: 'GET',
-    headers: defaultTaskHeaders,
-  });
-  
-  if (!response.ok) {
-    throw new Error(`Error al obtener los ejercicios: ${response.statusText}`);
+  try {
+    const response = await fetch(`${TASK_API_BASE_URL}/exercises/`, {
+      method: 'GET',
+      headers: defaultTaskHeaders,
+    });
+    
+    if (response.status === 404) {
+      console.warn('No se encontraron ejercicios (404)');
+      return [];
+    }
+    
+    if (!response.ok) {
+      console.error(`Error en respuesta del servidor: ${response.status} ${response.statusText}`);
+      return [];
+    }
+    
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error('Error al obtener ejercicios:', error);
+    return [];
   }
-  
-  return response.json();
 }
 
 /**

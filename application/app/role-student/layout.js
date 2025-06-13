@@ -23,11 +23,10 @@ export default function StudentLayout({ children }) {
 
   const links = [
     {
-      label: "Cursos",
-      href: ROUTES.STUDENT.COURSES,
-      icon: <IconBrain className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      label: "Tareas",
+      href: ROUTES.STUDENT.HOMEWORK,
+      icon: <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
-
     {
       label: "Recursos",
       href: ROUTES.STUDENT.RESOURCES,
@@ -39,9 +38,9 @@ export default function StudentLayout({ children }) {
       icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
-      label: "Tareas",
-      href: ROUTES.STUDENT.HOMEWORK,
-      icon: <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      label: "Cursos",
+      href: ROUTES.STUDENT.COURSES,
+      icon: <IconBrain className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Examen",
@@ -57,7 +56,7 @@ export default function StudentLayout({ children }) {
 
   useEffect(() => {
     if (pathname === ROUTES.STUDENT.ROOT) {
-      router.push(ROUTES.STUDENT.COURSES)
+      router.push(ROUTES.STUDENT.HOMEWORK)
     }
   }, [pathname, router])
 
