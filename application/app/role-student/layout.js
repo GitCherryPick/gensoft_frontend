@@ -51,7 +51,7 @@ export default function StudentLayout({ children }) {
 
   useEffect(() => {
     if (pathname === ROUTES.STUDENT.ROOT) {
-      router.push(ROUTES.STUDENT.COURSES)
+      router.push(ROUTES.STUDENT.HOMEWORK)
     }
   }, [pathname, router])
 
