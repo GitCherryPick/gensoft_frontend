@@ -22,9 +22,6 @@ export async function loginUser({ username, password }) {
 
     const data = await response.json();
     const { access_token, token_type, user_direct } = data;
-    console.log("access", access_token)
-    console.log("token", token_type)
-    console.log("useeer", user_direct)
     
     const userDataHeader = response.headers.get('X-User-Data');
     let userData = { username };

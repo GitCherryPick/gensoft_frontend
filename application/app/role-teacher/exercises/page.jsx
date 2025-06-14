@@ -32,6 +32,7 @@ export default function ExercisesPage() {
           <ExerciseForm
             code={code}
             getVisibleLines={() => editorRef.current?.getVisibleLines?.() || []}
+            getPinnedLines={() => editorRef.current?.getPinnedLines?.() || []}
             onExerciseCreated={handleExerciseCreated}
           />
         </div>
@@ -42,6 +43,7 @@ export default function ExercisesPage() {
             codeInput={code}
             setCodeInput={setCode}
             showLineVisibilityToggle={true}
+            showPin={true}
           />
         </div>
       </div>
