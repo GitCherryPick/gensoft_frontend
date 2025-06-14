@@ -77,12 +77,7 @@ export default function ProfilePage() {
               >
                 <Code size={18} className="mr-2" /> Proyectos
               </TabsTrigger>
-              <TabsTrigger
-                value="certificates"
-                className="px-6 py-3 text-sm font-medium flex items-center data-[state=active]:border-b-2 data-[state=active]:border-indigo-500 data-[state=active]:text-indigo-400 text-gray-400 hover:text-gray-300 rounded-none bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none"
-              >
-                <Award size={18} className="mr-2" /> Certificados
-              </TabsTrigger>
+             
             </TabsList>
 
             <div className="p-6">
@@ -105,13 +100,6 @@ export default function ProfilePage() {
                   Mis Proyectos
                 </h3>
                 <ProjectsPage />
-              </TabsContent>
-
-              <TabsContent value="certificates" className="m-0">
-                <h3 className="text-lg font-semibold text-gray-300 mb-4">
-                  Mis Certificados
-                </h3>
-                <Certificates />
               </TabsContent>
             </div>
           </Tabs>
