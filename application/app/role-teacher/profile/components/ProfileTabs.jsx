@@ -7,7 +7,6 @@ export default function ProfileTabs({ activeTab, onTabChange }) {
     { id: "informacion", label: "Información", icon: <Info className="w-4 h-4" /> },
     { id: "cursos", label: "Cursos de Python", icon: <BookOpen className="w-4 h-4" /> },
     { id: "proyectos", label: "Proyectos", icon: <FileText className="w-4 h-4" /> },
-    { id: "certificados", label: "Certificados", icon: <Award className="w-4 h-4" /> },
   ]
 
   return (

@@ -2,7 +2,7 @@
 
 import PersonalInfoTab from "./tabs/PersonalInfoTab"
 import AcademicInfoTab from "./tabs/AcademicInfoTab"
-import CertificationsTab from "./tabs/CertificationsTab"
+
 import ScheduleTab from "./tabs/ScheduleTab"
 import DocumentsTab from "./tabs/DocumentsTab"
 import SettingsTab from "./tabs/SettingsTab"
@@ -14,8 +14,6 @@ export default function ProfileContent({ activeTab }) {
         return <PersonalInfoTab />
       case "academic":
         return <AcademicInfoTab />
-      case "certifications":
-        return <CertificationsTab />
       case "schedule":
         return <ScheduleTab />
       case "documents":
