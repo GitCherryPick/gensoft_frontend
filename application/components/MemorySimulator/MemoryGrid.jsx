@@ -64,7 +64,7 @@ const MemoryGrid = ({ currentStep }) => {
 
   return (
     <div className="space-y-4">
-      <div className="text-center">
+      <div className="text-center p-4">
         <h4 className="text-xl font-bold text-white mb-2 flex justify-center gap-2">
           <Brain className="w-6 h-6 text-purple-400" />
           Así se ve la Memoria de tu Computadora
@@ -72,52 +72,6 @@ const MemoryGrid = ({ currentStep }) => {
         <p className="text-sm text-gray-300">
           Cada cajita representa un espacio donde Python guarda información
         </p>
-      </div>
-
-      <div className="bg-[#0D0C11] rounded-xl p-2">
-        <h5 className="text-white font-semibold mb-3 flex items-center gap-2">
-          Guía de Colores
-        </h5>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-          <div className="flex items-center gap-3 bg-green-500/10 p-3 rounded-lg border border-green-500/20">
-            <div className="w-4 h-4 bg-green-500 rounded-full shadow-lg"></div>
-            <div>
-              <div className="text-green-300 font-semibold">
-                Variables Globales
-              </div>
-              <div className="text-gray-400 text-xs">
-                Se pueden usar en todo el programa
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 bg-blue-500/10 p-3 rounded-lg border border-blue-500/20">
-            <div className="w-4 h-4 bg-blue-500 rounded-full shadow-lg"></div>
-            <div>
-              <div className="text-blue-300 font-semibold">
-                Variables Locales
-              </div>
-              <div className="text-gray-400 text-xs">
-                Solo existen dentro de funciones
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 bg-purple-500/10 p-3 rounded-lg border border-purple-500/20">
-            <div className="w-4 h-4 bg-purple-500 rounded-full shadow-lg animate-pulse"></div>
-            <div>
-              <div className="text-purple-300 font-semibold">Referencias</div>
-              <div className="text-gray-400 text-xs">
-                Apuntan a objetos grandes (listas, strings)
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 bg-gray-700/10 p-3 rounded-lg border border-gray-600/20">
-            <div className="w-4 h-4 bg-gray-600 rounded border-2 border-gray-500 border-dashed"></div>
-            <div>
-              <div className="text-gray-400 font-semibold">Memoria Vacía</div>
-              <div className="text-gray-500 text-xs">Disponible para usar</div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div className="bg-[#0D0C11] rounded-xl p-4">

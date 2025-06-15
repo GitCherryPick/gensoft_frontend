@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import MemoryGrid from "./MemoryGrid";
+import { Palette } from "lucide-react";
 
 const MemoryPanels = ({ currentStep }) => {
   const renderStackFrames = () => (
@@ -97,10 +98,63 @@ const MemoryPanels = ({ currentStep }) => {
       <div className="border border-gray-700/30 rounded-xl bg-[#131219] p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2 text-white">Memoria</h3>
         <div
-          className="overflow-auto max-h-[300px]"
+          className="overflow-auto max-h-[200px]"
           role="region"
           aria-label="Visualización de memoria"
         >
+          <div className="bg-[#0D0C11] rounded-lg p-1">
+            <h5 className="text-white text-sm font-semibold mb-2 flex items-center gap-1">
+              <Palette className="w-4 h-4 text-white" />
+              Guía de Colores
+            </h5>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs">
+              <div className="flex items-center gap-2 bg-green-500/10 p-2 rounded-md border border-green-500/20">
+                <div className="w-3 h-3 bg-green-500 rounded-full shadow-md"></div>
+                <div>
+                  <div className="text-green-300 font-semibold">
+                    Variables Globales
+                  </div>
+                  <div className="text-gray-400 text-[10px]">
+                    Se pueden usar en todo el programa
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-blue-500/10 p-2 rounded-md border border-blue-500/20">
+                <div className="w-3 h-3 bg-blue-500 rounded-full shadow-md"></div>
+                <div>
+                  <div className="text-blue-300 font-semibold">
+                    Variables Locales
+                  </div>
+                  <div className="text-gray-400 text-[10px]">
+                    Solo existen dentro de funciones
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-purple-500/10 p-2 rounded-md border border-purple-500/20">
+                <div className="w-3 h-3 bg-purple-500 rounded-full shadow-md animate-pulse"></div>
+                <div>
+                  <div className="text-purple-300 font-semibold">
+                    Referencias
+                  </div>
+                  <div className="text-gray-400 text-[10px]">
+                    Apuntan a objetos grandes (listas, strings)
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 bg-gray-700/10 p-2 rounded-md border border-gray-600/20">
+                <div className="w-3 h-3 bg-gray-600 rounded border border-gray-500 border-dashed"></div>
+                <div>
+                  <div className="text-gray-400 font-semibold">
+                    Memoria Vacía
+                  </div>
+                  <div className="text-gray-500 text-[10px]">
+                    Disponible para usar
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <MemoryGrid currentStep={currentStep} />
         </div>
       </div>
