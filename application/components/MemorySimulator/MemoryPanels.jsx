@@ -98,7 +98,7 @@ const MemoryPanels = ({ currentStep }) => {
       <div className="border border-gray-700/30 rounded-xl bg-[#131219] p-4 shadow-sm">
         <h3 className="text-lg font-semibold mb-2 text-white">Memoria</h3>
         <div
-          className="overflow-auto max-h-[200px]"
+          className="overflow-auto max-h-[400px]"
           role="region"
           aria-label="Visualización de memoria"
         >

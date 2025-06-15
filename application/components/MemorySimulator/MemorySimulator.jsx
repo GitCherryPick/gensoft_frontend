@@ -3,6 +3,7 @@ import FadeIn from "./FadeIn";
 import CodePanel from "./CodePanel";
 import MemoryPanels from "./MemoryPanels";
 import EXAMPLES from "./Examples";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 const MemorySimulator = ({ initialState }) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -48,19 +49,26 @@ const MemorySimulator = ({ initialState }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <CodePanel
-            memoryState={memoryState}
-            currentStepIndex={currentStepIndex}
-            setCurrentStepIndex={setCurrentStepIndex}
-            isAutoPlaying={isAutoPlaying}
-            setIsAutoPlaying={setIsAutoPlaying}
-            autoPlayInterval={autoPlayInterval}
-            setAutoPlayInterval={setAutoPlayInterval}
-            autoPlaySpeed={autoPlaySpeed}
-          />
-          <MemoryPanels currentStep={memoryState.steps[currentStepIndex]} />
-        </div>
+        <PanelGroup direction="horizontal" className="h-full">
+          <Panel defaultSize={60} minSize={30}>
+            <CodePanel
+              memoryState={memoryState}
+              currentStepIndex={currentStepIndex}
+              setCurrentStepIndex={setCurrentStepIndex}
+              isAutoPlaying={isAutoPlaying}
+              setIsAutoPlaying={setIsAutoPlaying}
+              autoPlayInterval={autoPlayInterval}
+              setAutoPlayInterval={setAutoPlayInterval}
+              autoPlaySpeed={autoPlaySpeed}
+            />
+          </Panel>
+
+          <PanelResizeHandle className="w-1 bg-gray-700 hover:bg-gray-500 cursor-col-resize" />
+
+          <Panel defaultSize={40} minSize={20}>
+            <MemoryPanels currentStep={memoryState.steps[currentStepIndex]} />
+          </Panel>
+        </PanelGroup>
       </div>
     </FadeIn>
   );
