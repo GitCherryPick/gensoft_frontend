@@ -34,7 +34,6 @@ export default function LabPython({ taskId = 1 }) {
   const [taskTitle, setTaskTitle] = useState("Cargando...");
   const [taskEnunciado, setTaskEnunciado] = useState("Cargando...");
   const [taskStatus, setTaskStatus] = useState("Abierta");
-  const [blockedLinesTask, setBlockedLinesTask] = useState([]);
 
   const fetchScore = async () => {
     try {
@@ -67,8 +66,6 @@ export default function LabPython({ taskId = 1 }) {
         setTaskTitle(data.title);
         setTaskEnunciado(data.enunciado);
         setTaskStatus(data.status);
-        setBlockedLinesTask(data.lines_blocked);
-        console.log("here ", data.lines_blocked)
         if(data.lineas_visibles.length > 0 && data.codigo_plantilla !== "") {
           const codigoPrevio = data.codigo_plantilla.split("\n");
           const codigoBase = codigoPrevio.map((v,i)=>{
@@ -301,7 +298,6 @@ export default function LabPython({ taskId = 1 }) {
           setEntrada={setEntrada}
           taskEnunciado={taskEnunciado}
           errorsInSubmit={errorsInSubmit}
-          blockedLines={blockedLinesTask}
         />
       </div>
     </div>

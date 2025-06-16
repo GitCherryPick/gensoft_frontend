@@ -17,10 +17,10 @@ registerLocale("es", es);
 const inputStyles = "border-border/50 hover:border-border/70 focus:border-border/90"
 const buttonStyles = "border-border/50 hover:border-border/70"
 
-export default function ExerciseForm({ code, getVisibleLines, getPinnedLines, onExerciseCreated }) {
+export default function ExerciseForm({ code, getVisibleLines, onExerciseCreated }) {
   const [enunciado, setEnunciado] = useState("")
-  const [pistas, setPistas] = useState([""]) 
-  const [tests, setTests] = useState([{ input: "", output: "" }])
+  const [pistas, setPistas] = useState([""]) // Estado para pistas
+  const [tests, setTests] = useState([{ input: "", output: "" }]) // Estado para tests
   const [isSubmitting, setIsSubmitting] = useState(false)
   const titleRef = useRef(null)
   const [calificacion, setCalificacion] = useState(10)
@@ -91,8 +91,7 @@ export default function ExerciseForm({ code, getVisibleLines, getPinnedLines, on
 
       const lineasVisibles = getVisibleLines()
       const codigoFormateado = code.replace(/\t/g, "  ")
-      const pinnedLines = getPinnedLines();
-      console.log('hola :', pinnedLines);
+
       // Filtrar pistas y tests vacíos
       const pistasLimpias = pistas.filter((pista) => pista.trim() !== "")
       const testsLimpios = tests.filter((test) => test.input.trim() !== "" && test.output.trim() !== "")
@@ -108,7 +107,6 @@ export default function ExerciseForm({ code, getVisibleLines, getPinnedLines, on
         pistas: pistasLimpias,
         grade: calificacion,
         date_limit: fechaLimite,
-        lines_blocked: pinnedLines || [],
       }
 
       const result = await createExerciseWithDetailsLab(exerciseData)

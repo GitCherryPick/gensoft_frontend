@@ -14,7 +14,6 @@ const Sandbox = forwardRef(({
   setFeedbackForDocente,
   taskEnunciado,
   errorsInSubmit,
-  blockedLines,
   children
 }, ref) => {
   const [linesIssues, setLinesIssues] = useState({
@@ -138,7 +137,6 @@ const Sandbox = forwardRef(({
           codeInput={codigo}
           setCodeInput={setCodigo}
           linesIssues={linesIssues}
-          blockedLines={blockedLines}
         >
           <PopOverError />
         </CodeEditor>
