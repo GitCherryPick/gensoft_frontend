@@ -109,3 +109,19 @@ export async function createExerciseWithDetailsLab(data) {
   });
   return response.json();
 }
+
+export async function getLastExam(){
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/exams/last`, {
+    method: 'GET',
+    headers: defaultContentHeaders,
+  });
+  return response.json();
+}
+
+export async function responseExam() {
+  const response = await fetch(`${SANDBOX_API_BASE_URL}/exams/submit`, {
+    method: 'POST',
+    headers: defaultContentHeaders,
+  });
+  return response.json();
+}

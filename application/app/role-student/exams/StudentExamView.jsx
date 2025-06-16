@@ -11,6 +11,7 @@ const CodeEditorCopy = dynamic(
 );
 
 const StudentExamView = ({ exam }) => {
+  console.log("Exam xdxdxd", exam);
   const [answers, setAnswers] = useState({});
   const [testResults, setTestResults] = useState({});
   const editorRefs = useRef({});
@@ -58,6 +59,24 @@ const StudentExamView = ({ exam }) => {
 
   // Handle exam submission
   const handleSubmit = () => {
+    const submission = {
+      exam_id: exam.exam_id,
+      student_id: exam.student_id,
+      question_responses: [
+        {
+          question_id: 0,
+          answer: "string",
+          answers: [
+            "string"
+          ],
+          code_solution: "string",
+          is_correct: true,
+          points_earned: 0
+        }
+      ],
+      total_score: 0
+    }
+    
     console.log("Exam submitted:", answers);
     alert("Examen enviado con éxito!");
   };
@@ -67,7 +86,7 @@ const StudentExamView = ({ exam }) => {
 
     return (
       <div
-        key={question.id}
+        key={question.question_id}
         className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-8 mb-6"
       >
         <div className="flex justify-between items-start mb-4">
@@ -92,16 +111,16 @@ const StudentExamView = ({ exam }) => {
         )}
 
         {/* Multiple Choice */}
-        {question.type === "multiple-choice" && (
+        {question.type === "single_choice" && (
           <div className="space-y-4">
             {question.options.map((option, optionIndex) => (
               <div key={optionIndex} className="flex items-center space-x-3">
                 <input
                   type="radio"
-                  name={`answer-${question.id}`}
-                  value={optionIndex}
-                  checked={answers[question.id] === optionIndex}
-                  onChange={() => handleAnswerChange(question.id, optionIndex)}
+                  name={`answer-${option.option_id}`}
+                  value={option.text}
+                  checked={answers[question.question_id] === optionIndex}
+                  onChange={() => handleAnswerChange(question.question_id, optionIndex)}
                   className="w-5 h-5 text-blue-500 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2"
                 />
                 <span className="text-white">{option}</span>
@@ -111,7 +130,7 @@ const StudentExamView = ({ exam }) => {
         )}
 
         {/* Multiple Select */}
-        {question.type === "multiple-select" && (
+        {question.type === "multiple_choice" && (
           <div className="space-y-4">
             {question.options.map((option, optionIndex) => (
               <div key={optionIndex} className="flex items-center space-x-3">
@@ -134,7 +153,7 @@ const StudentExamView = ({ exam }) => {
         )}
 
         {/* Code with Test Cases */}
-        {question.type === "CodeWithTest" && (
+        {question.type === "code_implementation" && (
           <div className="space-y-6">
             <div className="h-80 border border-gray-600/50 rounded-lg overflow-hidden">
               <CodeEditorCopy
@@ -200,7 +219,7 @@ const StudentExamView = ({ exam }) => {
         )}
 
         {/* Replication */}
-        {question.type === "Replication" && (
+        {question.type === "code_replication" && (
           <div className="space-y-6">
             {question.lineasVisibles?.length > 0 && (
               <div className="p-4 bg-gray-700/30 rounded-lg">
@@ -254,7 +273,7 @@ const StudentExamView = ({ exam }) => {
               Enviar examen
             </button>
           </div>
-        </div>
+        </div> 
       )}
     </div>
   );
