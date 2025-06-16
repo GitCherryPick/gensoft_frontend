@@ -103,7 +103,7 @@ export default function ScheduleTab() {
     <div className="h-full overflow-y-auto">
       <div className="w-full max-w-5xl mx-auto px-4 sm:px-6">
         {/* Header sticky */}
-        <div className="sticky top-0 bg-gray-900/95 backdrop-blur-sm py-4 -mx-4 sm:-mx-6 px-4 sm:px-6 mb-6 z-10 border-b border-slate-700/50">
+        <div className="sticky top-0 backdrop-blur-sm py-4 -mx-4 sm:-mx-6 px-4 sm:px-6 mb-6 z-10 border-b border-slate-700/50">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div className="flex items-center space-x-3">
               <h2 className="text-xl font-semibold text-white">Horario Académico</h2>

@@ -186,7 +186,7 @@ export default function DocumentsTab() {
         </div>
       )}
 
-      <div className="sticky top-0 bg-gradient-to-r from-slate-800 to-slate-800 py-4 px-6 -mx-6 mb-6 z-10 border-b border-slate-700/50 backdrop-blur-sm">
+      <div className="sticky top-0  from-slate-800 to-slate-800 py-4 px-6 -mx-6 mb-6 z-10 border-b border-slate-700/50 backdrop-blur-sm">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-blue-500/20 rounded-lg">
