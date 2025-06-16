@@ -1,4 +1,3 @@
-// app/role-student/exams/questionTypes.js
 export const questionTypes = [
     {
       type: "single_choice",

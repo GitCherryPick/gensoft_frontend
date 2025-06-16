@@ -10,7 +10,7 @@ const CodeEditorCopy = dynamic(
   { ssr: false }
 );
 
-const StudentExamView = ({ exam }) => {
+const StudentExamView = ({ exam = { questions: [], title: "Examen" } }) => {
   console.log("Exam xdxdxd", exam);
   const [answers, setAnswers] = useState({});
   const [testResults, setTestResults] = useState({});
@@ -256,9 +256,9 @@ const StudentExamView = ({ exam }) => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-3xl font-bold text-white mb-8 text-center">
-        {exam.title || "Examen"}
+        {exam?.title || "Examen"}
       </h2>
-      {exam.questions.length === 0 ? (
+      {!exam || !exam.questions || exam.questions.length === 0 ? (
         <div className="text-center py-20 text-gray-400">
           <p>No hay preguntas disponibles en este examen.</p>
         </div>
@@ -273,7 +273,7 @@ const StudentExamView = ({ exam }) => {
               Enviar examen
             </button>
           </div>
-        </div> 
+        </div>
       )}
     </div>
   );
