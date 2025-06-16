@@ -109,19 +109,3 @@ export async function createExerciseWithDetailsLab(data) {
   });
   return response.json();
 }
-
-export async function createExam(examData) {
-  const response = await fetch(`${SANDBOX_API_BASE_URL}/exams`, {
-    method: 'POST',
-    headers: defaultContentHeaders,
-    body: JSON.stringify(examData),
-  });
-  
-  if (!response.ok) {
-    const errorData = await response.json();
-    console.error('Error al crear examen:', errorData);
-    throw new Error(`Error ${response.status}: ${JSON.stringify(errorData)}`);
-  }
-  
-  return response.json();
-}
