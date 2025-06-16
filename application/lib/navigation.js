@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 export const ROUTES = {
   HOME: "/home",
-  LOGIN: "/login",
+  LOGIN: "/home",
   SIGNUP: "/signup",
   DASHBOARD: "/dashboard", 
 

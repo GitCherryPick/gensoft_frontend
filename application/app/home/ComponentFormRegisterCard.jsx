@@ -19,14 +19,16 @@ export default function ComponentFormRegisterCard({ onBack }) {
   const [error, setError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const router = useRouter();
+  
 
-  const { signup, isLoading } = useAuth();
+  const { signup, isLoading, login } = useAuth();
 
   useEffect(() => {
     router.prefetch(ROUTES.HOME);
   }, [router]);
 
   const handleRegister = async () => {
+    
   setError("");
   if (password !== confirmPassword) {
     setError("Las contraseñas no coinciden");
@@ -43,7 +45,7 @@ export default function ComponentFormRegisterCard({ onBack }) {
     setShowSuccess(true);
     // Redirige después de 2 segundos (2000 ms)
     setTimeout(() => {
-      router.push(ROUTES.DASHBOARD);
+      handleLogin();
     }, 2000);
   } catch (err) {
     console.error("Registration error:", err);
@@ -51,7 +53,21 @@ export default function ComponentFormRegisterCard({ onBack }) {
   }
 };
 
+const handleLogin = async () => {
+    try {
+      const user = await login({ username, password });
 
+      if (user.role === "student") {
+        router.push(ROUTES.STUDENT.ROOT);
+      } else if (user.role === "admin") {
+        router.push(ROUTES.ADMIN.ROOT);
+      } else if (user.role === "teacher") {
+        router.push(ROUTES.TEACHER.ROOT);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
   
 
   return (
