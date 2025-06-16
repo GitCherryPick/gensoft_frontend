@@ -6,7 +6,7 @@ export default function ProfileSidebar({ activeTab, onTabChange }) {
   const tabs = [
     { id: "personal", label: "Información personal", icon: User },
     { id: "academic", label: "Información académica", icon: BookOpen },
-    { id: "certifications", label: "Certificaciones", icon: Award },
+   
     { id: "schedule", label: "Horario", icon: Clock },
     { id: "documents", label: "Documentos", icon: FileText },
     { id: "settings", label: "Configuración", icon: Settings },

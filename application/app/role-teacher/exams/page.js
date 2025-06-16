@@ -5,8 +5,13 @@ import ExamSettings from "./ExamSettings";
 import ExamEditor from "./ExamEditor";
 import { questionTypes } from "./questionTypes";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useRouter } from "next/navigation";
+import { createExam } from "@/lib/sandbox/sandbox-service";
+
 
 const ExamCreator = () => {
+  const router = useRouter();
+
   const [exam, setExam] = useState({
     title: "",
     description: "",
@@ -26,8 +31,64 @@ const ExamCreator = () => {
     return <ExamSettings exam={exam} setExam={setExam} />;
   };
 
-  const handleSave = () => {
+  /* const handleSave = () => {
     console.log("Examen guardado:", exam);
+  }; */
+
+  const handleSave = async () => {
+    try {
+      const examData = {
+        title:        exam.title,
+        description:  exam.description,
+        time_limit:   exam.timeLimit,    
+        questions:    exam.questions.map(q => ({
+          question_id:    q.id,
+          title:          q.title,
+          description:    q.description,
+          points:         q.points,
+          type:           q.type === "multiple-choice"
+                            ? "single_choice"
+                            : q.type === "multiple-select"
+                              ? "multiple_choice"
+                              : q.type === "Replication"
+                                ? "code_replication"
+                                : "code_implementation",
+          options:        q.options?.map((opt, i) => ({
+                             option_id: i + 1,
+                             text:      opt
+                           })),
+          correct_answer: q.type === "multiple-choice"
+                            ? q.options[q.correctAnswers]
+                            : undefined,
+          correct_answers: q.type === "multiple-select"
+                            ? q.correctAnswers.map(i => q.options[i])
+                            : undefined,
+          target_code:     q.codigoObjetivo,
+          visible_lines:   q.lineasVisibles || [],
+          test_cases:      q.testCases ? q.testCases.map((test) => ({
+            test_case_id: test.id,
+            description: test.description,
+            input: test.input,
+            expected_output: test.expectedOutput,
+            is_visible: test.isVisible,
+            name: test.name,
+            points: test.points
+          })) : []
+        })),
+        settings: {
+          randomizeQuestions: exam.settings.randomizeQuestions,
+          showResults:        exam.settings.showResults,
+          allowRetake:        exam.settings.allowRetake,
+          passingScore:       exam.settings.passingScore
+        }
+      };
+      console.log("Exam data", examData);
+      const response = await createExam(examData);
+      
+      console.log("Respuesta del backend:", response);
+    } catch (error) {
+      console.error("Fallo en handleSave:", error);
+    }
   };
 
   return (
