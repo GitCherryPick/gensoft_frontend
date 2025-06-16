@@ -1,16 +1,19 @@
 'use client';
 import React, { useEffect, useState, useRef } from "react";
 import confetti from "canvas-confetti";
-import TestCaseResult from '../../../components/TestCaseResult'
-import { SANDBOX_API_BASE_URL, defaultContentHeaders } from '../../../lib/sandbox/sandbox-api-config';
+import TestCaseResult from '@/components/TestCaseResult'
+import { SANDBOX_API_BASE_URL, defaultContentHeaders } from '@/lib/sandbox/sandbox-api-config';
 import Sandbox from "./labs/Sandbox";
 import { LabDashboardModal } from "../../../components/DashBoardMetrics.jsx";
+import { postFeedbackAI } from "@/lib/users/users-service";
 
 export default function EditorPython() {
   const [isCliente, setIsCliente] = useState(false);
   const [testCases, setTestCases] = useState([]);
   const [salida, setSalida] = useState("");
   const [entrada, setEntrada] = useState("");
+  const [feedbackForDocente, setFeedbackForDocente] = useState([]);
+  const [nIntentos, setNIntentos] = useState(0);
   const [score, setScore] = useState(0);
   const [pestanaActiva, setPestanaActiva] = useState('enunciado');
   const [nuumberCases, setNumberCases] = useState("--");
@@ -26,7 +29,7 @@ export default function EditorPython() {
 
   const fetchScore = async () => {
     try {
-      const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks/getScore?task_id=${1}&user_id=${1}`, {
+      const response = await fetch(`${SANDBOX_API_BASE_URL}/tasks/getScore?task_id=${1}&user_id=${4}`, {
         method: "GET"
       });
       const data = await response.json();
@@ -61,15 +64,24 @@ export default function EditorPython() {
 
   const enviarCodigo = async () => {
     try {
+      console.log("holatriste", feedbackForDocente)
+      const feedback = await postFeedbackAI({
+        student_id: 4,//id del user 
+        task_id_lab: 1, //id de task
+        feedback_ai: [feedbackForDocente],
+        n_intentos: nIntentos
+      });
       const res = await fetch("http://localhost:8010/enviar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          UserId: 1,
+          userId: 4,
           code: codigo,
           taskId: 1,
+          result: salida.includes(":")? salida : "",
+          autofeedback_id: feedback.id?? 0
         }),
       });
 
@@ -126,6 +138,7 @@ export default function EditorPython() {
   }
 
   const ejecutarCodigo = () => {
+    setNIntentos(nIntentos+1);
     if(sandboxRef.current) {
       sandboxRef.current.executeCode();
     }
@@ -200,6 +213,8 @@ export default function EditorPython() {
           ref={sandboxRef} 
           salida={salida}
           setSalida={setSalida}
+          feedbackForDocente={feedbackForDocente}
+          setFeedbackForDocente={setFeedbackForDocente}
           entrada={entrada}
           setEntrada={setEntrada}
           taskEnunciado={taskEnunciado}
