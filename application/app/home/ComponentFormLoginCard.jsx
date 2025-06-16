@@ -97,7 +97,7 @@ export default function ComponentFormLoginCard({ onBack }) {
             Iniciar Sesión
           </PromiseButton>
 
-          <div className="flex justify-center gap-4 mt-6 pt-6 border-t border-neutral-700/50">
+          {/* <div className="flex justify-center gap-4 mt-6 pt-6 border-t border-neutral-700/50">
             <Link
               href={ROUTES.STUDENT.ROOT}
               prefetch={true}
@@ -119,7 +119,7 @@ export default function ComponentFormLoginCard({ onBack }) {
             >
               Docente
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
