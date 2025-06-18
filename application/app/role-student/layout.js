@@ -8,7 +8,7 @@ import {
   IconBook,
   IconListCheck,
   IconDevicesQuestion,
-  IconCalendar, // Nuevo icono
+  IconCalendar,
 } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
@@ -41,7 +41,7 @@ export default function StudentLayout({ children }) {
       icon: <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
-      label: "Calendario", // Nueva opción
+      label: "Calendario",
       href: ROUTES.STUDENT.CALENDAR,
       icon: <IconCalendar className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
