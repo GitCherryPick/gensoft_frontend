@@ -2,24 +2,22 @@
 import { useState, useEffect } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { getAllTasks, getReplicaExercises } from "@/lib/tasks-teacher/task-service"
-import { IconClock, IconCalendar, IconBook, IconCode, IconListCheck, IconAlertCircle, IconCheckCircle, IconRefresh } from "@tabler/icons-react"
+import { IconClock, IconCalendar, IconBook, IconCode, IconListCheck, IconAlertCircle, IconRefresh } from "@tabler/icons-react"
 import { useRouter } from "next/navigation"
 import NotificationBanner from "./NotificationBanner"
 
 export default function CalendarPage() {
-  const router = useRouter() // Moved useRouter hook to the top level
+  const router = useRouter() 
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [tasks, setTasks] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Función para obtener las tareas (usando tu código exacto)
   async function fetchTasks() {
     try {
       setLoading(true)
       setError(null)
 
-      // Laboratorio tasks (tu código exacto)
       let taskList = []
       try {
         const taskData = await getAllTasks()
@@ -38,10 +36,9 @@ export default function CalendarPage() {
         description: task.enunciado || "No description available",
         type: "Laboratorio",
         course: task.course_name || "Introducción a Python",
-        originalTask: task, // Guardamos la tarea original por si la necesitas
+        originalTask: task,
       }))
 
-      // Réplica exercises (tu código exacto)
       let replicaExercises = []
       try {
         replicaExercises = await getReplicaExercises()
@@ -62,10 +59,9 @@ export default function CalendarPage() {
         description: exercise.prompt || "No description available",
         type: "Réplica",
         course: exercise.course_name || "Introducción a Python",
-        originalExercise: exercise, // Guardamos el ejercicio original
+        originalExercise: exercise,
       }))
 
-      // Combinar todas las tareas
       const allTasks = [...laboratorioTasks, ...replicaTasks]
       setTasks(allTasks)
       console.log(`✅ ${allTasks.length} tareas cargadas correctamente`)
@@ -129,20 +125,14 @@ export default function CalendarPage() {
     }
   }
 
-  // Función para navegar a resolver tareas
   const navigateToTask = (task) => {
-    // Usar la ruta correcta que tienes en tu proyecto
     if (task.type === "Laboratorio") {
-      // Para laboratorio, necesitamos el ID sin el prefijo "lab-"
       const taskId = task.id.replace("lab-", "")
       router.push(`/role-student/homework?type=laboratory&id=${taskId}`)
     } else if (task.type === "Réplica") {
-      // Para réplica, usamos el ID directamente
       router.push(`/role-student/homework?type=replica&id=${task.id}`)
     }
   }
-
-  // Calendario simple con grid
   const renderCalendar = () => {
     const today = new Date()
     const currentMonth = today.getMonth()
@@ -168,12 +158,9 @@ export default function CalendarPage() {
       "Diciembre",
     ]
 
-    // Días vacíos al inicio
     for (let i = 0; i < startingDayOfWeek; i++) {
       days.push(<div key={`empty-${i}`} className="h-10"></div>)
     }
-
-    // Días del mes
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentYear, currentMonth, day)
       const dateString = date.toISOString().split("T")[0]
@@ -218,7 +205,6 @@ export default function CalendarPage() {
           <p className="text-gray-400 text-sm">Selecciona una fecha para ver las tareas programadas</p>
         </div>
 
-        {/* Días de la semana */}
         <div className="grid grid-cols-7 gap-1 mb-2">
           {["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"].map((day) => (
             <div key={day} className="h-10 flex items-center justify-center text-gray-400 text-sm font-medium">
@@ -227,17 +213,14 @@ export default function CalendarPage() {
           ))}
         </div>
 
-        {/* Días del mes */}
         <div className="grid grid-cols-7 gap-1">{days}</div>
       </div>
     )
   }
 
-  // Filtrar tareas para la fecha seleccionada
   const selectedDateString = selectedDate.toISOString().split("T")[0]
   const tasksForSelectedDate = tasks.filter((task) => task.dueDate === selectedDateString)
 
-  // Tareas urgentes (vencen hoy o están atrasadas)
   const urgentTasks = tasks.filter((task) => {
     const dueDate = new Date(task.dueDate)
     const today = new Date()
@@ -279,7 +262,6 @@ export default function CalendarPage() {
     <div className="min-h-screen w-full bg-dark-1 relative">
       <ScrollArea className="h-full w-full">
         <div className="max-w-7xl mx-auto p-6 space-y-6">
-          {/* Header */}
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-white">Calendario de Tareas</h1>
@@ -297,14 +279,11 @@ export default function CalendarPage() {
             </button>
           </div>
 
-          {/* Banner de Notificaciones sobre tareas urgentes, reemplaza la "Alerta de tareas urgentes" que existía en la rama del calendario de Mafer */}
           <NotificationBanner tasks={tasks} urgentTasks={urgentTasks} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Calendario Principal */}
             <div className="lg:col-span-2">{renderCalendar()}</div>
 
-            {/* Tareas del día seleccionado */}
             <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-6">
               <div className="mb-4">
                 <h2 className="text-xl font-semibold text-white">
@@ -352,7 +331,6 @@ export default function CalendarPage() {
 
                       <p className="text-xs text-gray-300 mt-2">{task.description}</p>
 
-                      {/* Agregar botón de navegación */}
                       <button
                         onClick={() => navigateToTask(task)}
                         className={`mt-3 w-full py-2 px-3 rounded-lg text-xs font-medium transition-colors ${
@@ -375,7 +353,6 @@ export default function CalendarPage() {
             </div>
           </div>
 
-          {/* Todas las tareas próximas */}
           <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-6">
             <div className="mb-6">
               <h2 className="text-xl font-semibold text-white mb-2">Próximas Tareas</h2>
@@ -422,7 +399,6 @@ export default function CalendarPage() {
 
                   <p className="text-xs text-gray-300 mt-2 line-clamp-2">{task.description}</p>
 
-                  {/* Agregar botón de navegación */}
                   <button
                     onClick={() => navigateToTask(task)}
                     className={`mt-3 w-full py-2 px-3 rounded-lg text-xs font-medium transition-colors ${
