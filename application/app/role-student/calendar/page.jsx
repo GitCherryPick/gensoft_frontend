@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { getAllTasks, getReplicaExercises } from "@/lib/tasks-teacher/task-service"
 import { IconClock, IconCalendar, IconBook, IconCode, IconListCheck, IconAlertCircle, IconRefresh } from "@tabler/icons-react"
 import { useRouter } from "next/navigation"
+import NotificationBanner from "./NotificationBanner"
 
 export default function CalendarPage() {
   const router = useRouter() 
@@ -278,18 +279,7 @@ export default function CalendarPage() {
             </button>
           </div>
 
-          {urgentTasks.length > 0 && (
-            <div className="p-4 bg-red-900/20 border border-red-800 rounded-lg">
-              <div className="flex items-center">
-                <IconAlertCircle className="h-5 w-5 text-red-400 mr-2" />
-                <p className="text-red-300">
-                  <span className="font-semibold">¡Atención!</span> Tienes{" "}
-                  <span className="font-semibold">{urgentTasks.length}</span>{" "}
-                  {urgentTasks.length === 1 ? "tarea urgente" : "tareas urgentes"}.
-                </p>
-              </div>
-            </div>
-          )}
+          <NotificationBanner tasks={tasks} urgentTasks={urgentTasks} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">{renderCalendar()}</div>
