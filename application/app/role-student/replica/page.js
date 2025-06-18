@@ -13,6 +13,7 @@ const CodeEditorCopy = dynamic(
 );
 
 export default function ReplicaPage({ params, onBack = () => {} }) {
+  const [prevStudentCode, setPrevStudentCode] = useState(null);
   const exerciseId = params?.id || 1;
   const [code, setCode] = useState('');
   const [exercise, setExercise] = useState(null);
@@ -150,7 +151,33 @@ export default function ReplicaPage({ params, onBack = () => {} }) {
             )}
           </div>
         </div>
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden relative">
+          {exercise?.codigo_objetivo && (
+            <button
+              type="button"
+              title="Ver respuesta"
+              style={{ position: 'absolute', top: 8, right: 8, zIndex: 10, opacity: 0.9 }}
+              className="px-4 py-2 border border-gray-200 dark:border-gray-600 bg-transparent rounded-md text-sm text-gray-500 dark:text-gray-300 hover:text-gray-700 hover:border-gray-400 dark:hover:border-gray-400 transition-colors duration-150 focus:outline-none"
+              onMouseDown={() => {
+                if (prevStudentCode === null) setPrevStudentCode(code);
+                setCode(exercise.codigo_objetivo);
+              }}
+              onMouseUp={() => {
+                if (prevStudentCode !== null) {
+                  setCode(prevStudentCode);
+                  setPrevStudentCode(null);
+                }
+              }}
+              onMouseLeave={() => {
+                if (prevStudentCode !== null) {
+                  setCode(prevStudentCode);
+                  setPrevStudentCode(null);
+                }
+              }}
+            >
+              Ver respuesta
+            </button>
+          )}
           <CodeEditorCopy
             codeInput={code}
             setCodeInput={handleCodeChange}
