@@ -92,3 +92,82 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Animación para el banner de notificaciones */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slideDown 0.3s ease-out;
+}
+
+/* Clases adicionales para truncar texto */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+
+/* Mejoras para responsive */
+@media (max-width: 640px) {
+  .animate-slide-down .flex-1 {
+    min-width: 0;
+  }
+
+  .animate-slide-down .text-xs {
+    font-size: 0.7rem;
+  }
+
+  .animate-slide-down .truncate {
+    max-width: 120px;
+  }
+}
+
+/* Clases adicionales para colores con opacidad */
+.bg-red-500\/10 {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.bg-yellow-500\/10 {
+  background-color: rgba(234, 179, 8, 0.1);
+}
+
+.bg-blue-500\/10 {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+.border-red-500\/20 {
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.border-yellow-500\/20 {
+  border-color: rgba(234, 179, 8, 0.2);
+}
+
+.border-blue-500\/20 {
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.border-red-500\/30 {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.border-yellow-500\/30 {
+  border-color: rgba(234, 179, 8, 0.3);
+}
+
+.border-blue-500\/30 {
+  border-color: rgba(59, 130, 246, 0.3);
+}
