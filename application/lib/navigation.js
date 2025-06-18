@@ -24,6 +24,7 @@ export const ROUTES = {
     HOMEWORK: "/role-student/homework",
     EXAMS: "/role-student/exams",
     RESOURCES: "/role-student/resources",
+    CALENDAR: "/role-student/calendar",
   },
 
   ADMIN: {
@@ -75,6 +76,11 @@ export function getNavLinks(role) {
           label: "Perfil",
           href: ROUTES.STUDENT.PROFILE,
           icon: "IconUser",
+        },
+        {
+          label: "Calendario",
+          href: ROUTES.STUDENT.CALENDAR,
+          icon: "IconCalendar",
         },
         {
           label: "Tareas",

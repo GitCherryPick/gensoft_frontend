@@ -1,7 +1,15 @@
 "use client"
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconBrain, IconUser, IconArrowLeft, IconBook, IconCopy, IconListCheck, IconDevicesQuestion  } from "@tabler/icons-react"
+import {
+  IconBrain,
+  IconUser,
+  IconArrowLeft,
+  IconBook,
+  IconListCheck,
+  IconDevicesQuestion,
+  IconCalendar, // Nuevo icono
+} from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -31,6 +39,11 @@ export default function StudentLayout({ children }) {
       label: "Recursos",
       href: ROUTES.STUDENT.RESOURCES,
       icon: <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Calendario",
+      href: ROUTES.STUDENT.CALENDAR,
+      icon: <IconCalendar className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Perfil",
