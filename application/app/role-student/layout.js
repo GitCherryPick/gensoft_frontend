@@ -41,7 +41,7 @@ export default function StudentLayout({ children }) {
       icon: <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
-      label: "Calendario",
+      label: "Calendario", // Nueva opción
       href: ROUTES.STUDENT.CALENDAR,
       icon: <IconCalendar className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
