@@ -13,6 +13,7 @@ export default function RoutePrefetcher() {
     router.prefetch(ROUTES.STUDENT.COURSES)
     router.prefetch(ROUTES.STUDENT.PROFILE)
     router.prefetch(ROUTES.STUDENT.RESOURCES)
+    router.prefetch(ROUTES.STUDENT.CALENDAR)
 
     router.prefetch(ROUTES.ADMIN.ROOT)
     router.prefetch(ROUTES.ADMIN.USERS)
