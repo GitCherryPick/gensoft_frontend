@@ -5,13 +5,10 @@ import { useState } from "react"
 export default function NotificationBanner({ tasks = [], urgentTasks = [] }) {
   const [isVisible, setIsVisible] = useState(true)
 
-  // El banner está oculto cuando no hay tareas urgentes o si el usuario lo ha cerrado
-  // Si no hay tareas urgentes, no se muestra el banner 
   if (!isVisible || urgentTasks.length === 0) {
     return null
   }
 
-  // Fecha actual para identificar tareas de hoy
   const today = new Date().toDateString()
   const todayUrgentTasks = urgentTasks.filter((task) => {
     const taskDate = new Date(task.dueDate).toDateString()
@@ -74,7 +71,6 @@ export default function NotificationBanner({ tasks = [], urgentTasks = [] }) {
     }
   }
   
-  // Mensaje del banner según el tipo de tarea
   const getBannerMessage = (priority) => {
     if (overdueUrgentTasks.length > 0) {
       return `🚨 ¡Tienes ${overdueUrgentTasks.length} tarea${overdueUrgentTasks.length > 1 ? "s" : ""} atrasada${overdueUrgentTasks.length > 1 ? "s" : ""}!`
@@ -97,7 +93,6 @@ export default function NotificationBanner({ tasks = [], urgentTasks = [] }) {
             <h3 className="text-white font-semibold mb-3">{getBannerMessage(priority)}</h3>
 
             <div className="space-y-2">
-              {/* Mostrar tareas atrasadas primero */}
               {overdueUrgentTasks.slice(0, 2).map((task, index) => (
                 <div
                   key={`overdue-${task.id || index}`}
@@ -126,7 +121,6 @@ export default function NotificationBanner({ tasks = [], urgentTasks = [] }) {
                 </div>
               ))}
 
-              {/* Mostrar tareas de hoy */}
               {todayUrgentTasks.slice(0, overdueUrgentTasks.length > 0 ? 1 : 2).map((task, index) => (
                 <div
                   key={`today-${task.id || index}`}
@@ -155,7 +149,6 @@ export default function NotificationBanner({ tasks = [], urgentTasks = [] }) {
                 </div>
               ))}
 
-              {/* Para mostrar otras tareas urgentes */}
               {urgentTasks
                 .filter((task) => !overdueUrgentTasks.includes(task) && !todayUrgentTasks.includes(task))
                 .slice(0, 1)

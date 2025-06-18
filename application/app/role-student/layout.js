@@ -51,11 +51,6 @@ export default function StudentLayout({ children }) {
       icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
-      label: "Cursos",
-      href: ROUTES.STUDENT.COURSES,
-      icon: <IconBrain className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
-    },
-    {
       label: "Examen",
       href: ROUTES.STUDENT.EXAMS,
       icon: <IconDevicesQuestion className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
