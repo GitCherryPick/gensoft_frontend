@@ -34,11 +34,10 @@ export async function loginUser({ username, password }) {
       }
     }
 
-    // Determinar rol según el correo
-    let role = "student";
-    if (username.includes("admin")) {
-      role = "admin";
-    } else if (username.includes("teacher") || username.includes("profesor")) {
+    let role = "";
+    if(user_direct.role === "estudiante") {
+      role = "student";
+    } else if(user_direct.role == "docente") {
       role = "teacher";
     }
 
