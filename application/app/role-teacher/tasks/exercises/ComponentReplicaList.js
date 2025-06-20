@@ -1,11 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getReplicaExercises } from '@/lib/tasks-teacher/task-service';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import FadeIn from "@/components/animations/FadeIn";
 import { Button } from "@/components/ui/button";
-import { Plus } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
+import { deleteExercise } from '@/lib/content/content-service';
+import { toast } from 'sonner';
 
 /**
  * @param {Object} props - Propiedades del componente
@@ -25,6 +27,7 @@ export default function ComponentReplicaList({
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [error, setError] = useState(null);
   const [internalSelectedExercise, setInternalSelectedExercise] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   useEffect(() => {
     if (externalSelectedExercise !== undefined) {
@@ -32,31 +35,75 @@ export default function ComponentReplicaList({
     }
   }, [externalSelectedExercise]);
 
-  const fetchExercises = async () => {
+  useEffect(() => {
+    return () => {
+      setInternalSelectedExercise(null);
+      setExercises([]);
+      setError(null);
+    };
+  }, [])
+
+  const handleDeleteExercise = async (exerciseId) => {
+    if (!exerciseId) {
+      console.error('ID de ejercicio no proporcionado');
+      return;
+    }
+    
+    try {
+      setIsDeleting(true);
+      const updatedExercises = exercises.filter(ex => ex.exercise_id !== exerciseId);
+      setExercises(updatedExercises);
+      if (internalSelectedExercise?.exercise_id === exerciseId) {
+        setInternalSelectedExercise(null);
+        onExerciseSelect?.(null);
+      }
+      await deleteExercise(exerciseId);
+      toast.success('Ejercicio eliminado correctamente');
+      if (updatedExercises.length > 0) {
+        await fetchExercises();
+      }
+    } catch (error) {
+      console.error('Error al eliminar el ejercicio:', error);
+      toast.error(error.message || 'Error al eliminar el ejercicio');
+      await fetchExercises();
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const fetchExercises = useCallback(async () => {
     try {
       setError(null);
       const data = await getReplicaExercises();
-      setExercises(data);
+      setExercises(data || []);
       
       if (data && data.length > 0 && autoSelectFirst && externalSelectedExercise === undefined) {
         const firstExercise = data[0];
         setInternalSelectedExercise(firstExercise);
         onExerciseSelect?.(firstExercise);
+      } else if (data && data.length === 0) {
+        setInternalSelectedExercise(null);
+        onExerciseSelect?.(null);
       }
       
       return data;
     } catch (err) {
       console.error('Error al cargar los ejercicios:', err);
-      setError('Error en Management Service.');
+      setError('No se pudieron cargar los ejercicios.');
+      setExercises([]);
       return [];
     } finally {
       setIsInitialLoad(false);
     }
-  };
+  }, [autoSelectFirst, externalSelectedExercise, onExerciseSelect]);
 
   useEffect(() => {
     fetchExercises();
-  }, [fetchExercises]);
+    
+    if (onRefresh) {
+      onRefresh(fetchExercises);
+    }
+  }, [fetchExercises, onRefresh]);
 
   const handleExerciseSelect = (exercise) => {
     setInternalSelectedExercise(exercise);
@@ -141,9 +188,22 @@ export default function ComponentReplicaList({
                   >
                     <div className="flex items-center w-full">
                       <div className="w-full">
-                        <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-0.5">
-                          {exercise.title || 'Ejercicio sin título'}
-                        </h3>
+                        <div className="flex justify-between items-center">
+                          <h3 className="text-sm font-medium text-gray-800 dark:text-gray-200 mb-0.5">
+                            {exercise.title || 'Ejercicio sin título'}
+                          </h3>
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteExercise(exercise.exercise_id);
+                            }}
+                            className="text-gray-400 hover:text-red-500 transition-colors p-1 rounded-full"
+                            disabled={isDeleting}
+                            title="Eliminar ejercicio"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                         {exercise.prompt && (
                           <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">
                             {exercise.prompt}

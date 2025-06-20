@@ -13,6 +13,7 @@ const CodeEditorCopy = dynamic(
 );
 
 export default function ReplicaPage({ params, onBack = () => {} }) {
+  const [prevStudentCode, setPrevStudentCode] = useState(null);
   const exerciseId = params?.id || 1;
   const [code, setCode] = useState('');
   const [exercise, setExercise] = useState(null);
@@ -109,8 +110,8 @@ export default function ReplicaPage({ params, onBack = () => {} }) {
   }, [currentUser]);
 
   return (
-    <div className="flex h-full w-full p-4 gap-4">
-      <div className="w-3/5 flex flex-col h-full p-4">
+    <div className="flex flex-col md:flex-row h-full w-full p-4 gap-4">
+      <div className="w-full md:w-3/5 flex flex-col h-full p-4 flex-1">
         <div className="flex items-start gap-4 mb-4">
           <button 
             onClick={onBack}
@@ -150,16 +151,44 @@ export default function ReplicaPage({ params, onBack = () => {} }) {
             )}
           </div>
         </div>
-        <div className="flex-1 overflow-hidden">
-          <CodeEditorCopy
-            codeInput={code}
-            setCodeInput={handleCodeChange}
-            blockedLines={exercise?.lineas_fijadas || []}
-          />
+        <div className="flex-1 overflow-hidden relative flex flex-col">
+          {exercise?.codigo_objetivo && (
+            <button
+              type="button"
+              title="Ver respuesta"
+              style={{ position: 'absolute', top: 8, right: 8, zIndex: 10, opacity: 0.9 }}
+              className="px-4 py-2 border border-gray-200 dark:border-gray-600 bg-transparent rounded-md text-sm text-gray-500 dark:text-gray-300 hover:text-gray-700 hover:border-gray-400 dark:hover:border-gray-400 transition-colors duration-150 focus:outline-none"
+              onMouseDown={() => {
+                if (prevStudentCode === null) setPrevStudentCode(code);
+                setCode(exercise.codigo_objetivo);
+              }}
+              onMouseUp={() => {
+                if (prevStudentCode !== null) {
+                  setCode(prevStudentCode);
+                  setPrevStudentCode(null);
+                }
+              }}
+              onMouseLeave={() => {
+                if (prevStudentCode !== null) {
+                  setCode(prevStudentCode);
+                  setPrevStudentCode(null);
+                }
+              }}
+            >
+              Ver respuesta
+            </button>
+          )}
+          <div className="flex-1 w-full">
+            <CodeEditorCopy
+              codeInput={code}
+              setCodeInput={handleCodeChange}
+              blockedLines={exercise?.lineas_fijadas || []}
+            />
+          </div>
         </div>
       </div>
-      
-      <div className="w-2/5 border-l border-gray-200 dark:border-gray-700">
+
+      <div className="w-full md:w-2/5 md:border-l border-t md:border-t-0 border-gray-200 dark:border-gray-700 mt-8 md:mt-0">
         {!loading && (
           error ? (
             <div className="p-4">

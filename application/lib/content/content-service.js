@@ -1,4 +1,5 @@
 import { CONTENT_API_BASE_URL, defaultContentHeaders } from './content-api-config';
+import { TASK_API_BASE_URL, defaultTaskHeaders } from '../tasks-teacher/task-api-config';
 import { FuncionSepararListaVisiblesYPineadas } from '../../app/role-teacher/tasks/Functions';
 
 // ------- 
@@ -329,6 +330,42 @@ export async function getExerciseById(exerciseId) {
     return resultadoFinal;
   } catch (error) {
     console.error('Error al obtener datos del ejercicio:', error);
+    throw error;
+  }
+}
+
+export async function deleteExercise(exerciseId) {
+  try {
+    // Usamos la misma API base que getReplicaExercises para mantener coherencia
+    const response = await fetch(`${TASK_API_BASE_URL}/exercises/${exerciseId}`, {
+      method: 'DELETE',
+      headers: defaultTaskHeaders,
+    });
+
+    // Si es 404 o cualquier otro error, manejarlo de forma adecuada
+    if (response.status === 404) {
+      console.warn(`Ejercicio ${exerciseId} no encontrado (404)`); 
+      // Devolvemos un objeto con éxito = true para no interrumpir el flujo
+      return { success: true, message: "Ejercicio eliminado correctamente" };
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      // En modo desarrollo, mostrar más detalles del error
+      console.error(`Error en respuesta del servidor: ${response.status} ${response.statusText}`, errorData);
+      // Lanzamos el error con un mensaje descriptivo
+      throw new Error(errorData.detail || `Error al eliminar el ejercicio: ${response.statusText}`);
+    }
+
+    try {
+      // Intentamos parsear la respuesta, pero puede que no devuelva JSON
+      return await response.json();
+    } catch (parseError) {
+      // Si no es JSON, devolvemos un objeto de éxito genérico
+      return { success: true, message: "Ejercicio eliminado correctamente" };
+    }
+  } catch (error) {
+    console.error('Error al eliminar el ejercicio:', error);
     throw error;
   }
 }

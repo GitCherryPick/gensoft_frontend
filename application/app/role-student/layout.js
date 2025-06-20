@@ -1,7 +1,15 @@
 "use client"
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconBrain, IconUser, IconArrowLeft, IconBook, IconCopy, IconListCheck  } from "@tabler/icons-react"
+import {
+  IconBrain,
+  IconUser,
+  IconArrowLeft,
+  IconBook,
+  IconListCheck,
+  IconDevicesQuestion,
+  IconCalendar,
+} from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -23,15 +31,19 @@ export default function StudentLayout({ children }) {
 
   const links = [
     {
-      label: "Cursos",
-      href: ROUTES.STUDENT.COURSES,
-      icon: <IconBrain className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      label: "Tareas",
+      href: ROUTES.STUDENT.HOMEWORK,
+      icon: <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
-
     {
       label: "Recursos",
       href: ROUTES.STUDENT.RESOURCES,
       icon: <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Calendario",
+      href: ROUTES.STUDENT.CALENDAR,
+      icon: <IconCalendar className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Perfil",
@@ -39,9 +51,9 @@ export default function StudentLayout({ children }) {
       icon: <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
-      label: "Tareas",
-      href: ROUTES.STUDENT.HOMEWORK,
-      icon: <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      label: "Examen",
+      href: ROUTES.STUDENT.EXAMS,
+      icon: <IconDevicesQuestion className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
       label: "Cerrar Sesión",
@@ -52,7 +64,7 @@ export default function StudentLayout({ children }) {
 
   useEffect(() => {
     if (pathname === ROUTES.STUDENT.ROOT) {
-      router.push(ROUTES.STUDENT.COURSES)
+      router.push(ROUTES.STUDENT.HOMEWORK)
     }
   }, [pathname, router])
 
@@ -60,7 +72,7 @@ export default function StudentLayout({ children }) {
     <div
       className={cn(
         "mx-auto flex w-full flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-50 md:flex-row dark:border-neutral-700 dark:bg-dark-1",
-        "h-screen",
+        "md:h-screen",
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={true}>

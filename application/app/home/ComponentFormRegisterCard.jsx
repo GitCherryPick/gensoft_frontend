@@ -70,10 +70,10 @@ export default function ComponentFormRegisterCard({ onBack }) {
 
         <Tabs defaultValue="estudiante" onValueChange={setRolSeleccionado}>
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="estudiante" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-md">
+            <TabsTrigger value="estudiante" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-md py-2">
               Estudiante
             </TabsTrigger>
-            <TabsTrigger value="docente" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-md">
+            <TabsTrigger value="docente" className="data-[state=active]:bg-white data-[state=active]:text-black rounded-md py-2">
               Docente
             </TabsTrigger>
           </TabsList>
@@ -85,7 +85,7 @@ export default function ComponentFormRegisterCard({ onBack }) {
           </TabsContent>
           <TabsContent value="docente">
             <p className="text-sm text-muted-foreground mb-4">
-              Regístrate como docente, es importante que agregues "_teacher" en tu nombre de usuario.
+              Regístrate como docente.
             </p>
           </TabsContent>
         </Tabs>

@@ -76,7 +76,7 @@ export default function PersonalInfoPage({ userId: propUserId }) {
   }
 
   return (
-    <div className="min-h-screenp-6">
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto">
         <div className="sticky top-0 py-4 px-6 -mx-6 mb-6 z-10 border-b border-slate-700/50 backdrop-blur-sm">
           <div className="flex justify-between items-center">

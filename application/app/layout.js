@@ -5,8 +5,8 @@ import { ToastProvider } from "@/components/ui/toast-provider"
 import { AuthProvider } from "@/lib/auth/auth-context"
 
 export const metadata = {
-  title: "Role-Based System",
-  description: "Simple role-based navigation system",
+  title: "Pythonidae",
+  description: "Plataforma interactiva para aprender Python desde cero, con ejercicios prácticos y retroalimentación automática",
 }
 
 export default function RootLayout({ children }) {

@@ -4,6 +4,7 @@ import { useState } from "react"
 import ProfileHeader from "./components/ProfileHeader"
 import ProfileSidebar from "./components/ProfileSidebar"
 import ProfileContent from "./components/ProfileContent"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export default function TeacherProfilePage() {
   const [activeTab, setActiveTab] = useState("personal")
@@ -11,10 +12,22 @@ export default function TeacherProfilePage() {
   return (
     <div className="min-h-screen bg-[#0a0b14]">
       <div className="container mx-auto px-4 py-8 max-w-[1200px]">
-        <ProfileHeader />
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6">
-          <ProfileSidebar activeTab={activeTab} onTabChange={setActiveTab} />
-          <ProfileContent activeTab={activeTab} />
+
+        <div className="mb-6">
+          <ProfileHeader />
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 md:h-[calc(100vh-200px)]">
+          <div className="md:h-full">
+            <ProfileSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+          </div>
+          <div className="md:h-full overflow-hidden">
+            <ScrollArea className="md:h-full w-full">
+              <div className="pr-4 pb-8">
+                <ProfileContent activeTab={activeTab} />
+              </div>
+            </ScrollArea>
+          </div>
         </div>
       </div>
     </div>

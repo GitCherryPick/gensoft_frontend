@@ -22,7 +22,9 @@ export const ROUTES = {
     REPLICA: "/role-student/replica",
     PROFILE: "/role-student/profile",
     HOMEWORK: "/role-student/homework",
+    EXAMS: "/role-student/exams",
     RESOURCES: "/role-student/resources",
+    CALENDAR: "/role-student/calendar",
   },
 
   ADMIN: {
@@ -46,7 +48,7 @@ export const ROUTES = {
 };
 
 export const DEFAULT_ROUTES = {
-  STUDENT: ROUTES.STUDENT.COURSES,
+  STUDENT: ROUTES.STUDENT.HOMEWORK,
   ADMIN: ROUTES.ADMIN.USERS,
   TEACHER: ROUTES.TEACHER.STUDENTS,
 };
@@ -56,8 +58,8 @@ export function getNavLinks(role) {
     case "student":
       return [
         {
-          label: "Cursos",
-          href: ROUTES.STUDENT.COURSES,
+          label: "Tareas",
+          href: ROUTES.STUDENT.HOMEWORK,
           icon: "IconBrain",
         },
         {
@@ -74,6 +76,11 @@ export function getNavLinks(role) {
           label: "Perfil",
           href: ROUTES.STUDENT.PROFILE,
           icon: "IconUser",
+        },
+        {
+          label: "Calendario",
+          href: ROUTES.STUDENT.CALENDAR,
+          icon: "IconCalendar",
         },
         {
           label: "Tareas",
