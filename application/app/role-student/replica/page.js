@@ -110,8 +110,8 @@ export default function ReplicaPage({ params, onBack = () => {} }) {
   }, [currentUser]);
 
   return (
-    <div className="flex h-full w-full p-4 gap-4">
-      <div className="w-3/5 flex flex-col h-full p-4">
+    <div className="flex flex-col md:flex-row h-full w-full p-4 gap-4">
+      <div className="w-full md:w-3/5 flex flex-col h-full p-4 flex-1">
         <div className="flex items-start gap-4 mb-4">
           <button 
             onClick={onBack}
@@ -151,7 +151,7 @@ export default function ReplicaPage({ params, onBack = () => {} }) {
             )}
           </div>
         </div>
-        <div className="flex-1 overflow-hidden relative">
+        <div className="flex-1 overflow-hidden relative flex flex-col">
           {exercise?.codigo_objetivo && (
             <button
               type="button"
@@ -178,15 +178,17 @@ export default function ReplicaPage({ params, onBack = () => {} }) {
               Ver respuesta
             </button>
           )}
-          <CodeEditorCopy
-            codeInput={code}
-            setCodeInput={handleCodeChange}
-            blockedLines={exercise?.lineas_fijadas || []}
-          />
+          <div className="flex-1 w-full">
+            <CodeEditorCopy
+              codeInput={code}
+              setCodeInput={handleCodeChange}
+              blockedLines={exercise?.lineas_fijadas || []}
+            />
+          </div>
         </div>
       </div>
-      
-      <div className="w-2/5 border-l border-gray-200 dark:border-gray-700">
+
+      <div className="w-full md:w-2/5 md:border-l border-t md:border-t-0 border-gray-200 dark:border-gray-700 mt-8 md:mt-0">
         {!loading && (
           error ? (
             <div className="p-4">
