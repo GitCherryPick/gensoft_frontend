@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconUsers, IconArrowLeft, IconBook, IconUser, IconListCheck, IconEdit, IconBrandBandlab } from "@tabler/icons-react"
+import { IconArrowLeft, IconBook, IconUser, IconFlask, IconCopy, IconChecklist, IconFileCertificate } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -23,31 +23,31 @@ export default function TeacherLayout({ children }) {
       ),
     },
     {
-      label: "Gestión de Contenido",
+      label: "Modulos",
       href: ROUTES.TEACHER.CONTENT,
       icon: (
         <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
-      label: "Crear Ejercicios",
+      label: "Laboratorios",
       href: ROUTES.TEACHER.EXERCISES,
-      icon: <IconEdit className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: <IconFlask className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
-      label: "Gestión de Tareas",
+      label: "Replicas",
       href: ROUTES.TEACHER.TASKS,
       icon: (
-        <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconCopy className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
-      label: "Revisión de Laboratorios",
+      label: "Revisión Tareas",
       href: ROUTES.TEACHER.REVIEW_LABS,
-      icon: <IconBrandBandlab className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: <IconChecklist className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
-      label: "Examen",
+      label: "Examenes",
       href: ROUTES.TEACHER.EXAMS,
       icon: (
         <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
@@ -81,7 +81,7 @@ export default function TeacherLayout({ children }) {
     <div
       className={cn(
         "mx-auto flex w-full flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-50 md:flex-row dark:border-neutral-700 dark:bg-dark-1",
-        "h-screen"
+        "md:h-screen"
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={true}>

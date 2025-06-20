@@ -17,12 +17,12 @@ export default function TeacherProfilePage() {
           <ProfileHeader />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 h-[calc(100vh-200px)]">
+        <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6 md:h-[calc(100vh-200px)]">
           <div className="md:h-full">
             <ProfileSidebar activeTab={activeTab} onTabChange={setActiveTab} />
           </div>
-          <div className="h-full overflow-hidden">
-            <ScrollArea className="h-full w-full">
+          <div className="md:h-full overflow-hidden">
+            <ScrollArea className="md:h-full w-full">
               <div className="pr-4 pb-8">
                 <ProfileContent activeTab={activeTab} />
               </div>
