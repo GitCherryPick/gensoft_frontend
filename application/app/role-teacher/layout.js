@@ -16,10 +16,10 @@ export default function TeacherLayout({ children }) {
 
   const links = [
     {
-      label: "Alumnos",
-      href: ROUTES.TEACHER.STUDENTS,
+      label: "Perfil",
+      href: ROUTES.TEACHER.PROFILE,
       icon: (
-        <IconUsers className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
@@ -47,13 +47,6 @@ export default function TeacherLayout({ children }) {
       icon: <IconBrandBandlab className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
     },
     {
-      label: "Perfil",
-      href: ROUTES.TEACHER.PROFILE,
-      icon: (
-        <IconUser className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
       label: "Examen",
       href: ROUTES.TEACHER.EXAMS,
       icon: (
@@ -71,7 +64,7 @@ export default function TeacherLayout({ children }) {
 
   useEffect(() => {
     if (pathname === ROUTES.TEACHER.ROOT) {
-      router.push(ROUTES.TEACHER.STUDENTS);
+      router.push(ROUTES.TEACHER.PROFILE);
     }
   }, [pathname, router]);
 
@@ -108,19 +101,6 @@ export default function TeacherLayout({ children }) {
                 />
               ))}
             </div>
-          </div>
-          <div>
-            <SidebarLink
-              link={{
-                label: "Perfil Docente",
-                href: ROUTES.TEACHER.PROFILE,
-                icon: (
-                  <div className="h-7 w-7 shrink-0 rounded-full bg-gray-300 flex items-center justify-center">
-                    <span className="text-xs">D</span>
-                  </div>
-                ),
-              }}
-            />
           </div>
         </SidebarBody>
       </Sidebar>
