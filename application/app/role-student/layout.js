@@ -72,7 +72,7 @@ export default function StudentLayout({ children }) {
     <div
       className={cn(
         "mx-auto flex w-full flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-50 md:flex-row dark:border-neutral-700 dark:bg-dark-1",
-        "h-screen",
+        "md:h-screen",
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={true}>

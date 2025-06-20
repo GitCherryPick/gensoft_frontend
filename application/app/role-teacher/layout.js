@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
-import { IconUsers, IconArrowLeft, IconBook, IconUser, IconListCheck, IconEdit, IconBrandBandlab } from "@tabler/icons-react"
+import { IconArrowLeft, IconBook, IconUser, IconFlask, IconCopy, IconChecklist, IconFileCertificate } from "@tabler/icons-react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
@@ -16,37 +16,6 @@ export default function TeacherLayout({ children }) {
 
   const links = [
     {
-      label: "Alumnos",
-      href: ROUTES.TEACHER.STUDENTS,
-      icon: (
-        <IconUsers className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Gestión de Contenido",
-      href: ROUTES.TEACHER.CONTENT,
-      icon: (
-        <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Crear Ejercicios",
-      href: ROUTES.TEACHER.EXERCISES,
-      icon: <IconEdit className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
-    },
-    {
-      label: "Gestión de Tareas",
-      href: ROUTES.TEACHER.TASKS,
-      icon: (
-        <IconListCheck className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Revisión de Laboratorios",
-      href: ROUTES.TEACHER.REVIEW_LABS,
-      icon: <IconBrandBandlab className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
-    },
-    {
       label: "Perfil",
       href: ROUTES.TEACHER.PROFILE,
       icon: (
@@ -54,7 +23,31 @@ export default function TeacherLayout({ children }) {
       ),
     },
     {
-      label: "Examen",
+      label: "Modulos",
+      href: ROUTES.TEACHER.CONTENT,
+      icon: (
+        <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Laboratorios",
+      href: ROUTES.TEACHER.EXERCISES,
+      icon: <IconFlask className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Replicas",
+      href: ROUTES.TEACHER.TASKS,
+      icon: (
+        <IconCopy className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Revisión Tareas",
+      href: ROUTES.TEACHER.REVIEW_LABS,
+      icon: <IconChecklist className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+    },
+    {
+      label: "Examenes",
       href: ROUTES.TEACHER.EXAMS,
       icon: (
         <IconBook className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
@@ -71,7 +64,7 @@ export default function TeacherLayout({ children }) {
 
   useEffect(() => {
     if (pathname === ROUTES.TEACHER.ROOT) {
-      router.push(ROUTES.TEACHER.STUDENTS);
+      router.push(ROUTES.TEACHER.PROFILE);
     }
   }, [pathname, router]);
 
@@ -88,7 +81,7 @@ export default function TeacherLayout({ children }) {
     <div
       className={cn(
         "mx-auto flex w-full flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-50 md:flex-row dark:border-neutral-700 dark:bg-dark-1",
-        "h-screen"
+        "md:h-screen"
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={true}>
@@ -108,19 +101,6 @@ export default function TeacherLayout({ children }) {
                 />
               ))}
             </div>
-          </div>
-          <div>
-            <SidebarLink
-              link={{
-                label: "Perfil Docente",
-                href: ROUTES.TEACHER.PROFILE,
-                icon: (
-                  <div className="h-7 w-7 shrink-0 rounded-full bg-gray-300 flex items-center justify-center">
-                    <span className="text-xs">D</span>
-                  </div>
-                ),
-              }}
-            />
           </div>
         </SidebarBody>
       </Sidebar>

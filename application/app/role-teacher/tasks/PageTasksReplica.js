@@ -26,8 +26,8 @@ export default function TasksReplicaPage({ onCreateNew }) {
   }, [selectedExercise]);
 
   return (
-    <div className="h-full flex overflow-hidden">
-      <div className="w-[30%] h-full flex flex-col border-r border-gray">
+    <div className="h-full flex flex-col md:flex-row overflow-hidden">
+      <div className="w-full md:w-[30%] h-full flex flex-col md:border-r border-gray">
         <ComponentReplicaList 
           selectedExercise={selectedExercise}
           onExerciseSelect={handleExerciseSelect}
@@ -36,7 +36,7 @@ export default function TasksReplicaPage({ onCreateNew }) {
         />
       </div>
 
-      <div className="w-[70%] overflow-auto">
+      <div className="w-full md:w-[70%] overflow-auto mt-4 md:mt-0">
         <ExerciseDetailPanel selectedExercise={selectedExercise} />
       </div>
     </div>

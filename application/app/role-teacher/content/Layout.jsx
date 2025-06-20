@@ -12,14 +12,14 @@ export default function Layout({
   const rightWidth = `${defaultRightSize}%`
 
   return (
-    <div className="h-full w-full flex">
-      <div className="h-full overflow-auto" style={{ width: leftWidth }}>
+    <div className="h-full w-full flex flex-col md:flex-row">
+      <div className="h-full overflow-auto w-full md:basis-[30%]">
         <div className="h-full p-4 overflow-auto">{leftPanel}</div>
       </div>
 
-      <div className="h-full border-l border-cta-1/30 dark:border-cta-1/20 mx-2"></div>
+      <div className="hidden md:block h-full border-l border-cta-1/30 dark:border-cta-1/20 mx-2"></div>
 
-      <div className="h-full overflow-auto" style={{ width: rightWidth }}>
+      <div className="h-full overflow-auto w-full mt-4 md:mt-0 md:basis-[70%]">
         <div className="h-full p-4 overflow-auto flex items-center justify-center">{rightPanel}</div>
       </div>
     </div>
