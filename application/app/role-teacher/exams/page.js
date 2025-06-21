@@ -82,7 +82,6 @@ const ExamCreator = () => {
           passingScore:       exam.settings.passingScore
         }
       };
-      console.log("Exam data", examData);
       const response = await createExam(examData);
       
       console.log("Respuesta del backend:", response);

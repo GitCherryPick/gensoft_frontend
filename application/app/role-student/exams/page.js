@@ -2,69 +2,12 @@ import { notFound } from "next/navigation";
 
 import  StudentExamView from "./StudentExamView"; 
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getLastExam } from "@/lib/sandbox/sandbox-service";
 
 
 async function fetchExamData(examId) {
   try {
-    //ejemplo de examen
-    const examData = {
-      id: examId,
-      title: "Examen de funcion de suma",
-      description: "Has la funcion de la suma",
-      timeLimit: 60,
-      questions: [
-        {
-          id: "q1",
-          type: "multiple-choice",
-          title: "What is the output of this code?",
-          description: "Consider the following code snippet: `print(2 + 2)`",
-          options: ["2", "4", "22", "Error"],
-          points: 10,
-        },
-        {
-          id: "q2",
-          type: "CodeWithTest",
-          title: "Write a function to add two numbers",
-          description: "Create a function that takes two numbers and returns their sum.",
-          codeTemplate: "function add(a, b) {\n  // Your code here\n}",
-          testCases: [
-            {
-              id: "t1",
-              input: "2, 3",
-              expectedOutput: "5",
-              isVisible: true,
-            },
-            {
-              id: "t2",
-              input: "0, 0",
-              expectedOutput: "0",
-              isVisible: true,
-            },
-          ],
-          points: 20,
-        },
-        {
-          id: "q3",
-          type: "Replication",
-          title: "Replicate the given code",
-          description: "Replicate the visible lines of the following code.",
-          codigoObjetivo: "function greet() {\n  console.log('Hello');\n  return 'Hello World';\n}",
-          lineasVisibles: [1, 3],
-          codeTemplate: "// Replicate the visible lines\n",
-          points: 15,
-        },
-      ],
-      settings: {
-        randomizeQuestions: false,
-        showResults: true,
-        allowRetake: false,
-        passingScore: 70,
-      },
-    };
-
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
+    const examData = await getLastExam();
     return examData;
   } catch (error) {
     console.error("Error fetching exam data:", error);
@@ -77,6 +20,7 @@ export default async function ExamPage({ params }) {
 
   
   const exam = await fetchExamData(examId);
+  console.log("Exam data:", exam);
 
 
   if (!exam) {
