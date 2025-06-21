@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useRef, useCallback } from "react";
 import { CheckCircle, XCircle, Play } from "lucide-react";
@@ -13,7 +12,6 @@ const CodeEditorCopy = dynamic(
 );
 
 const StudentExamView = ({ exam = { questions: [], title: "Examen" } }) => {
-  console.log("Exam xdxdxd", exam);
   const [answers, setAnswers] = useState({});
   const [testResults, setTestResults] = useState({});
   const editorRefs = useRef({});
@@ -67,8 +65,15 @@ const StudentExamView = ({ exam = { questions: [], title: "Examen" } }) => {
         const question = exam.questions.find(q => q.question_id === parseInt(questionId));
         return {
           question_id: parseInt(questionId),
-          answer: typeof answer === 'string' ? answer : '',
-          answers: Array.isArray(answer) ? answer : [],
+          answer:
+            question?.type === "single_choice"
+              ? question.options[answer]?.text ?? ""
+              : typeof answer === "string"
+              ? answer
+              : "",
+          answers: Array.isArray(answer)
+            ? answer.map(idx => question.options[idx]?.text ?? "")
+            : [],
           code_solution: question?.type.includes('code') ? answer : '',
           is_correct: true, // Esto se calculará en el backend
           points_earned: 0 // Esto se calculará en el backend
