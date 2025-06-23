@@ -2,6 +2,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import { CheckCircle, XCircle, Play } from "lucide-react";
 import { questionTypes } from "./questionTypes";
+import { examResponse } from "@/lib/sandbox/sandbox-service"
 import dynamic from "next/dynamic";
 
 // Dynamic import for CodeEditorCopy
@@ -10,12 +11,12 @@ const CodeEditorCopy = dynamic(
   { ssr: false }
 );
 
-const StudentExamView = ({ exam }) => {
+const StudentExamView = ({ exam = { questions: [], title: "Examen" } }) => {
   const [answers, setAnswers] = useState({});
   const [testResults, setTestResults] = useState({});
   const editorRefs = useRef({});
 
-  //multi respuestas
+  // Manejo de respuestas para preguntas de opción múltiple y única
   const handleAnswerChange = (questionId, value) => {
     setAnswers((prev) => ({
       ...prev,
@@ -23,7 +24,7 @@ const StudentExamView = ({ exam }) => {
     }));
   };
 
-  //code
+  // Manejo de código
   const handleCodeChange = (questionId, code) => {
     setAnswers((prev) => ({
       ...prev,
@@ -31,13 +32,12 @@ const StudentExamView = ({ exam }) => {
     }));
   };
 
-  // simulador de test
+  // Simulador de test
   const runTestCases = (questionId, code) => {
-    const question = exam.questions.find((q) => q.id === questionId);
+    const question = exam.questions.find((q) => q.question_id === questionId);
     if (!question || !question.testCases) return;
 
     const results = question.testCases.map((testCase, index) => {
-     
       const mockOutput = "8"; 
       const passed = mockOutput === testCase.expectedOutput;
       return {
@@ -58,7 +58,32 @@ const StudentExamView = ({ exam }) => {
 
   // Handle exam submission
   const handleSubmit = () => {
-    console.log("Exam submitted:", answers);
+    const submission = {
+      exam_id: exam.exam_id,
+      student_id: exam.student_id || 0,
+      question_responses: Object.entries(answers).map(([questionId, answer]) => {
+        const question = exam.questions.find(q => q.question_id === parseInt(questionId));
+        return {
+          question_id: parseInt(questionId),
+          answer:
+            question?.type === "single_choice"
+              ? question.options[answer]?.text ?? ""
+              : typeof answer === "string"
+              ? answer
+              : "",
+          answers: Array.isArray(answer)
+            ? answer.map(idx => question.options[idx]?.text ?? "")
+            : [],
+          code_solution: question?.type.includes('code') ? answer : '',
+          is_correct: true, // Esto se calculará en el backend
+          points_earned: 0 // Esto se calculará en el backend
+        };
+      }),
+      total_score: 0
+    }
+    console.log("Submitting exam:", submission);
+    const response = examResponse(submission);
+    console.log("Exam submitted:", response);
     alert("Examen enviado con éxito!");
   };
 
@@ -67,7 +92,7 @@ const StudentExamView = ({ exam }) => {
 
     return (
       <div
-        key={question.id}
+        key={question.question_id}
         className="bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-700/50 p-8 mb-6"
       >
         <div className="flex justify-between items-start mb-4">
@@ -91,74 +116,74 @@ const StudentExamView = ({ exam }) => {
           <p className="text-gray-300 mb-6">{question.description}</p>
         )}
 
-        {/* Multiple Choice */}
-        {question.type === "multiple-choice" && (
-          <div className="space-y-4">
+        {/* SINGLE CHOICE */}
+        {question.type === "single_choice" && question.options && (
+          <div className="space-y-3 mb-6">
             {question.options.map((option, optionIndex) => (
-              <div key={optionIndex} className="flex items-center space-x-3">
+              <div key={option.option_id || optionIndex} className="flex items-center space-x-3">
                 <input
                   type="radio"
-                  name={`answer-${question.id}`}
+                  name={`question-${question.question_id}`}
                   value={optionIndex}
-                  checked={answers[question.id] === optionIndex}
-                  onChange={() => handleAnswerChange(question.id, optionIndex)}
+                  checked={answers[question.question_id] === optionIndex}
+                  onChange={() => handleAnswerChange(question.question_id, optionIndex)}
                   className="w-5 h-5 text-blue-500 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2"
                 />
-                <span className="text-white">{option}</span>
+                <span className="text-white">{option.text}</span>
               </div>
             ))}
           </div>
         )}
 
-        {/* Multiple Select */}
-        {question.type === "multiple-select" && (
-          <div className="space-y-4">
+        {/* MULTIPLE CHOICE  */}
+        {question.type === "multiple_choice" && question.options && (
+          <div className="space-y-3 mb-6">
             {question.options.map((option, optionIndex) => (
-              <div key={optionIndex} className="flex items-center space-x-3">
+              <div key={option.option_id || optionIndex} className="flex items-center space-x-3">
                 <input
                   type="checkbox"
-                  checked={answers[question.id]?.includes(optionIndex) || false}
+                  checked={answers[question.question_id]?.includes(optionIndex) || false}
                   onChange={(e) => {
-                    const currentAnswers = answers[question.id] || [];
+                    const currentAnswers = answers[question.question_id] || [];
                     const newAnswers = e.target.checked
                       ? [...currentAnswers, optionIndex]
                       : currentAnswers.filter((i) => i !== optionIndex);
-                    handleAnswerChange(question.id, newAnswers);
+                    handleAnswerChange(question.question_id, newAnswers);
                   }}
                   className="w-5 h-5 text-blue-500 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2 rounded"
                 />
-                <span className="text-white">{option}</span>
+                <span className="text-white">{option.text}</span>
               </div>
             ))}
           </div>
         )}
 
-        {/* Code with Test Cases */}
-        {question.type === "CodeWithTest" && (
+        {/* CODE IMPLEMENTATION  */}
+        {question.type === "code_implementation" && (
           <div className="space-y-6">
             <div className="h-80 border border-gray-600/50 rounded-lg overflow-hidden">
               <CodeEditorCopy
                 ref={(ref) => {
-                  if (ref) editorRefs.current[question.id] = ref;
+                  if (ref) editorRefs.current[question.question_id] = ref;
                 }}
-                codeInput={answers[question.id] || question.codeTemplate || ""}
-                setCodeInput={(code) => handleCodeChange(question.id, code)}
+                codeInput={answers[question.question_id] || question.codeTemplate || ""}
+                setCodeInput={(code) => handleCodeChange(question.question_id, code)}
               />
             </div>
             <button
-              onClick={() => runTestCases(question.id, answers[question.id])}
+              onClick={() => runTestCases(question.question_id, answers[question.question_id])}
               className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-medium transition-colors duration-200"
             >
               <Play size={16} />
               <span>Ejecutar pruebas</span>
             </button>
 
-            {testResults[question.id] && (
+            {testResults[question.question_id] && (
               <div className="space-y-4">
                 <h4 className="text-lg font-semibold text-white">
                   Resultados de las pruebas
                 </h4>
-                {testResults[question.id]
+                {testResults[question.question_id]
                   .filter((result) => result.isVisible)
                   .map((result, index) => (
                     <div
@@ -199,8 +224,8 @@ const StudentExamView = ({ exam }) => {
           </div>
         )}
 
-        {/* Replication */}
-        {question.type === "Replication" && (
+        {/* CODE REPLICATION  */}
+        {question.type === "code_replication" && (
           <div className="space-y-6">
             {question.lineasVisibles?.length > 0 && (
               <div className="p-4 bg-gray-700/30 rounded-lg">
@@ -222,10 +247,10 @@ const StudentExamView = ({ exam }) => {
             <div className="h-80 border border-gray-600/50 rounded-lg overflow-hidden">
               <CodeEditorCopy
                 ref={(ref) => {
-                  if (ref) editorRefs.current[question.id] = ref;
+                  if (ref) editorRefs.current[question.question_id] = ref;
                 }}
-                codeInput={answers[question.id] || question.codeTemplate || ""}
-                setCodeInput={(code) => handleCodeChange(question.id, code)}
+                codeInput={answers[question.question_id] || question.codeTemplate || ""}
+                setCodeInput={(code) => handleCodeChange(question.question_id, code)}
               />
             </div>
           </div>
@@ -237,9 +262,9 @@ const StudentExamView = ({ exam }) => {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-3xl font-bold text-white mb-8 text-center">
-        {exam.title || "Examen"}
+        {exam?.title || "Examen"}
       </h2>
-      {exam.questions.length === 0 ? (
+      {!exam || !exam.questions || exam.questions.length === 0 ? (
         <div className="text-center py-20 text-gray-400">
           <p>No hay preguntas disponibles en este examen.</p>
         </div>
