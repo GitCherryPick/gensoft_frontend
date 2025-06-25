@@ -4,7 +4,9 @@
 
 Este proyecto tiene como objetivo crear una plataforma inclusiva que permita la enseñanza de Introducción a la Programación en Python, garantizando accesibilidad, calidad y formación de habilidades digitales para todos los estudiantes, sin brechas.
 
-La plataforma combina el uso de Recursos Educativos Abiertos (OER), un agente inteligente de apoyo al aprendizaje, movilidad estudiantil entre instituciones, la gestión de docentes y de administradores, además de conservar el progreso de cada estudiante.
+La plataforma combina el uso de un agente inteligente de apoyo al aprendizaje, la gestión de docentes para revisión de tareas, además de conservar el progreso de cada estudiante.
+
+Para instalar el proyecto y agregar nuevas caracteristicas visita [install.md](https://github.com/GitCherryPick/gensoft_frontend/blob/feat/add-install-file/install.md)
 
 ## Proposito
 
@@ -12,13 +14,12 @@ El propósito del proyecto GITCHERRYPICK es desarrollar una plataforma inclusiva
 
 ## Alcance
 
-La plataforma ofrecerá gestión de contenidos educativos, creación y uso de Recursos Educativos Abiertos (OER), un entorno de programación en Python seguro, un agente inteligente, seguimiento del progreso estudiantil, administración de actividades, exámenes y certificaciones, además de integrar interoperabilidad con plataformas LMS como Moodle, cumpliendo con estándares de accesibilidad y seguridad.
+La plataforma ofrecerá gestión de contenidos educativos, un entorno de programación en Python seguro, un agente inteligente, seguimiento del progreso estudiantil, administración de actividades, exámenes, además de cumplir con estándares de accesibilidad y seguridad.
 
 ## Características Principales
 
 - Gestión de Contenido:
   Creación y gestión de contenido por parte de los docentes.
-  Uso de Recursos Educativos Abiertos (OER).
 
 - Entorno de Desarrollo Integrado (IDE) Embebido:
   Editor de código Python y consola de salida interactiva.
@@ -29,13 +30,7 @@ La plataforma ofrecerá gestión de contenidos educativos, creación y uso de Re
   Retroalimentación automática en actividades y ejercicios.
 
 - Agente inteligente:
-  Asistencia personalizada durante el aprendizaje.
-
-- Integraciones:
-  Conexión con Moodle a través de estándares LOM.
-
-- Certificaciones:
-  Emisión de certificados al completar los cursos.
+  Asistencia personalizada durante el aprendizaje y ejercicios de programación - código.
 
 - Seguimiento:
   Gestión y almacenamiento de programas realizados, calificaciones y exámenes.
